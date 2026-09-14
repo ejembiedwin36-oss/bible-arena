@@ -1,6 +1,15 @@
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import { NavLink, Route, Routes, useNavigate } from 'react-router-dom';
-import { sampleLuke1 } from './data/bible';
+import { supabase } from './lib/supabase';
+
+type ReaderVerse = { id: string; verse_number: number; text: string };
+
+type ReaderState = {
+  book: string;
+  chapter: number;
+  translation: string;
+  verses: ReaderVerse[];
+};
 
 const navigation = [
   ['/', 'Home'], ['/bible', 'Bible'], ['/explore', 'Explore'], ['/devotion', 'Devotion'],
@@ -24,21 +33,96 @@ function Home() {
 }
 
 function BibleReader() {
-  const [translation, setTranslation] = useState(sampleLuke1.translation);
-  const [selected, setSelected] = useState<number | null>(null);
-  const [bookmarked, setBookmarked] = useState<number[]>([]);
+  const [reader, setReader] = useState<ReaderState | null>(null);
+  const [translation, setTranslation] = useState('KJV');
+  const [selected, setSelected] = useState<string | null>(null);
+  const [bookmarked, setBookmarked] = useState<string[]>([]);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState<string | null>(null);
 
-  const toggleBookmark = (verse: number) => setBookmarked((current) => current.includes(verse) ? current.filter((v) => v !== verse) : [...current, verse]);
+  useEffect(() => {
+    let cancelled = false;
+
+    async function loadChapter() {
+      setLoading(true);
+      setError(null);
+
+      const { data: version, error: versionError } = await supabase
+        .from('bible_versions')
+        .select('id, name, abbreviation')
+        .eq('abbreviation', translation)
+        .eq('is_active', true)
+        .maybeSingle();
+
+      if (versionError || !version) {
+        if (!cancelled) setError(versionError?.message ?? `Translation ${translation} is not available.`);
+        setLoading(false);
+        return;
+      }
+
+      const { data: book, error: bookError } = await supabase
+        .from('bible_books')
+        .select('id, name, chapter_count')
+        .eq('canonical_key', 'luke')
+        .maybeSingle();
+
+      if (bookError || !book) {
+        if (!cancelled) setError(bookError?.message ?? 'Luke was not found in the Bible catalogue.');
+        setLoading(false);
+        return;
+      }
+
+      const { data: chapter, error: chapterError } = await supabase
+        .from('bible_chapters')
+        .select('id, chapter_number')
+        .eq('book_id', book.id)
+        .eq('chapter_number', 1)
+        .maybeSingle();
+
+      if (chapterError || !chapter) {
+        if (!cancelled) setError(chapterError?.message ?? 'Luke 1 was not found.');
+        setLoading(false);
+        return;
+      }
+
+      const { data: verses, error: versesError } = await supabase
+        .from('bible_verses')
+        .select('id, verse_number, text')
+        .eq('chapter_id', chapter.id)
+        .eq('version_id', version.id)
+        .order('verse_number');
+
+      if (versesError) {
+        if (!cancelled) setError(versesError.message);
+        setLoading(false);
+        return;
+      }
+
+      if (!cancelled) {
+        setReader({ book: book.name, chapter: chapter.chapter_number, translation: version.abbreviation, verses: verses ?? [] });
+      }
+      setLoading(false);
+    }
+
+    loadChapter();
+    return () => { cancelled = true; };
+  }, [translation]);
+
+  const toggleBookmark = (verseId: string) => setBookmarked((current) => current.includes(verseId) ? current.filter((id) => id !== verseId) : [...current, verseId]);
 
   return <main className="reader">
     <section className="reader-toolbar card">
-      <div><span className="eyebrow">BIBLE READER</span><h1>{sampleLuke1.book} {sampleLuke1.chapter}</h1></div>
-      <label>Translation <select value={translation} onChange={(e) => setTranslation(e.target.value)}><option>KJV</option><option>WEB (planned)</option></select></label>
+      <div><span className="eyebrow">BIBLE READER</span><h1>{reader ? `${reader.book} ${reader.chapter}` : 'Luke 1'}</h1></div>
+      <label>Translation <select value={translation} onChange={(e) => { setTranslation(e.target.value); setSelected(null); }}><option>KJV</option></select></label>
     </section>
     <section className="chapter card">
-      <div className="chapter-heading"><div><span className="label">{translation}</span><h2>Luke 1</h2></div><div className="chapter-nav"><button className="secondary">‹</button><button className="secondary">›</button></div></div>
-      <div className="verses">{sampleLuke1.verses.map((item) => <div key={item.verse} className={`verse-row ${selected === item.verse ? 'selected' : ''}`} onClick={() => setSelected(item.verse)}><sup>{item.verse}</sup><p>{item.text}</p><button className="bookmark" onClick={(event) => { event.stopPropagation(); toggleBookmark(item.verse); }} aria-label={`Bookmark verse ${item.verse}`}>{bookmarked.includes(item.verse) ? '★' : '☆'}</button></div>)}</div>
-      {selected && <div className="selection-bar">Luke 1:{selected} selected <span>•</span> {bookmarked.includes(selected) ? 'Bookmarked' : 'Tap ☆ to bookmark'}</div>}
+      {loading && <p>Loading Scripture from Supabase…</p>}
+      {!loading && error && <div><h2>Unable to load Scripture</h2><p>{error}</p></div>}
+      {!loading && !error && reader && <>
+        <div className="chapter-heading"><div><span className="label">{reader.translation}</span><h2>{reader.book} {reader.chapter}</h2></div><div className="chapter-nav"><button className="secondary" disabled>‹</button><button className="secondary" disabled>›</button></div></div>
+        <div className="verses">{reader.verses.map((item) => <div key={item.id} className={`verse-row ${selected === item.id ? 'selected' : ''}`} onClick={() => setSelected(item.id)}><sup>{item.verse_number}</sup><p>{item.text}</p><button className="bookmark" onClick={(event) => { event.stopPropagation(); toggleBookmark(item.id); }} aria-label={`Bookmark verse ${item.verse_number}`}>{bookmarked.includes(item.id) ? '★' : '☆'}</button></div>)}</div>
+        {selected && <div className="selection-bar">{reader.book} {reader.chapter}:{reader.verses.find((verse) => verse.id === selected)?.verse_number} selected <span>•</span> {bookmarked.includes(selected) ? 'Bookmarked locally' : 'Tap ☆ to bookmark'}</div>}
+      </>}
     </section>
   </main>;
 }
