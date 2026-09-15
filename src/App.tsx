@@ -4,6 +4,7 @@ import type { FormEvent } from 'react';
 import type { Session } from '@supabase/supabase-js';
 import { supabase } from './lib/supabase';
 import { ensureProfile } from './lib/userData';
+import './features.css';
 
 type AuthMode = 'signin' | 'signup';
 type Book = { id: string; canonical_key: string; name: string; abbreviation: string; testament: string; category: string; chapter_count: number };
@@ -11,7 +12,6 @@ type BookStudyData = Book & { traditional_author: string | null; authorship_stat
 type Version = { id: string; name: string; abbreviation: string; language_id: string };
 type ReaderVerse = { id: string; verse_number: number; text: string };
 type ReaderState = { book: Book; chapter: number; chapterId: string; version: Version; verses: ReaderVerse[] };
-
 type BookmarkRow = { id: string; verse_id: string | null; created_at: string; verse: ReaderVerse & { chapter: { id: string; chapter_number: number; book: { id: string; canonical_key: string; name: string; abbreviation: string } }; version: { id: string; name: string; abbreviation: string } } };
 
 const navigation = [
@@ -72,19 +72,7 @@ function BibleReader({ session }: { session: Session }) {
 
 function Bookmarks({ session }: { session: Session }) {
   const navigate = useNavigate(); const [items, setItems] = useState<BookmarkRow[]>([]); const [loading, setLoading] = useState(true); const [error, setError] = useState<string | null>(null); const [removing, setRemoving] = useState<string | null>(null);
-  async function loadBookmarks() {
-    setLoading(true); setError(null);
-    const { data, error: e } = await supabase.from('bookmarks').select('id, verse_id, created_at, bible_verses(id, verse_number, text, bible_chapters(id, chapter_number, bible_books(id, canonical_key, name, abbreviation)), bible_versions(id, name, abbreviation))').eq('user_id', session.user.id).not('verse_id', 'is', null).order('created_at', { ascending: false });
-    if (e) { setError(e.message); setItems([]); } else {
-      const normalized = ((data ?? []) as unknown[]).map(row => {
-        const item = row as any; const verse = item.bible_verses; const chapter = Array.isArray(verse?.bible_chapters) ? verse.bible_chapters[0] : verse?.bible_chapters; const book = Array.isArray(chapter?.bible_books) ? chapter.bible_books[0] : chapter?.bible_books; const version = Array.isArray(verse?.bible_versions) ? verse.bible_versions[0] : verse?.bible_versions;
-        if (!verse || !chapter || !book || !version) return null;
-        return { id: item.id, verse_id: item.verse_id, created_at: item.created_at, verse: { id: verse.id, verse_number: verse.verse_number, text: verse.text, chapter: { id: chapter.id, chapter_number: chapter.chapter_number, book: { id: book.id, canonical_key: book.canonical_key, name: book.name, abbreviation: book.abbreviation } }, version: { id: version.id, name: version.name, abbreviation: version.abbreviation } } } as BookmarkRow;
-      }).filter((item): item is BookmarkRow => Boolean(item));
-      setItems(normalized);
-    }
-    setLoading(false);
-  }
+  async function loadBookmarks() { setLoading(true); setError(null); const { data, error: e } = await supabase.from('bookmarks').select('id, verse_id, created_at, bible_verses(id, verse_number, text, bible_chapters(id, chapter_number, bible_books(id, canonical_key, name, abbreviation)), bible_versions(id, name, abbreviation))').eq('user_id', session.user.id).not('verse_id', 'is', null).order('created_at', { ascending: false }); if (e) { setError(e.message); setItems([]); } else { const normalized = ((data ?? []) as unknown[]).map(row => { const item = row as any; const verse = item.bible_verses; const chapter = Array.isArray(verse?.bible_chapters) ? verse.bible_chapters[0] : verse?.bible_chapters; const book = Array.isArray(chapter?.bible_books) ? chapter.bible_books[0] : chapter?.bible_books; const version = Array.isArray(verse?.bible_versions) ? verse.bible_versions[0] : verse?.bible_versions; if (!verse || !chapter || !book || !version) return null; return { id: item.id, verse_id: item.verse_id, created_at: item.created_at, verse: { id: verse.id, verse_number: verse.verse_number, text: verse.text, chapter: { id: chapter.id, chapter_number: chapter.chapter_number, book: { id: book.id, canonical_key: book.canonical_key, name: book.name, abbreviation: book.abbreviation } }, version: { id: version.id, name: version.name, abbreviation: version.abbreviation } } } as BookmarkRow; }).filter((item): item is BookmarkRow => Boolean(item)); setItems(normalized); } setLoading(false); }
   useEffect(() => { loadBookmarks(); }, [session.user.id]);
   async function removeBookmark(id: string) { setRemoving(id); const { error: e } = await supabase.from('bookmarks').delete().eq('id', id).eq('user_id', session.user.id); if (e) setError(e.message); else setItems(current => current.filter(item => item.id !== id)); setRemoving(null); }
   return <main className="placeholder bookmarks-page card"><div className="page-heading"><div><span className="eyebrow">YOUR ARENA</span><h1>Bookmarks</h1><p>Keep the Scriptures you want to return to close at hand.</p></div><span className="count-chip">{items.length} saved</span></div>{loading && <p>Loading your saved Scriptures…</p>}{error && <div className="notice error">{error}</div>}{!loading && !error && items.length === 0 && <div className="empty-state"><strong>No bookmarks yet.</strong><p>Save a verse from the Bible Reader and it will appear here with its full reference.</p><button onClick={() => navigate('/bible')}>Open Bible →</button></div>}{!loading && items.length > 0 && <div className="saved-list">{items.map(item => <article key={item.id} className="bookmark-card"><div className="bookmark-main"><span className="label">{item.verse.version.abbreviation}</span><button className="reference-button" onClick={() => navigate(`/bible/${item.verse.chapter.book.canonical_key}/${item.verse.chapter.chapter_number}`)}>{item.verse.chapter.book.name} {item.verse.chapter.chapter_number}:{item.verse.verse_number}</button><p>“{item.verse.text}”</p></div><div className="bookmark-actions"><button onClick={() => navigate(`/bible/${item.verse.chapter.book.canonical_key}/${item.verse.chapter.chapter_number}`)}>Read →</button><button className="danger-button" disabled={removing === item.id} onClick={() => removeBookmark(item.id)}>{removing === item.id ? 'Removing…' : 'Remove'}</button></div></article>)}</div>}</main>;
@@ -97,7 +85,6 @@ function Notes({ session }: { session: Session }) {
   async function save(event: FormEvent) { event.preventDefault(); if (!text.trim()) return; setSaving(true); setError(null); const { error: e } = await supabase.from('user_notes').insert({ user_id: session.user.id, note: text.trim() }); if (e) setError(e.message); else { setText(''); await load(); } setSaving(false); }
   return <main className="placeholder card"><span className="eyebrow">YOUR ARENA</span><h1>My Notes</h1><p>Write down what Scripture is teaching you.</p><form className="note-form" onSubmit={save}><textarea value={text} onChange={e => setText(e.target.value)} rows={5} placeholder="Write a reflection…" /><button disabled={saving}>{saving ? 'Saving…' : 'Save note'}</button></form>{error && <div className="notice error">{error}</div>}{loading ? <p>Loading notes…</p> : <div className="saved-list">{items.map(item => <article key={item.id} className="saved-item"><strong>{new Date(item.created_at).toLocaleString()}</strong><p>{item.note}</p></article>)}</div>}</main>;
 }
-
 function Placeholder({ title, description }: { title: string; description: string }) { return <main className="placeholder card"><span className="eyebrow">BIBLE ARENA</span><h1>{title}</h1><p>{description}</p><div className="study-note"><strong>This module is planned in the implementation roadmap.</strong><p>We are building the foundation first so future features can use real Bible data safely.</p></div></main>; }
 function SidebarSection({ title, items }: { title: string; items: string[][] }) { return <div className="nav-section"><span className="nav-section-title">{title}</span>{items.map(([path, label]) => <NavLink key={path} to={path} end={path === '/'}>{label}</NavLink>)}</div>; }
 
