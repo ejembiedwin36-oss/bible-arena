@@ -1,5 +1,6 @@
 import { useEffect, useState } from 'react';
 import { useNavigate, useParams } from 'react-router-dom';
+import type { Session } from '@supabase/supabase-js';
 import { supabase } from '../lib/supabase';
 
 type VerseData = {
@@ -13,13 +14,17 @@ type VerseData = {
 
 type Topic = { id: string; name: string; description: string | null };
 
-export function VerseStudy() {
+export function VerseStudy({ session }: { session: Session }) {
   const { verseId } = useParams();
   const navigate = useNavigate();
   const [verse, setVerse] = useState<VerseData | null>(null);
   const [topics, setTopics] = useState<Topic[]>([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
+  const [bookmarked, setBookmarked] = useState(false);
+  const [note, setNote] = useState('');
+  const [noteSaving, setNoteSaving] = useState(false);
+  const [actionMessage, setActionMessage] = useState<string | null>(null);
 
   useEffect(() => {
     if (!verseId) return;
@@ -50,6 +55,16 @@ export function VerseStudy() {
         setLoading(false);
         return;
       }
+
+
+      const { data: existingBookmark } = await supabase
+        .from('bookmarks')
+        .select('id')
+        .eq('user_id', session.user.id)
+        .eq('verse_id', verseId)
+        .maybeSingle();
+      if (cancelled) return;
+      setBookmarked(Boolean(existingBookmark));
 
       const { data: mappings, error: te } = await supabase
         .from('topic_scriptures')
@@ -123,10 +138,31 @@ export function VerseStudy() {
         <span className="label">Study actions</span>
         <h2>Keep exploring</h2>
         <div className="study-actions">
-          <button onClick={() => navigate('/notes')}>Write a note</button>
+          <button onClick={async () => {
+            setActionMessage(null);
+            if (bookmarked) {
+              const { error: e } = await supabase.from('bookmarks').delete().eq('user_id', session.user.id).eq('verse_id', verse.id);
+              if (e) setActionMessage(e.message); else { setBookmarked(false); setActionMessage('Verse removed from bookmarks.'); }
+            } else {
+              const { error: e } = await supabase.from('bookmarks').insert({ user_id: session.user.id, verse_id: verse.id });
+              if (e) setActionMessage(e.message); else { setBookmarked(true); setActionMessage('Verse saved to bookmarks.'); }
+            }
+          }}>{bookmarked ? '★ Bookmarked' : '☆ Bookmark verse'}</button>
           <button onClick={() => navigate('/bookmarks')}>View bookmarks</button>
           <button onClick={() => navigate('/explore/topics')}>Explore topics</button>
         </div>
+        {actionMessage && <p>{actionMessage}</p>}
+      </article>
+      <article className="card study-panel">
+        <span className="label">Personal reflection</span>
+        <h2>Write a note for this verse</h2>
+        <textarea value={note} onChange={e => setNote(e.target.value)} rows={5} placeholder="What is this verse teaching you?" />
+        <button disabled={noteSaving || !note.trim()} onClick={async () => {
+          setNoteSaving(true); setActionMessage(null);
+          const { error: e } = await supabase.from('user_notes').insert({ user_id: session.user.id, content: note.trim(), verse_id: verse.id, chapter_id: verse.chapter.id });
+          if (e) setActionMessage(e.message); else { setNote(''); setActionMessage('Your note was saved with this verse.'); }
+          setNoteSaving(false);
+        }}>{noteSaving ? 'Saving…' : 'Save verse note'}</button>
       </article>
 
       <article className="card study-panel">
