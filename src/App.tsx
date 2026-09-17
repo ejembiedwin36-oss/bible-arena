@@ -69,7 +69,7 @@ function BibleReader({ session }: { session: Session }) {
   async function toggleBookmark(verseId: string) { if (bookmarked.includes(verseId)) { const { error: e } = await supabase.from('bookmarks').delete().eq('user_id', session.user.id).eq('verse_id', verseId); if (!e) setBookmarked(current => current.filter(id => id !== verseId)); } else { const { error: e } = await supabase.from('bookmarks').insert({ user_id: session.user.id, verse_id: verseId }); if (!e) setBookmarked(current => [...current, verseId]); } }
   if (!bookKey) return <BibleCatalogue />;
   const canPrevious = reader ? chapter > 1 : false; const canNext = reader ? chapter < reader.book.chapter_count : false;
-  return <main className="reader"><section className="reader-toolbar card"><div><button className="back-button" onClick={() => navigate('/bible')}>← Books</button><span className="eyebrow">BIBLE READER</span><h1>{reader?.book.name ?? 'Bible'}</h1></div><div className="reader-controls">{versions.length > 0 && <select value={versionId} onChange={e => setVersionId(e.target.value)}>{versions.map(v => <option key={v.id} value={v.id}>{v.name} ({v.abbreviation})</option>)}</select>}<span className="account-chip">Signed in</span></div></section><section className="chapter card">{loading && <p>Loading Scripture from Supabase…</p>}{!loading && error && <div><h2>Unable to load Scripture</h2><p>{error}</p><button onClick={() => navigate('/bible')}>Back to books</button></div>}{!loading && !error && reader && <><div className="chapter-heading"><div><span className="label">{reader.version.abbreviation}</span><h2>{reader.book.name} {reader.chapter}</h2></div><div className="chapter-nav"><button disabled={!canPrevious} onClick={() => navigate(`/bible/${reader.book.canonical_key}/${chapter - 1}`)}>← Previous</button><select value={chapter} onChange={e => navigate(`/bible/${reader.book.canonical_key}/${e.target.value}`)}>{Array.from({ length: reader.book.chapter_count }, (_, i) => <option key={i + 1} value={i + 1}>Chapter {i + 1}</option>)}</select><button disabled={!canNext} onClick={() => navigate(`/bible/${reader.book.canonical_key}/${chapter + 1}`)}>Next →</button></div></div>{reader.verses.length === 0 ? <div className="catalog-message"><h3>Text not loaded yet</h3><p>This chapter is already in the Bible catalogue, but its verse text has not been imported for this translation yet.</p></div> : <div className="verses">{reader.verses.map(item => <div key={item.id} className={`verse-row ${selected === item.id ? 'selected' : ''}`} onClick={() => setSelected(item.id)}><sup>{item.verse_number}</sup><p className={item.is_jesus_words ? 'jesus-words' : ''}>{item.text}</p><button className="bookmark" onClick={event => { event.stopPropagation(); toggleBookmark(item.id); }} aria-label={`Bookmark verse ${item.verse_number}`}>{bookmarked.includes(item.id) ? '★' : '☆'}</button></div>)}</div>}{selected && <div className="selection-bar">{reader.book.name} {reader.chapter}:{reader.verses.find(v => v.id === selected)?.verse_number} selected <span>•</span> {reader.version.abbreviation}</div>}</>}</section></main>;
+  return <main className="reader"><section className="reader-toolbar card"><div><button className="back-button" onClick={() => navigate('/bible')}>← Books</button><span className="eyebrow">BIBLE READER</span><h1>{reader?.book.name ?? 'Bible'}</h1></div><div className="reader-controls">{versions.length > 0 && <select value={versionId} onChange={e => setVersionId(e.target.value)}>{versions.map(v => <option key={v.id} value={v.id}>{v.name} ({v.abbreviation})</option>)}</select>}<span className="account-chip">Signed in</span></div></section><section className="chapter card">{loading && <p>Loading Scripture from Supabase…</p>}{!loading && error && <div><h2>Unable to load Scripture</h2><p>{error}</p><button onClick={() => navigate('/bible')}>Back to books</button></div>}{!loading && !error && reader && <><div className="chapter-heading"><div><span className="label">{reader.version.abbreviation}</span><h2>{reader.book.name} {reader.chapter}</h2></div><div className="chapter-nav"><button disabled={!canPrevious} onClick={() => navigate(`/bible/${reader.book.canonical_key}/${chapter - 1}`)}>← Previous</button><select value={chapter} onChange={e => navigate(`/bible/${reader.book.canonical_key}/${e.target.value}`)}>{Array.from({ length: reader.book.chapter_count }, (_, i) => <option key={i + 1} value={i + 1}>Chapter {i + 1}</option>)}</select><button disabled={!canNext} onClick={() => navigate(`/bible/${reader.book.canonical_key}/${chapter + 1}`)}>Next →</button></div></div>{reader.verses.length === 0 ? <div className="catalog-message"><h3>Text not loaded yet</h3><p>This chapter is already in the Bible catalogue, but its verse text has not been imported for this translation yet.</p></div> : <div className="verses">{reader.verses.map(item => <div key={item.id} className={`verse-row ${selected === item.id ? 'selected' : ''}`} onClick={() => setSelected(item.id)}><sup>{item.verse_number}</sup><p className={item.is_jesus_words ? 'jesus-words' : ''}>{item.text}</p><button className="bookmark" onClick={event => { event.stopPropagation(); toggleBookmark(item.id); }} aria-label={`Bookmark verse ${item.verse_number}`}>{bookmarked.includes(item.id) ? '★' : '☆'}</button></div>)}</div>}{selected && <div className="selection-bar"><span>{reader.book.name} {reader.chapter}:{reader.verses.find(v => v.id === selected)?.verse_number} selected <span>•</span> {reader.version.abbreviation}</span><button className="text-button" onClick={() => navigate(`/explore/verse/${selected}`)}>Study verse →</button></div>}</>}</section></main>;
 }
 
 function Bookmarks({ session }: { session: Session }) {
@@ -81,11 +81,61 @@ function Bookmarks({ session }: { session: Session }) {
 }
 
 function Notes({ session }: { session: Session }) {
-  const [text, setText] = useState(''); const [items, setItems] = useState<{ id: string; note: string; created_at: string }[]>([]); const [loading, setLoading] = useState(true); const [saving, setSaving] = useState(false); const [error, setError] = useState<string | null>(null);
-  async function load() { const { data, error: e } = await supabase.from('user_notes').select('id, note, created_at').eq('user_id', session.user.id).order('created_at', { ascending: false }); if (e) setError(e.message); setItems(data ?? []); setLoading(false); }
+  const navigate = useNavigate();
+  const [text, setText] = useState('');
+  const [items, setItems] = useState<{ id: string; content: string; created_at: string; verse: { verse_number: number; text: string; chapter: { chapter_number: number; book: { canonical_key: string; name: string; abbreviation: string } } } | null }[]>([]);
+  const [loading, setLoading] = useState(true);
+  const [saving, setSaving] = useState(false);
+  const [error, setError] = useState<string | null>(null);
+
+  async function load() {
+    setLoading(true);
+    const { data, error: e } = await supabase.from('user_notes')
+      .select('id, content, created_at, bible_verses(verse_number, text, bible_chapters(chapter_number, bible_books(canonical_key, name, abbreviation)))')
+      .eq('user_id', session.user.id)
+      .order('created_at', { ascending: false });
+    if (e) setError(e.message);
+    const normalized = ((data ?? []) as any[]).map(item => {
+      const rawVerse = Array.isArray(item.bible_verses) ? item.bible_verses[0] : item.bible_verses;
+      const rawChapter = Array.isArray(rawVerse?.bible_chapters) ? rawVerse.bible_chapters[0] : rawVerse?.bible_chapters;
+      const rawBook = Array.isArray(rawChapter?.bible_books) ? rawChapter.bible_books[0] : rawChapter?.bible_books;
+      return {
+        id: item.id,
+        content: item.content,
+        created_at: item.created_at,
+        verse: rawVerse && rawChapter && rawBook ? {
+          verse_number: rawVerse.verse_number,
+          text: rawVerse.text,
+          chapter: { chapter_number: rawChapter.chapter_number, book: rawBook }
+        } : null
+      };
+    });
+    setItems(normalized);
+    setLoading(false);
+  }
+
   useEffect(() => { load(); }, [session.user.id]);
-  async function save(event: FormEvent) { event.preventDefault(); if (!text.trim()) return; setSaving(true); setError(null); const { error: e } = await supabase.from('user_notes').insert({ user_id: session.user.id, note: text.trim() }); if (e) setError(e.message); else { setText(''); await load(); } setSaving(false); }
-  return <main className="placeholder card"><span className="eyebrow">YOUR ARENA</span><h1>My Notes</h1><p>Write down what Scripture is teaching you.</p><form className="note-form" onSubmit={save}><textarea value={text} onChange={e => setText(e.target.value)} rows={5} placeholder="Write a reflection…" /><button disabled={saving}>{saving ? 'Saving…' : 'Save note'}</button></form>{error && <div className="notice error">{error}</div>}{loading ? <p>Loading notes…</p> : <div className="saved-list">{items.map(item => <article key={item.id} className="saved-item"><strong>{new Date(item.created_at).toLocaleString()}</strong><p>{item.note}</p></article>)}</div>}</main>;
+
+  async function save(event: FormEvent) {
+    event.preventDefault();
+    if (!text.trim()) return;
+    setSaving(true);
+    setError(null);
+    const { error: e } = await supabase.from('user_notes').insert({ user_id: session.user.id, content: text.trim() });
+    if (e) setError(e.message);
+    else { setText(''); await load(); }
+    setSaving(false);
+  }
+
+  return <main className="placeholder card"><span className="eyebrow">YOUR ARENA</span><h1>My Notes</h1><p>Write down what Scripture is teaching you.</p>
+    <form className="note-form" onSubmit={save}><textarea value={text} onChange={e => setText(e.target.value)} rows={5} placeholder="Write a reflection…" /><button disabled={saving}>{saving ? 'Saving…' : 'Save note'}</button></form>
+    {error && <div className="notice error">{error}</div>}
+    {loading ? <p>Loading notes…</p> : <div className="saved-list">{items.map(item => <article key={item.id} className="saved-item">
+      <strong>{item.verse ? <button className="reference-button" onClick={() => navigate(`/bible/${item.verse!.chapter.book.canonical_key}/${item.verse!.chapter.chapter_number}`)}>{item.verse.chapter.book.name} {item.verse.chapter.chapter_number}:{item.verse.verse_number}</button> : 'Personal note'}</strong>
+      {item.verse && <small>“{item.verse.text}”</small>}
+      <p>{item.content}</p><time>{new Date(item.created_at).toLocaleString()}</time>
+    </article>)}</div>}
+  </main>;
 }
 function Placeholder({ title, description }: { title: string; description: string }) { return <main className="placeholder card"><span className="eyebrow">BIBLE ARENA</span><h1>{title}</h1><p>{description}</p><div className="study-note"><strong>This module is planned in the implementation roadmap.</strong><p>We are building the foundation first so future features can use real Bible data safely.</p></div></main>; }
 function SidebarSection({ title, items }: { title: string; items: string[][] }) { return <div className="nav-section"><span className="nav-section-title">{title}</span>{items.map(([path, label]) => <NavLink key={path} to={path} end={path === '/'}>{label}</NavLink>)}</div>; }
@@ -94,7 +144,7 @@ function AppShell({ session }: { session: Session }) {
   const navigate = useNavigate(); const [displayName, setDisplayName] = useState(session.user.email?.split('@')[0] ?? 'Reader');
   useEffect(() => { ensureProfile(session).then(profile => { if (profile?.display_name) setDisplayName(profile.display_name); }); }, [session]);
   return <div className="app"><header className="topbar"><button className="brand" onClick={() => navigate('/')}><span className="brand-mark">BA</span><span>Bible Arena</span></button><div className="topbar-actions"><span className="account-name">{displayName}</span><button className="text-button" onClick={() => supabase.auth.signOut()}>Sign out</button></div></header><div className="layout"><aside className="sidebar"><SidebarSection title="Main" items={primaryNavigation} /><SidebarSection title="Your Arena" items={personalNavigation} /></aside><section className="content"><Routes><Route path="/" element={<Home />} /><Route path="/bible" element={<BibleCatalogue />} /><Route path="/bible/:bookKey/:chapterNumber" element={<BibleReader session={session} />} />
-<Route path="/explore/verse/:verseId" element={<VerseStudy />} /><Route path="/explore" element={<Explore />} /><Route path="/explore/topics" element={<TopicSearch />} /><Route path="/explore/topic/:topicId" element={<TopicStudy />} /><Route path="/explore/book/:bookKey" element={<BookStudy />} /><Route path="/bookmarks" element={<Bookmarks session={session} />} /><Route path="/notes" element={<Notes session={session} />} /><Route path="/devotion" element={<Placeholder title="Today’s Devotion" description="Daily devotional content, completion tracking, and Scripture reflection will live here." />} /><Route path="/arena" element={<Placeholder title="Bible Arena" description="Challenges, questions, streaks, and friendly Scripture competition will live here." />} /><Route path="/ask" element={<Placeholder title="Ask AI" description="The Bible Assistant will be added after the Scripture study foundation is complete." />} /><Route path="/progress" element={<Placeholder title="Progress" description="Reading history, plans, challenges, and study progress will be collected here." />} /><Route path="/profile" element={<Placeholder title="Profile" description="Your Bible Arena profile and personal preferences will live here." />} /><Route path="/settings" element={<Placeholder title="Settings" description="Language, Bible version, appearance, notification, and account settings will live here." />} /><Route path="*" element={<Home />} /></Routes></section></div></div>;
+<Route path="/explore/verse/:verseId" element={<VerseStudy session={session} />} /><Route path="/explore" element={<Explore />} /><Route path="/explore/topics" element={<TopicSearch />} /><Route path="/explore/topic/:topicId" element={<TopicStudy />} /><Route path="/explore/book/:bookKey" element={<BookStudy />} /><Route path="/bookmarks" element={<Bookmarks session={session} />} /><Route path="/notes" element={<Notes session={session} />} /><Route path="/devotion" element={<Placeholder title="Today’s Devotion" description="Daily devotional content, completion tracking, and Scripture reflection will live here." />} /><Route path="/arena" element={<Placeholder title="Bible Arena" description="Challenges, questions, streaks, and friendly Scripture competition will live here." />} /><Route path="/ask" element={<Placeholder title="Ask AI" description="The Bible Assistant will be added after the Scripture study foundation is complete." />} /><Route path="/progress" element={<Placeholder title="Progress" description="Reading history, plans, challenges, and study progress will be collected here." />} /><Route path="/profile" element={<Placeholder title="Profile" description="Your Bible Arena profile and personal preferences will live here." />} /><Route path="/settings" element={<Placeholder title="Settings" description="Language, Bible version, appearance, notification, and account settings will live here." />} /><Route path="*" element={<Home />} /></Routes></section></div></div>;
 }
 
 export default function App() {
