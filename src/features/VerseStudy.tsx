@@ -13,12 +13,14 @@ type VerseData = {
 };
 
 type Topic = { id: string; name: string; description: string | null };
+type RelatedVerse = { id: string; verse_number: number; text: string; chapter_number: number; book_key: string; book_name: string; version_abbreviation: string };
 
 export function VerseStudy({ session }: { session: Session }) {
   const { verseId } = useParams();
   const navigate = useNavigate();
   const [verse, setVerse] = useState<VerseData | null>(null);
   const [topics, setTopics] = useState<Topic[]>([]);
+  const [related, setRelated] = useState<RelatedVerse[]>([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
   const [bookmarked, setBookmarked] = useState(false);
@@ -77,6 +79,27 @@ export function VerseStudy({ session }: { session: Session }) {
         .map(row => Array.isArray(row.topics) ? row.topics[0] : row.topics)
         .filter(Boolean) as Topic[];
 
+      const topicIds = connectedTopics.map(topic => topic.id);
+      if (topicIds.length) {
+        const { data: relatedMappings } = await supabase
+          .from('topic_scriptures')
+          .select('verse_id, topics!inner(id), bible_verses!inner(id, verse_number, text, bible_chapters!inner(chapter_number, bible_books!inner(canonical_key, name)), bible_versions!inner(abbreviation))')
+          .in('topic_id', topicIds)
+          .neq('verse_id', verseId)
+          .limit(8);
+        const seen = new Set<string>();
+        const relatedVerses = ((relatedMappings ?? []) as any[]).map(row => {
+          const rv = Array.isArray(row.bible_verses) ? row.bible_verses[0] : row.bible_verses;
+          const rc = Array.isArray(rv?.bible_chapters) ? rv.bible_chapters[0] : rv?.bible_chapters;
+          const rb = Array.isArray(rc?.bible_books) ? rc.bible_books[0] : rc?.bible_books;
+          const ver = Array.isArray(rv?.bible_versions) ? rv.bible_versions[0] : rv?.bible_versions;
+          if (!rv || !rc || !rb || !ver || seen.has(rv.id)) return null;
+          seen.add(rv.id);
+          return { id: rv.id, verse_number: rv.verse_number, text: rv.text, chapter_number: rc.chapter_number, book_key: rb.canonical_key, book_name: rb.name, version_abbreviation: ver.abbreviation };
+        }).filter(Boolean) as RelatedVerse[];
+        setRelated(relatedVerses);
+      }
+
       setVerse({
         id: raw.id,
         verse_number: raw.verse_number,
@@ -132,6 +155,12 @@ export function VerseStudy({ session }: { session: Session }) {
         <span className="label">Connected topics</span>
         <h2>{topics.length ? `${topics.length} topic${topics.length === 1 ? '' : 's'}` : 'No mapped topics yet'}</h2>
         {topics.length ? <div className="topic-pills">{topics.map(topic => <button key={topic.id} onClick={() => navigate(`/explore/topic/${topic.id}`)}>{topic.name}</button>)}</div> : <p>This verse has not yet been mapped to a verified study topic. More topic mappings can be added without changing the Bible reader.</p>}
+      </article>
+
+      <article className="card study-panel">
+        <span className="label">Related Scriptures</span>
+        <h2>{related.length ? 'Explore connected verses' : 'No related Scriptures yet'}</h2>
+        {related.length ? <div className="related-scriptures">{related.map(item => <button key={item.id} onClick={() => navigate(`/explore/verse/${item.id}`)}><strong>{item.book_name} {item.chapter_number}:{item.verse_number}</strong><small>{item.version_abbreviation} · {item.text}</small></button>)}</div> : <p>Related Scriptures will appear here when verified topic mappings connect this verse to other passages.</p>}
       </article>
 
       <article className="card study-panel">
