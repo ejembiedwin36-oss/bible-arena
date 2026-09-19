@@ -14,6 +14,7 @@ type VerseData = {
 
 type Topic = { id: string; name: string; description: string | null };
 type RelatedVerse = { id: string; verse_number: number; text: string; chapter_number: number; book_key: string; book_name: string; version_abbreviation: string };
+type ContextVerse = { id: string; verse_number: number; text: string; is_jesus_words: boolean };
 
 export function VerseStudy({ session }: { session: Session }) {
   const { verseId } = useParams();
@@ -21,6 +22,7 @@ export function VerseStudy({ session }: { session: Session }) {
   const [verse, setVerse] = useState<VerseData | null>(null);
   const [topics, setTopics] = useState<Topic[]>([]);
   const [related, setRelated] = useState<RelatedVerse[]>([]);
+  const [contextVerses, setContextVerses] = useState<ContextVerse[]>([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
   const [bookmarked, setBookmarked] = useState(false);
@@ -58,6 +60,15 @@ export function VerseStudy({ session }: { session: Session }) {
         return;
       }
 
+
+      const { data: chapterRows } = await supabase
+        .from('bible_verses')
+        .select('id, verse_number, text, is_jesus_words')
+        .eq('chapter_id', chapter.id)
+        .eq('version_id', raw.bible_versions?.id ?? version.id)
+        .order('verse_number', { ascending: true });
+      if (cancelled) return;
+      setContextVerses((chapterRows ?? []) as ContextVerse[]);
 
       const { data: existingBookmark } = await supabase
         .from('bookmarks')
@@ -146,9 +157,10 @@ export function VerseStudy({ session }: { session: Session }) {
     <section className="verse-study-grid">
       <article className="card study-panel">
         <span className="label">Scripture context</span>
-        <h2>{verse.chapter.book.name} {verse.chapter.chapter_number}</h2>
-        <p>This verse belongs to {verse.chapter.book.name} chapter {verse.chapter.chapter_number} in the {verse.version.name} translation.</p>
-        <button className="text-button" onClick={() => navigate(`/bible/${verse.chapter.book.canonical_key}/${verse.chapter.chapter_number}`)}>Read the chapter →</button>
+        <h2>Where this verse sits</h2>
+        <p>{verse.chapter.book.name} chapter {verse.chapter.chapter_number} · {verse.version.name}</p>
+        {contextVerses.length ? <div className="verse-context-list">{contextVerses.map(item => <button key={item.id} className={item.id === verse.id ? 'active' : ''} onClick={() => item.id === verse.id ? undefined : navigate(`/explore/verse/${item.id}`)}><strong>{item.verse_number}</strong><span className={item.is_jesus_words ? 'jesus-words' : ''}>{item.text}</span></button>)}</div> : <p>The surrounding chapter text is not loaded yet for this translation.</p>}
+        <button className="text-button" onClick={() => navigate(`/bible/${verse.chapter.book.canonical_key}/${verse.chapter.chapter_number}`)}>Read the complete chapter →</button>
       </article>
 
       <article className="card study-panel">
