@@ -138,6 +138,40 @@ function Notes({ session }: { session: Session }) {
     </article>)}</div>}
   </main>;
 }
+function ReadingPlans() {
+  const [plans, setPlans] = useState<{ id: string; name: string; description: string | null; duration_days: number | null; is_active: boolean }[]>([]);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState<string | null>(null);
+
+  useEffect(() => {
+    supabase.from('reading_plans').select('id, name, description, duration_days, is_active').eq('is_active', true).order('created_at')
+      .then(({ data, error: e }) => {
+        if (e) setError(e.message);
+        setPlans(data ?? []);
+        setLoading(false);
+      });
+  }, []);
+
+  return <main className="reading-plans page-card">
+    <div className="page-heading">
+      <div><span className="eyebrow">YOUR ARENA</span><h1>Reading Plans</h1><p>Build a steady rhythm of Scripture reading, one plan at a time.</p></div>
+      <span className="count-chip">{plans.length} published</span>
+    </div>
+    {loading && <p>Loading reading plans…</p>}
+    {error && <div className="notice error">{error}</div>}
+    {!loading && !error && plans.length === 0 && <div className="plan-empty">
+      <span className="plan-icon">📖</span>
+      <strong>Reading plans are ready for content.</strong>
+      <p>No reading plans have been published yet. The foundation is connected to Supabase, so plans can be added without changing the reader.</p>
+      <small>Daily chapter assignments will be added when plan content is published.</small>
+    </div>}
+    {!loading && !error && plans.length > 0 && <div className="plan-list">{plans.map(plan => <article key={plan.id} className="plan-card">
+      <div><span className="label">{plan.duration_days ? `${plan.duration_days} days` : 'Flexible plan'}</span><h2>{plan.name}</h2><p>{plan.description || 'A Scripture reading journey.'}</p></div>
+      <span className="count-chip">Coming next</span>
+    </article>)}</div>}
+  </main>;
+}
+
 function Placeholder({ title, description }: { title: string; description: string }) { return <main className="placeholder card"><span className="eyebrow">BIBLE ARENA</span><h1>{title}</h1><p>{description}</p><div className="study-note"><strong>This module is planned in the implementation roadmap.</strong><p>We are building the foundation first so future features can use real Bible data safely.</p></div></main>; }
 function SidebarSection({ title, items }: { title: string; items: string[][] }) { return <div className="nav-section"><span className="nav-section-title">{title}</span>{items.map(([path, label]) => <NavLink key={path} to={path} end={path === '/'}>{label}</NavLink>)}</div>; }
 
@@ -145,7 +179,7 @@ function AppShell({ session }: { session: Session }) {
   const navigate = useNavigate(); const [displayName, setDisplayName] = useState(session.user.email?.split('@')[0] ?? 'Reader');
   useEffect(() => { ensureProfile(session).then(profile => { if (profile?.display_name) setDisplayName(profile.display_name); }); }, [session]);
   return <div className="app"><header className="topbar"><button className="brand" onClick={() => navigate('/')}><span className="brand-mark">BA</span><span>Bible Arena</span></button><div className="topbar-actions"><span className="account-name">{displayName}</span><button className="text-button" onClick={() => supabase.auth.signOut()}>Sign out</button></div></header><div className="layout"><aside className="sidebar"><SidebarSection title="Main" items={primaryNavigation} /><SidebarSection title="Your Arena" items={personalNavigation} /></aside><section className="content"><Routes><Route path="/" element={<Home />} /><Route path="/bible" element={<BibleCatalogue />} /><Route path="/bible/:bookKey/:chapterNumber" element={<BibleReader session={session} />} />
-<Route path="/explore/verse/:verseId" element={<VerseStudy session={session} />} /><Route path="/explore" element={<Explore />} /><Route path="/explore/topics" element={<TopicSearch />} /><Route path="/explore/topic/:topicId" element={<TopicStudy />} /><Route path="/explore/book/:bookKey" element={<BookStudy />} /><Route path="/bookmarks" element={<Bookmarks session={session} />} /><Route path="/notes" element={<Notes session={session} />} /><Route path="/devotion" element={<Placeholder title="Today’s Devotion" description="Daily devotional content, completion tracking, and Scripture reflection will live here." />} /><Route path="/arena" element={<Placeholder title="Bible Arena" description="Challenges, questions, streaks, and friendly Scripture competition will live here." />} /><Route path="/ask" element={<Placeholder title="Ask AI" description="The Bible Assistant will be added after the Scripture study foundation is complete." />} /><Route path="/progress" element={<Placeholder title="Progress" description="Reading history, plans, challenges, and study progress will be collected here." />} /><Route path="/profile" element={<Placeholder title="Profile" description="Your Bible Arena profile and personal preferences will live here." />} /><Route path="/settings" element={<Placeholder title="Settings" description="Language, Bible version, appearance, notification, and account settings will live here." />} /><Route path="*" element={<Home />} /></Routes></section></div></div>;
+<Route path="/explore/verse/:verseId" element={<VerseStudy session={session} />} /><Route path="/explore" element={<Explore />} /><Route path="/explore/topics" element={<TopicSearch />} /><Route path="/explore/topic/:topicId" element={<TopicStudy />} /><Route path="/explore/book/:bookKey" element={<BookStudy />} /><Route path="/bookmarks" element={<Bookmarks session={session} />} /><Route path="/notes" element={<Notes session={session} />} /><Route path="/devotion" element={<Placeholder title="Today’s Devotion" description="Daily devotional content, completion tracking, and Scripture reflection will live here." />} /><Route path="/arena" element={<Placeholder title="Bible Arena" description="Challenges, questions, streaks, and friendly Scripture competition will live here." />} /><Route path="/ask" element={<Placeholder title="Ask AI" description="The Bible Assistant will be added after the Scripture study foundation is complete." />} /><Route path="/progress" element={<ReadingPlans />} /><Route path="/profile" element={<Placeholder title="Profile" description="Your Bible Arena profile and personal preferences will live here." />} /><Route path="/settings" element={<Placeholder title="Settings" description="Language, Bible version, appearance, notification, and account settings will live here." />} /><Route path="*" element={<Home />} /></Routes></section></div></div>;
 }
 
 export default function App() {
