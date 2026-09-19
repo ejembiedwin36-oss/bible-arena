@@ -14,3 +14,4 @@
 .verse-context-list button.active{outline:2px solid var(--line);background:#fff}
 .verse-context-list strong{font-size:13px;color:var(--muted)}
 .verse-context-list span{color:var(--ink)}
+\n.reading-plans{max-width:980px}.plan-empty{margin-top:22px;padding:34px;border:1px dashed var(--line);border-radius:18px;background:#faf8f2}.plan-icon{display:block;font-size:30px;margin-bottom:10px}.plan-empty strong{font-size:19px}.plan-empty p{color:var(--muted);line-height:1.7;max-width:700px}.plan-empty small{color:var(--muted)}.plan-list{display:grid;gap:12px;margin-top:22px}.plan-card{display:flex;justify-content:space-between;gap:20px;padding:22px;border:1px solid var(--line);border-radius:18px;background:#fff}.plan-card h2{margin:7px 0}.plan-card p{color:var(--muted);line-height:1.6}.plan-card .count-chip{align-self:flex-start}@media(max-width:850px){.plan-card{flex-direction:column}}\n
