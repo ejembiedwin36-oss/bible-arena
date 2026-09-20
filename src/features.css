@@ -15,3 +15,15 @@
 .verse-context-list strong{font-size:13px;color:var(--muted)}
 .verse-context-list span{color:var(--ink)}
 \n.reading-plans{max-width:980px}.plan-empty{margin-top:22px;padding:34px;border:1px dashed var(--line);border-radius:18px;background:#faf8f2}.plan-icon{display:block;font-size:30px;margin-bottom:10px}.plan-empty strong{font-size:19px}.plan-empty p{color:var(--muted);line-height:1.7;max-width:700px}.plan-empty small{color:var(--muted)}.plan-list{display:grid;gap:12px;margin-top:22px}.plan-card{display:flex;justify-content:space-between;gap:20px;padding:22px;border:1px solid var(--line);border-radius:18px;background:#fff}.plan-card h2{margin:7px 0}.plan-card p{color:var(--muted);line-height:1.6}.plan-card .count-chip{align-self:flex-start}@media(max-width:850px){.plan-card{flex-direction:column}}\n
+.plan-days{display:grid;gap:14px;margin-top:22px}
+.plan-day-card{display:flex;justify-content:space-between;gap:20px;padding:22px;border:1px solid var(--line);border-radius:18px;background:#fff}
+.plan-day-card.completed{opacity:.86}
+.plan-day-main{min-width:0}
+.plan-day-main h2{margin:7px 0}
+.plan-day-main p{color:var(--muted);line-height:1.6}
+.plan-reading-list{display:flex;flex-wrap:wrap;gap:8px;margin-top:14px}
+.plan-reading-link{border:1px solid var(--line);background:#faf8f2;border-radius:10px;padding:9px 11px;cursor:pointer;font-weight:700}
+.plan-reading-link span{margin-left:5px}
+.plan-complete{align-self:flex-start;white-space:nowrap;border:1px solid var(--line);background:#fff;border-radius:10px;padding:10px 13px;font-weight:700;cursor:pointer}
+.plan-day-card.completed .plan-complete{background:#faf8f2}
+@media(max-width:850px){.plan-day-card{flex-direction:column}.plan-complete{align-self:stretch}}
