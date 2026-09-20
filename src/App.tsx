@@ -138,19 +138,46 @@ function Notes({ session }: { session: Session }) {
     </article>)}</div>}
   </main>;
 }
+type ReadingPlan = { id: string; name: string; description: string | null; duration_days: number | null; is_active: boolean };
+type ReadingPlanDay = { id: string; plan_id: string; day_number: number; title: string | null; description: string | null };
+type ReadingPlanReading = { id: string; plan_day_id: string; book_id: string; start_chapter: number; start_verse: number | null; end_chapter: number; end_verse: number | null; sort_order: number; book: { canonical_key: string; name: string; abbreviation: string } };
+
 function ReadingPlans() {
-  const [plans, setPlans] = useState<{ id: string; name: string; description: string | null; duration_days: number | null; is_active: boolean }[]>([]);
+  const navigate = useNavigate();
+  const [plans, setPlans] = useState<ReadingPlan[]>([]);
+  const [activePlans, setActivePlans] = useState<{ id: string; plan_id: string; started_at: string; completed_at: string | null }[]>([]);
   const [loading, setLoading] = useState(true);
+  const [starting, setStarting] = useState<string | null>(null);
   const [error, setError] = useState<string | null>(null);
 
-  useEffect(() => {
-    supabase.from('reading_plans').select('id, name, description, duration_days, is_active').eq('is_active', true).order('created_at')
-      .then(({ data, error: e }) => {
-        if (e) setError(e.message);
-        setPlans(data ?? []);
-        setLoading(false);
-      });
-  }, []);
+  async function load() {
+    setLoading(true);
+    const [{ data: planData, error: planError }, { data: userPlans, error: userError }] = await Promise.all([
+      supabase.from('reading_plans').select('id, name, description, duration_days, is_active').eq('is_active', true).order('created_at'),
+      supabase.from('user_reading_plans').select('id, plan_id, started_at, completed_at').order('started_at', { ascending: false }),
+    ]);
+    if (planError || userError) setError(planError?.message ?? userError?.message ?? 'Unable to load reading plans.');
+    setPlans(planData ?? []);
+    setActivePlans(userPlans ?? []);
+    setLoading(false);
+  }
+
+  useEffect(() => { load(); }, []);
+
+  async function startPlan(planId: string) {
+    setStarting(planId);
+    setError(null);
+    const existing = activePlans.find(row => row.plan_id === planId && !row.completed_at);
+    if (existing) {
+      navigate(`/progress/plan/${planId}`);
+      setStarting(null);
+      return;
+    }
+    const { data, error: e } = await supabase.from('user_reading_plans').insert({ plan_id: planId }).select('id, plan_id').single();
+    if (e) setError(e.message);
+    else navigate(`/progress/plan/${data.plan_id}`);
+    setStarting(null);
+  }
 
   return <main className="reading-plans page-card">
     <div className="page-heading">
@@ -162,13 +189,103 @@ function ReadingPlans() {
     {!loading && !error && plans.length === 0 && <div className="plan-empty">
       <span className="plan-icon">📖</span>
       <strong>Reading plans are ready for content.</strong>
-      <p>No reading plans have been published yet. The foundation is connected to Supabase, so plans can be added without changing the reader.</p>
-      <small>Daily chapter assignments will be added when plan content is published.</small>
+      <p>No reading plans have been published yet. The day-by-day data foundation is now ready, so future plans can be added without changing the Bible reader.</p>
+      <small>Plan content must be published with verified Scripture references before it appears here.</small>
     </div>}
-    {!loading && !error && plans.length > 0 && <div className="plan-list">{plans.map(plan => <article key={plan.id} className="plan-card">
-      <div><span className="label">{plan.duration_days ? `${plan.duration_days} days` : 'Flexible plan'}</span><h2>{plan.name}</h2><p>{plan.description || 'A Scripture reading journey.'}</p></div>
-      <span className="count-chip">Coming next</span>
-    </article>)}</div>}
+    {!loading && !error && plans.length > 0 && <div className="plan-list">{plans.map(plan => {
+      const started = activePlans.find(row => row.plan_id === plan.id && !row.completed_at);
+      return <article key={plan.id} className="plan-card">
+        <div><span className="label">{plan.duration_days ? `${plan.duration_days} days` : 'Flexible plan'}</span><h2>{plan.name}</h2><p>{plan.description || 'A Scripture reading journey.'}</p></div>
+        <button disabled={starting === plan.id} onClick={() => startPlan(plan.id)}>{starting === plan.id ? 'Starting…' : started ? 'Continue plan →' : 'Start plan →'}</button>
+      </article>;
+    })}</div>}
+  </main>;
+}
+
+function ReadingPlanDetail() {
+  const { planId } = useParams();
+  const navigate = useNavigate();
+  const [plan, setPlan] = useState<ReadingPlan | null>(null);
+  const [days, setDays] = useState<ReadingPlanDay[]>([]);
+  const [readings, setReadings] = useState<ReadingPlanReading[]>([]);
+  const [completed, setCompleted] = useState<string[]>([]);
+  const [userPlanId, setUserPlanId] = useState<string | null>(null);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState<string | null>(null);
+
+  useEffect(() => {
+    if (!planId) return;
+    (async () => {
+      setLoading(true);
+      const [{ data: p, error: pe }, { data: d, error: de }, { data: r, error: re }, { data: up, error: ue }] = await Promise.all([
+        supabase.from('reading_plans').select('id, name, description, duration_days, is_active').eq('id', planId).eq('is_active', true).maybeSingle(),
+        supabase.from('reading_plan_days').select('id, plan_id, day_number, title, description').eq('plan_id', planId).order('day_number'),
+        supabase.from('reading_plan_readings').select('id, plan_day_id, book_id, start_chapter, start_verse, end_chapter, end_verse, sort_order, book:bible_books(canonical_key, name, abbreviation)').in('plan_day_id', (d ?? []).map(day => day.id)).order('sort_order'),
+        supabase.from('user_reading_plans').select('id, plan_id').eq('plan_id', planId).order('started_at', { ascending: false }).limit(1).maybeSingle(),
+      ]);
+      if (pe || de || re || ue || !p) {
+        setError(pe?.message ?? de?.message ?? re?.message ?? ue?.message ?? 'Reading plan was not found.');
+        setLoading(false);
+        return;
+      }
+      setPlan(p);
+      setDays(d ?? []);
+      setReadings(((r ?? []) as unknown as ReadingPlanReading[]).map(row => ({ ...row, book: Array.isArray(row.book) ? row.book[0] : row.book })));
+      setUserPlanId(up?.id ?? null);
+      if (up?.id) {
+        const { data: progress, error: progressError } = await supabase.from('user_reading_plan_days').select('plan_day_id').eq('user_reading_plan_id', up.id);
+        if (progressError) setError(progressError.message);
+        setCompleted((progress ?? []).map(row => row.plan_day_id));
+      } else {
+        setCompleted([]);
+      }
+      setLoading(false);
+    })();
+  }, [planId]);
+
+  async function toggleDay(dayId: string) {
+    if (!userPlanId) {
+      setError('Start this plan first before marking a day complete.');
+      return;
+    }
+    setError(null);
+    if (completed.includes(dayId)) {
+      const { error: e } = await supabase.from('user_reading_plan_days').delete().eq('user_reading_plan_id', userPlanId).eq('plan_day_id', dayId);
+      if (e) setError(e.message);
+      else setCompleted(current => current.filter(id => id !== dayId));
+    } else {
+      const { error: e } = await supabase.from('user_reading_plan_days').insert({ user_reading_plan_id: userPlanId, plan_day_id: dayId });
+      if (e) setError(e.message);
+      else setCompleted(current => [...current, dayId]);
+    }
+  }
+
+  if (loading) return <main className="reading-plans page-card"><p>Loading reading plan…</p></main>;
+  if (error || !plan) return <main className="reading-plans page-card"><button className="back-button" onClick={() => navigate('/progress')}>← Reading Plans</button><h1>Plan unavailable</h1><p>{error ?? 'Reading plan not found.'}</p></main>;
+
+  return <main className="reading-plans page-card">
+    <button className="back-button" onClick={() => navigate('/progress')}>← Reading Plans</button>
+    <div className="page-heading">
+      <div><span className="eyebrow">READING JOURNEY</span><h1>{plan.name}</h1><p>{plan.description || 'A Scripture reading journey.'}</p></div>
+      <span className="count-chip">{completed.length}/{days.length} days</span>
+    </div>
+    {days.length === 0 && <div className="plan-empty"><span className="plan-icon">🗓️</span><strong>Plan content is not published yet.</strong><p>The plan exists, but its day-by-day Scripture assignments have not been added.</p></div>}
+    {days.length > 0 && <div className="plan-days">{days.map(day => {
+      const dayReadings = readings.filter(reading => reading.plan_day_id === day.id);
+      return <article key={day.id} className={`plan-day-card${completed.includes(day.id) ? ' completed' : ''}`}>
+        <div className="plan-day-main">
+          <span className="label">DAY {day.day_number}</span>
+          <h2>{day.title || `Day ${day.day_number}`}</h2>
+          <p>{day.description || 'Continue your Scripture reading for today.'}</p>
+          {dayReadings.length > 0 ? <div className="plan-reading-list">{dayReadings.map(reading => {
+            const startRef = `${reading.book.name} ${reading.start_chapter}${reading.start_verse ? `:${reading.start_verse}` : ''}`;
+            const endRef = `${reading.end_chapter}${reading.end_verse ? `:${reading.end_verse}` : ''}`;
+            return <button key={reading.id} className="plan-reading-link" onClick={() => navigate(`/bible/${reading.book.canonical_key}/${reading.start_chapter}`)}>{startRef}–{endRef} <span>→</span></button>;
+          })}</div> : <small>No Scripture assignment has been added yet.</small>}
+        </div>
+        <button className="plan-complete" onClick={() => toggleDay(day.id)}>{completed.includes(day.id) ? 'Completed ✓' : 'Mark complete'}</button>
+      </article>;
+    })}</div>}
   </main>;
 }
 
@@ -179,7 +296,8 @@ function AppShell({ session }: { session: Session }) {
   const navigate = useNavigate(); const [displayName, setDisplayName] = useState(session.user.email?.split('@')[0] ?? 'Reader');
   useEffect(() => { ensureProfile(session).then(profile => { if (profile?.display_name) setDisplayName(profile.display_name); }); }, [session]);
   return <div className="app"><header className="topbar"><button className="brand" onClick={() => navigate('/')}><span className="brand-mark">BA</span><span>Bible Arena</span></button><div className="topbar-actions"><span className="account-name">{displayName}</span><button className="text-button" onClick={() => supabase.auth.signOut()}>Sign out</button></div></header><div className="layout"><aside className="sidebar"><SidebarSection title="Main" items={primaryNavigation} /><SidebarSection title="Your Arena" items={personalNavigation} /></aside><section className="content"><Routes><Route path="/" element={<Home />} /><Route path="/bible" element={<BibleCatalogue />} /><Route path="/bible/:bookKey/:chapterNumber" element={<BibleReader session={session} />} />
-<Route path="/explore/verse/:verseId" element={<VerseStudy session={session} />} /><Route path="/explore" element={<Explore />} /><Route path="/explore/topics" element={<TopicSearch />} /><Route path="/explore/topic/:topicId" element={<TopicStudy />} /><Route path="/explore/book/:bookKey" element={<BookStudy />} /><Route path="/bookmarks" element={<Bookmarks session={session} />} /><Route path="/notes" element={<Notes session={session} />} /><Route path="/devotion" element={<Placeholder title="Today’s Devotion" description="Daily devotional content, completion tracking, and Scripture reflection will live here." />} /><Route path="/arena" element={<Placeholder title="Bible Arena" description="Challenges, questions, streaks, and friendly Scripture competition will live here." />} /><Route path="/ask" element={<Placeholder title="Ask AI" description="The Bible Assistant will be added after the Scripture study foundation is complete." />} /><Route path="/progress" element={<ReadingPlans />} /><Route path="/profile" element={<Placeholder title="Profile" description="Your Bible Arena profile and personal preferences will live here." />} /><Route path="/settings" element={<Placeholder title="Settings" description="Language, Bible version, appearance, notification, and account settings will live here." />} /><Route path="*" element={<Home />} /></Routes></section></div></div>;
+<Route path="/explore/verse/:verseId" element={<VerseStudy session={session} />} /><Route path="/explore" element={<Explore />} /><Route path="/explore/topics" element={<TopicSearch />} /><Route path="/explore/topic/:topicId" element={<TopicStudy />} /><Route path="/explore/book/:bookKey" element={<BookStudy />} /><Route path="/bookmarks" element={<Bookmarks session={session} />} /><Route path="/notes" element={<Notes session={session} />} /><Route path="/devotion" element={<Placeholder title="Today’s Devotion" description="Daily devotional content, completion tracking, and Scripture reflection will live here." />} /><Route path="/arena" element={<Placeholder title="Bible Arena" description="Challenges, questions, streaks, and friendly Scripture competition will live here." />} /><Route path="/ask" element={<Placeholder title="Ask AI" description="The Bible Assistant will be added after the Scripture study foundation is complete." />} /><Route path="/progress" element={<ReadingPlans />} />
+  <Route path="/progress/plan/:planId" element={<ReadingPlanDetail />} /><Route path="/profile" element={<Placeholder title="Profile" description="Your Bible Arena profile and personal preferences will live here." />} /><Route path="/settings" element={<Placeholder title="Settings" description="Language, Bible version, appearance, notification, and account settings will live here." />} /><Route path="*" element={<Home />} /></Routes></section></div></div>;
 }
 
 export default function App() {
