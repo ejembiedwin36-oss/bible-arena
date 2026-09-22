@@ -182,7 +182,7 @@ function ReadingPlans() {
   return <main className="reading-plans page-card">
     <div className="page-heading">
       <div><span className="eyebrow">YOUR ARENA</span><h1>Reading Plans</h1><p>Build a steady rhythm of Scripture reading, one plan at a time.</p></div>
-      <span className="count-chip">{plans.length} published</span>
+      <span className="count-chip">{plans.length} published · {activePlans.filter(row => !row.completed_at).length} active</span>
     </div>
     {loading && <p>Loading reading plans…</p>}
     {error && <div className="notice error">{error}</div>}
@@ -194,9 +194,10 @@ function ReadingPlans() {
     </div>}
     {!loading && !error && plans.length > 0 && <div className="plan-list">{plans.map(plan => {
       const started = activePlans.find(row => row.plan_id === plan.id && !row.completed_at);
-      return <article key={plan.id} className="plan-card">
-        <div><span className="label">{plan.duration_days ? `${plan.duration_days} days` : 'Flexible plan'}</span><h2>{plan.name}</h2><p>{plan.description || 'A Scripture reading journey.'}</p></div>
-        <button disabled={starting === plan.id} onClick={() => startPlan(plan.id)}>{starting === plan.id ? 'Starting…' : started ? 'Continue plan →' : 'Start plan →'}</button>
+      const completedPlan = activePlans.some(row => row.plan_id === plan.id && Boolean(row.completed_at));
+      return <article key={plan.id} className={`plan-card${completedPlan ? ' completed-plan' : ''}`}>
+        <div><span className="label">{plan.duration_days ? `${plan.duration_days} days` : 'Flexible plan'}</span><h2>{plan.name}</h2><p>{plan.description || 'A Scripture reading journey.'}</p><div className="plan-status">{completedPlan ? 'Completed ✓' : started ? 'In progress' : 'Not started'}</div></div>
+        <button disabled={starting === plan.id} onClick={() => startPlan(plan.id)}>{starting === plan.id ? 'Starting…' : started ? 'Continue plan →' : completedPlan ? 'Read again →' : 'Start plan →'}</button>
       </article>;
     })}</div>}
   </main>;
@@ -267,9 +268,10 @@ function ReadingPlanDetail() {
     <button className="back-button" onClick={() => navigate('/progress')}>← Reading Plans</button>
     <div className="page-heading">
       <div><span className="eyebrow">READING JOURNEY</span><h1>{plan.name}</h1><p>{plan.description || 'A Scripture reading journey.'}</p></div>
-      <span className="count-chip">{completed.length}/{days.length} days</span>
+      <span className="count-chip">{completed.length}/{days.length} days{days.length > 0 && completed.length === days.length ? ' · Complete ✓' : ''}</span>
     </div>
     {days.length === 0 && <div className="plan-empty"><span className="plan-icon">🗓️</span><strong>Plan content is not published yet.</strong><p>The plan exists, but its day-by-day Scripture assignments have not been added.</p></div>}
+    {days.length > 0 && completed.length === days.length && <div className="plan-complete-banner"><strong>Plan completed 🎉</strong><p>You’ve finished every reading in this journey. You can revisit any day below.</p></div>}
     {days.length > 0 && <div className="plan-days">{days.map(day => {
       const dayReadings = readings.filter(reading => reading.plan_day_id === day.id);
       return <article key={day.id} className={`plan-day-card${completed.includes(day.id) ? ' completed' : ''}`}>
