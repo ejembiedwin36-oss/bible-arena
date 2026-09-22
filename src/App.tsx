@@ -22,6 +22,17 @@ const navigation = [
   ['/progress', 'Progress'], ['/profile', 'Profile'], ['/settings', 'Settings'],
 ];
 const primaryNavigation = navigation.slice(0, 4);
+const interfaceLanguages = [
+  { code: 'en', name: 'English' },
+  { code: 'id', name: 'Idoma' },
+  { code: 'ig', name: 'Igbo' },
+  { code: 'yo', name: 'Yoruba' },
+  { code: 'ha', name: 'Hausa' },
+  { code: 'tiv', name: 'Tiv' },
+  { code: 'igl', name: 'Igala' },
+  { code: 'efi', name: 'Efik / Calabar' },
+];
+
 const personalNavigation = navigation.slice(4);
 
 function AuthScreen() {
@@ -291,6 +302,22 @@ function ReadingPlanDetail() {
   </main>;
 }
 
+
+function Settings({ session }: { session: Session }) {
+  const [language, setLanguage] = useState('en');
+  const [saving, setSaving] = useState(false);
+  const [message, setMessage] = useState<string | null>(null);
+  useEffect(() => {
+    supabase.from('profiles').select('preferred_language_code').eq('id', session.user.id).maybeSingle().then(({ data }) => setLanguage(data?.preferred_language_code || 'en'));
+  }, [session.user.id]);
+  async function saveLanguage(next: string) {
+    setLanguage(next); setSaving(true); setMessage(null);
+    const { error } = await supabase.from('profiles').upsert({ id: session.user.id, preferred_language_code: next, updated_at: new Date().toISOString() }, { onConflict: 'id' });
+    setMessage(error ? error.message : 'Interface language preference saved.'); setSaving(false);
+  }
+  return <main className="settings-page page-card"><span className="eyebrow">SETTINGS</span><h1>Language & Preferences</h1><p className="settings-intro">Choose the language you want Bible Arena to use for its interface. Bible translation text is managed separately and only appears when a licensed version is available.</p><section className="settings-section"><span className="label">APP INTERFACE LANGUAGE</span><select value={language} disabled={saving} onChange={e => saveLanguage(e.target.value)}>{interfaceLanguages.map(item => <option key={item.code} value={item.code}>{item.name}</option>)}</select>{saving && <small>Saving…</small>}{message && <div className="notice success">{message}</div>}</section><section className="settings-section"><span className="label">BIBLE TEXT</span><p>Use the Bible Reader language and version selectors to choose from active, properly imported Bible versions. Currently, English KJV is the verified text available in the reader.</p></section></main>;
+}
+
 function Placeholder({ title, description }: { title: string; description: string }) { return <main className="placeholder card"><span className="eyebrow">BIBLE ARENA</span><h1>{title}</h1><p>{description}</p><div className="study-note"><strong>This module is planned in the implementation roadmap.</strong><p>We are building the foundation first so future features can use real Bible data safely.</p></div></main>; }
 function SidebarSection({ title, items }: { title: string; items: string[][] }) { return <div className="nav-section"><span className="nav-section-title">{title}</span>{items.map(([path, label]) => <NavLink key={path} to={path} end={path === '/'}>{label}</NavLink>)}</div>; }
 
@@ -299,7 +326,7 @@ function AppShell({ session }: { session: Session }) {
   useEffect(() => { ensureProfile(session).then(profile => { if (profile?.display_name) setDisplayName(profile.display_name); }); }, [session]);
   return <div className="app"><header className="topbar"><button className="brand" onClick={() => navigate('/')}><span className="brand-mark">BA</span><span>Bible Arena</span></button><div className="topbar-actions"><span className="account-name">{displayName}</span><button className="text-button" onClick={() => supabase.auth.signOut()}>Sign out</button></div></header><div className="layout"><aside className="sidebar"><SidebarSection title="Main" items={primaryNavigation} /><SidebarSection title="Your Arena" items={personalNavigation} /></aside><section className="content"><Routes><Route path="/" element={<Home />} /><Route path="/bible" element={<BibleCatalogue />} /><Route path="/bible/:bookKey/:chapterNumber" element={<BibleReader session={session} />} />
 <Route path="/explore/verse/:verseId" element={<VerseStudy session={session} />} /><Route path="/explore" element={<Explore />} /><Route path="/explore/topics" element={<TopicSearch />} /><Route path="/explore/topic/:topicId" element={<TopicStudy />} /><Route path="/explore/book/:bookKey" element={<BookStudy />} /><Route path="/bookmarks" element={<Bookmarks session={session} />} /><Route path="/notes" element={<Notes session={session} />} /><Route path="/devotion" element={<Placeholder title="Today’s Devotion" description="Daily devotional content, completion tracking, and Scripture reflection will live here." />} /><Route path="/arena" element={<Placeholder title="Bible Arena" description="Challenges, questions, streaks, and friendly Scripture competition will live here." />} /><Route path="/ask" element={<Placeholder title="Ask AI" description="The Bible Assistant will be added after the Scripture study foundation is complete." />} /><Route path="/progress" element={<ReadingPlans />} />
-  <Route path="/progress/plan/:planId" element={<ReadingPlanDetail />} /><Route path="/profile" element={<Placeholder title="Profile" description="Your Bible Arena profile and personal preferences will live here." />} /><Route path="/settings" element={<Placeholder title="Settings" description="Language, Bible version, appearance, notification, and account settings will live here." />} /><Route path="*" element={<Home />} /></Routes></section></div></div>;
+  <Route path="/progress/plan/:planId" element={<ReadingPlanDetail />} /><Route path="/profile" element={<Placeholder title="Profile" description="Your Bible Arena profile and personal preferences will live here." />} /><Route path="/settings" element={<Settings session={session} />} /><Route path="*" element={<Home />} /></Routes></section></div></div>;
 }
 
 export default function App() {
