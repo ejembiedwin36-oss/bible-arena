@@ -30,7 +30,7 @@ const interfaceLanguages = [
 ];
 
 const uiText = {
-  en: { home:'Home', bible:'Bible', explore:'Explore', topics:'Topics', devotion:'Devotion', arena:'Arena', notes:'My Notes', bookmarks:'Bookmarks', ask:'Ask AI', progress:'Progress', profile:'Profile', settings:'Settings', openBible:'Open Bible', exploreStudy:'Explore Study', browseBible:'{t.browseBible}', browseTopics:'{t.browseTopics}', writeNote:'Write a Note', viewBookmarks:'View Bookmarks', goDeeper:'Go deeper', quickActions:'Quick Actions', studyHub:'Study Hub', bibleCatalogue:'Bible Catalogue' },
+  en: { home:'Home', bible:'Bible', explore:'Explore', topics:'Topics', devotion:'Devotion', arena:'Arena', notes:'My Notes', bookmarks:'Bookmarks', ask:'Ask AI', progress:'Progress', profile:'Profile', settings:'Settings', openBible:'Open Bible', exploreStudy:'Explore Study', browseBible:'Browse Bible →', browseTopics:'Browse Topics →', writeNote:'Write a Note', viewBookmarks:'View Bookmarks', goDeeper:'Go deeper', quickActions:'Quick Actions', studyHub:'Study Hub', bibleCatalogue:'Bible Catalogue' },
   id: { home:'Home', bible:'Bible', explore:'Explore', topics:'Topics', devotion:'Devotion', arena:'Arena', notes:'My Notes', bookmarks:'Bookmarks', ask:'Ask AI', progress:'Progress', profile:'Profile', settings:'Settings', openBible:'Open Bible', exploreStudy:'Explore Study', browseBible:'Browse Bible →', browseTopics:'Browse Topics →', writeNote:'Write a Note', viewBookmarks:'View Bookmarks', goDeeper:'Go deeper', quickActions:'Quick Actions', studyHub:'Study Hub', bibleCatalogue:'Bible Catalogue' },
   ig: { home:'Ụlọ', bible:'Akwụkwọ Nsọ', explore:'Nyochaa', topics:'Isiokwu', devotion:'Nraranye', arena:'Arena', notes:'Ihe m dere', bookmarks:'Ihe e debere', ask:'Jụọ AI', progress:'Ọganihu', profile:'Profaịlụ', settings:'Ntọala', openBible:'Mepee Akwụkwọ Nsọ', exploreStudy:'Nyochaa Ọmụmụ', browseBible:'Chọgharịa Akwụkwọ Nsọ →', browseTopics:'Chọgharịa Isiokwu →', writeNote:'Dee ihe edeturu', viewBookmarks:'Lee ihe e debere', goDeeper:'Mụtakwuo', quickActions:'Omume Ngwa ngwa', studyHub:'Ebe Ọmụmụ', bibleCatalogue:'Ndepụta Akwụkwọ Nsọ' },
   yo: { home:'Ile', bible:'Bibeli', explore:'Ṣàwárí', topics:'Àwọn Kókó', devotion:'Ìfọkànsìn', arena:'Arena', notes:'Àwọn Akọsilẹ Mi', bookmarks:'Àwọn Aṣàyàn', ask:'Béèrè AI', progress:'Ìlọsíwájú', profile:'Profaili', settings:'Ètò', openBible:'Ṣí Bibeli', exploreStudy:'Ṣàwárí Ìkẹ́kọ̀ọ́', browseBible:'Ṣàwárí Bibeli →', browseTopics:'Ṣàwárí Àwọn Kókó →', writeNote:'Kọ Akọsilẹ', viewBookmarks:'Wo Àwọn Aṣàyàn', goDeeper:'Kẹ́kọ̀ọ́ síi', quickActions:'Àwọn Ìṣe Kánkán', studyHub:'Ibi Ìkẹ́kọ̀ọ́', bibleCatalogue:'Àkójọpọ̀ Bibeli' },
@@ -315,16 +315,74 @@ function ReadingPlanDetail() {
   </main>;
 }
 
+function Settings({ session }: { session: Session }) {
+  const [language, setLanguage] = useState<InterfaceLanguage>('en');
+  const [saving, setSaving] = useState(false);
+  const [message, setMessage] = useState<string | null>(null);
+  const [error, setError] = useState<string | null>(null);
+
+  useEffect(() => {
+    supabase.from('profiles').select('preferred_language_code').eq('id', session.user.id).maybeSingle().then(({ data, error: e }) => {
+      if (e) setError(e.message);
+      const code = data?.preferred_language_code as InterfaceLanguage | null;
+      if (code && code in uiText) setLanguage(code);
+    });
+  }, [session.user.id]);
+
+  async function saveLanguage(next: InterfaceLanguage) {
+    setLanguage(next);
+    setSaving(true);
+    setMessage(null);
+    setError(null);
+    const { error: e } = await supabase.from('profiles').upsert({
+      id: session.user.id,
+      preferred_language_code: next,
+      updated_at: new Date().toISOString(),
+    });
+    if (e) setError(e.message);
+    else setMessage('Interface language saved.');
+    setSaving(false);
+  }
+
+  const t = uiText[language];
+  return <main className="placeholder card">
+    <span className="eyebrow">SETTINGS</span>
+    <h1>{t.settings}</h1>
+    <p>Choose the language used for the Bible Arena interface. Bible translation text is selected separately in the Bible Reader.</p>
+    <section className="settings-section">
+      <div className="page-heading">
+        <div><span className="label">Interface language</span><h2>{interfaceLanguages.find(item => item.code === language)?.name ?? 'English'}</h2></div>
+        {saving && <span className="count-chip">Saving…</span>}
+      </div>
+      <div className="language-grid">
+        {interfaceLanguages.map(item => <button key={item.code} className={item.code === language ? 'selected-language' : ''} disabled={saving} onClick={() => saveLanguage(item.code as InterfaceLanguage)}>{item.name}</button>)}
+      </div>
+      {message && <div className="notice success">{message}</div>}
+      {error && <div className="notice error">{error}</div>}
+    </section>
+  </main>;
+}
+
 function Placeholder({ title, description }: { title: string; description: string }) { return <main className="placeholder card"><span className="eyebrow">BIBLE ARENA</span><h1>{title}</h1><p>{description}</p><div className="study-note"><strong>This module is planned in the implementation roadmap.</strong><p>We are building the foundation first so future features can use real Bible data safely.</p></div></main>; }
 function SidebarSection({ title, items }: { title: string; items: string[][] }) { return <div className="nav-section"><span className="nav-section-title">{title}</span>{items.map(([path, label]) => <NavLink key={path} to={path} end={path === '/'}>{label}</NavLink>)}</div>; }
 
 function AppShell({ session }: { session: Session }) {
   const { t } = useInterfaceLanguage(session);
+  const localizedNavigation = navigation.map(([path, label]) => {
+    const keyByLabel: Record<string, keyof typeof uiText.en> = {
+      Home: 'home', Bible: 'bible', Explore: 'explore', Topics: 'topics', Devotion: 'devotion',
+      Arena: 'arena', 'My Notes': 'notes', Bookmarks: 'bookmarks', 'Ask AI': 'ask',
+      Progress: 'progress', Profile: 'profile', Settings: 'settings',
+    };
+    return [path, t[keyByLabel[label] ?? 'home']] as string[];
+  });
+  const localizedPrimaryNavigation = localizedNavigation.slice(0, 4);
+  const localizedPersonalNavigation = localizedNavigation.slice(4);
   const navigate = useNavigate(); const [displayName, setDisplayName] = useState(session.user.email?.split('@')[0] ?? 'Reader');
   useEffect(() => { ensureProfile(session).then(profile => { if (profile?.display_name) setDisplayName(profile.display_name); }); }, [session]);
-  return <div className="app"><header className="topbar"><button className="brand" onClick={() => navigate('/')}><span className="brand-mark">BA</span><span>Bible Arena</span></button><div className="topbar-actions"><span className="account-name">{displayName}</span><button className="text-button" onClick={() => supabase.auth.signOut()}>Sign out</button></div></header><div className="layout"><aside className="sidebar"><SidebarSection title="Main" items={primaryNavigation} /><SidebarSection title="Your Arena" items={personalNavigation} /></aside><section className="content"><Routes><Route path="/" element={<Home t={t} />} /><Route path="/bible" element={<BibleCatalogue />} /><Route path="/bible/:bookKey/:chapterNumber" element={<BibleReader session={session} />} />
+  return <div className="app"><header className="topbar"><button className="brand" onClick={() => navigate('/')}><span className="brand-mark">BA</span><span>Bible Arena</span></button><div className="topbar-actions"><span className="account-name">{displayName}</span><button className="text-button" onClick={() => supabase.auth.signOut()}>Sign out</button></div></header><div className="layout"><aside className="sidebar"><SidebarSection title="Main" items={localizedPrimaryNavigation} /><SidebarSection title="Your Arena" items={localizedPersonalNavigation} /></aside><section className="content"><Routes><Route path="/" element={<Home t={t} />} /><Route path="/bible" element={<BibleCatalogue />} /><Route path="/bible/:bookKey/:chapterNumber" element={<BibleReader session={session} />} />
 <Route path="/explore/verse/:verseId" element={<VerseStudy session={session} />} /><Route path="/explore" element={<Explore />} /><Route path="/explore/topics" element={<TopicSearch />} /><Route path="/explore/topic/:topicId" element={<TopicStudy />} /><Route path="/explore/book/:bookKey" element={<BookStudy />} /><Route path="/bookmarks" element={<Bookmarks session={session} />} /><Route path="/notes" element={<Notes session={session} />} /><Route path="/devotion" element={<Placeholder title="Today’s Devotion" description="Daily devotional content, completion tracking, and Scripture reflection will live here." />} /><Route path="/arena" element={<Placeholder title="Bible Arena" description="Challenges, questions, streaks, and friendly Scripture competition will live here." />} /><Route path="/ask" element={<Placeholder title="Ask AI" description="The Bible Assistant will be added after the Scripture study foundation is complete." />} /><Route path="/progress" element={<ReadingPlans />} />
-  <Route path="/progress/plan/:planId" element={<ReadingPlanDetail />} /><Route path="/profile" element={<Placeholder title="Profile" description="Your Bible Arena profile and personal preferences will live here." />} /><Route path="/settings" element={<Placeholder title="Settings" description="Language, Bible version, appearance, notification, and account settings will live here." />} /><Route path="*" element={<Home />} /></Routes></section></div></div>;
+  <Route path="/progress/plan/:planId" element={<ReadingPlanDetail />} /><Route path="/profile" element={<Placeholder title={t.profile} description="Your Bible Arena profile and personal preferences will live here." />} /><Route path="/settings" element={<Settings session={session} />} /><Route path="*" element={<Home />} /></Routes></section></div></div>;
 }
 
 export default function App() {
