@@ -55,9 +55,8 @@ function useInterfaceLanguage(session: Session) {
     });
   }, [session.user.id]);
   return { language, t: uiText[language] };
-function Home() {
+function Home({ t }: { t: typeof uiText.en }) {
   const navigate = useNavigate();
-  const { t } = useInterfaceLanguage({ user: { id: '' } } as Session);
   return <main className="home"><section className="hero card"><div><span className="eyebrow">BIBLE ARENA</span><h1>Read. Understand. Study. Grow.</h1><p>A calm, intelligent space to encounter Scripture, study deeply, and grow every day.</p><div className="actions"><button onClick={() => navigate('/bible')}>{t.openBible}</button><button className="secondary" onClick={() => navigate('/explore')}>{t.exploreStudy}</button></div></div><div className="verse"><span>Today's Scripture</span><strong>“Your word is a lamp to my feet and a light to my path.”</strong><small>Psalm 119:105</small></div></section><section className="grid"><article className="card"><span className="label">{t.bibleCatalogue}</span><h2>66 books</h2><p>Browse the Old and New Testaments by book and chapter.</p><button className="text-button" onClick={() => navigate('/bible')}>{t.browseBible}</button></article><article className="card"><span className="label">{t.studyHub}</span><h2>{t.goDeeper}</h2><p>Explore books, study context, and build a stronger understanding of Scripture.</p><button className="text-button" onClick={() => navigate('/explore')}>{t.exploreStudy}</button><button className="text-button" onClick={() => navigate('/explore/topics')}>{t.browseTopics}</button></article><article className="card"><span className="label">{t.quickActions}</span><div className="quick"><button onClick={() => navigate('/bible')}>{t.openBible}</button><button onClick={() => navigate('/notes')}>{t.writeNote}</button><button onClick={() => navigate('/bookmarks')}>{t.viewBookmarks}</button></div></article></section></main>;
 }mport { useEffect, useMemo, useState } from 'react';
 import { NavLink, Route, Routes, useNavigate, useParams } from 'react-router-dom';
