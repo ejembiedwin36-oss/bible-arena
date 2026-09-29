@@ -1,5 +1,6 @@
 import { useEffect, useState } from 'react';
 import { getChapterVerses, type BibleChapterVerse } from '../lib/bibleData';
+import { prefetchNextChapter } from '../lib/bibleChapterNavigation';
 
 export function useBibleChapterVerses(chapterId: string | null, versionId: string | null) {
   const [verses, setVerses] = useState<BibleChapterVerse[]>([]);
@@ -23,6 +24,7 @@ export function useBibleChapterVerses(chapterId: string | null, versionId: strin
         setVerses([]);
       } else {
         setVerses((data ?? []) as BibleChapterVerse[]);
+        void prefetchNextChapter(chapterId, versionId);
       }
       setLoading(false);
     }).catch((requestError) => {
