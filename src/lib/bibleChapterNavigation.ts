@@ -1,25 +1,13 @@
 import { supabase } from './supabase';
 import { withSupabaseTimeout } from './resilientSupabase';
-import { getNextChapter, type ChapterNavigationRecord } from './bibleNavigation';
 import { prefetchChapter } from './biblePrefetch';
 
-type ChapterRow = {
-  id: string;
-  book_id: string;
-  chapter_number: number;
-};
-
-type BookRow = {
-  id: string;
-  book_name: string;
-  book_order: number;
-  chapter_count: number;
-};
-
-export async function prefetchNextChapter(
-  chapterId: string,
-  versionId: string,
-) {
+/**
+ * Prefetch exactly one next chapter with the minimum metadata queries needed.
+ * Normal chapters require only the current chapter lookup + next chapter lookup.
+ * A next-book lookup is performed only at a book boundary.
+ */
+export async function prefetchNextChapter(chapterId: string, versionId: string) {
   const { data: current, error: currentError } = await withSupabaseTimeout(
     supabase
       .from('bible_chapters')
@@ -33,73 +21,53 @@ export async function prefetchNextChapter(
   const { data: book, error: bookError } = await withSupabaseTimeout(
     supabase
       .from('bible_books')
-      .select('id,book_name,book_order,chapter_count')
+      .select('id,book_order,chapter_count')
       .eq('id', current.book_id)
       .maybeSingle(),
   );
 
   if (bookError || !book) return;
 
-  const { data: nextBook, error: nextBookError } = await withSupabaseTimeout(
-    supabase
-      .from('bible_books')
-      .select('id,book_name,book_order,chapter_count')
-      .eq('book_order', book.book_order + 1)
-      .maybeSingle(),
-  );
-
-  if (nextBookError) return;
-
-  const currentRecord: ChapterNavigationRecord = {
-    id: current.id,
-    bookId: book.id,
-    bookName: book.book_name,
-    bookOrder: book.book_order,
-    chapterNumber: current.chapter_number,
-    chapterCount: book.chapter_count,
-  };
-
-  const candidates: ChapterNavigationRecord[] = [
-    currentRecord,
-    ...(nextBook
-      ? [{
-          id: '',
-          bookId: nextBook.id,
-          bookName: nextBook.book_name,
-          bookOrder: nextBook.book_order,
-          chapterNumber: 1,
-          chapterCount: nextBook.chapter_count,
-        }]
-      : []),
-  ];
-
+  // Most navigation stays inside the same book, so avoid querying the next
+  // book unless the current chapter is the final chapter of this book.
   if (current.chapter_number < book.chapter_count) {
-    const { data: nextChapter } = await withSupabaseTimeout(
+    const { data: nextChapter, error: nextError } = await withSupabaseTimeout(
       supabase
         .from('bible_chapters')
-        .select('id,book_id,chapter_number')
+        .select('id')
         .eq('book_id', book.id)
         .eq('chapter_number', current.chapter_number + 1)
         .maybeSingle(),
     );
 
-    if (nextChapter) prefetchChapter(nextChapter.id, versionId);
+    if (!nextError && nextChapter) {
+      prefetchChapter(nextChapter.id, versionId);
+    }
     return;
   }
 
-  const next = getNextChapter(currentRecord, candidates);
-  if (!next?.id) return;
+  // We reached the final chapter of a book. Find the next book, then its
+  // first chapter. If there is no next book, this is the end of the Bible.
+  const { data: nextBook, error: nextBookError } = await withSupabaseTimeout(
+    supabase
+      .from('bible_books')
+      .select('id')
+      .eq('book_order', book.book_order + 1)
+      .maybeSingle(),
+  );
 
-  const { data: nextChapter } = await withSupabaseTimeout(
+  if (nextBookError || !nextBook) return;
+
+  const { data: nextChapter, error: nextChapterError } = await withSupabaseTimeout(
     supabase
       .from('bible_chapters')
       .select('id')
-      .eq('book_id', next.bookId)
+      .eq('book_id', nextBook.id)
       .eq('chapter_number', 1)
       .maybeSingle(),
   );
 
-  if (nextChapter) prefetchChapter(nextChapter.id, versionId);
+  if (!nextChapterError && nextChapter) {
+    prefetchChapter(nextChapter.id, versionId);
+  }
 }
-
-export type { ChapterRow, BookRow };
