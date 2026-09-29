@@ -21,7 +21,7 @@ export async function getChapterVerses(chapterId: string, versionId: string) {
 
     const result = await withSupabaseTimeout(
       supabase
-        .from('bible_translation_verses')
+        .from('bible_verses')
         .select('id,verse_number,text,is_jesus_words')
         .eq('chapter_id', chapterId)
         .eq('version_id', versionId)
