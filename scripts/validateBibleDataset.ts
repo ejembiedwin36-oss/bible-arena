@@ -15,11 +15,13 @@ export function validateBibleDataset(
   verses: BibleDatasetVerse[],
   expectedBooks: readonly string[],
   expectedChapterCounts?: Readonly<Record<string, number>>,
+  expectedVerseCounts?: Readonly<Record<string, Readonly<Record<number, number>>>>,
 ): BibleDatasetValidationResult {
   const errors: string[] = [];
   const seen = new Set<string>();
   const books = new Set<string>();
   const chaptersByBook = new Map<string, Set<number>>();
+  const versesByChapter = new Map<string, Set<number>>();
 
   for (const [index, verse] of verses.entries()) {
     const row = index + 1;
@@ -44,6 +46,11 @@ export function validateBibleDataset(
     const chapters = chaptersByBook.get(book) ?? new Set<number>();
     chapters.add(verse.chapter);
     chaptersByBook.set(book, chapters);
+
+    const chapterKey = `${book}:${verse.chapter}`;
+    const chapterVerses = versesByChapter.get(chapterKey) ?? new Set<number>();
+    chapterVerses.add(verse.verse);
+    versesByChapter.set(chapterKey, chapterVerses);
   }
 
   for (const book of expectedBooks) {
@@ -52,25 +59,43 @@ export function validateBibleDataset(
       continue;
     }
 
-    if (!expectedChapterCounts) continue;
-
-    const expectedCount = expectedChapterCounts[book];
+    const expectedChapterCount = expectedChapterCounts?.[book];
     const chapters = chaptersByBook.get(book) ?? new Set<number>();
 
-    if (expectedCount === undefined) {
+    if (expectedChapterCounts && expectedChapterCount === undefined) {
       errors.push(`Missing expected chapter count for book: ${book}.`);
       continue;
     }
 
-    for (let chapter = 1; chapter <= expectedCount; chapter += 1) {
-      if (!chapters.has(chapter)) {
-        errors.push(`Missing chapter: ${book} ${chapter}.`);
+    if (expectedChapterCount !== undefined) {
+      for (let chapter = 1; chapter <= expectedChapterCount; chapter += 1) {
+        if (!chapters.has(chapter)) errors.push(`Missing chapter: ${book} ${chapter}.`);
+      }
+
+      for (const chapter of chapters) {
+        if (chapter > expectedChapterCount) {
+          errors.push(`Unexpected chapter: ${book} ${chapter}.`);
+        }
       }
     }
 
-    for (const chapter of chapters) {
-      if (chapter > expectedCount) {
-        errors.push(`Unexpected chapter: ${book} ${chapter}.`);
+    const expectedBookVerseCounts = expectedVerseCounts?.[book];
+    if (!expectedBookVerseCounts) continue;
+
+    for (const [chapterString, expectedLastVerse] of Object.entries(expectedBookVerseCounts)) {
+      const chapter = Number(chapterString);
+      const actualVerses = versesByChapter.get(`${book}:${chapter}`) ?? new Set<number>();
+
+      for (let verse = 1; verse <= expectedLastVerse; verse += 1) {
+        if (!actualVerses.has(verse)) {
+          errors.push(`Missing verse: ${book} ${chapter}:${verse}.`);
+        }
+      }
+
+      for (const actualVerse of actualVerses) {
+        if (actualVerse > expectedLastVerse) {
+          errors.push(`Unexpected verse: ${book} ${chapter}:${actualVerse}.`);
+        }
       }
     }
   }
