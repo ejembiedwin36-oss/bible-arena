@@ -4,6 +4,9 @@ export type VoiceInferenceRequest = {
   operation: VoiceInferenceOperation;
   languageCode: string;
   audioReference?: string;
+  /** Base64-encoded audio for providers that accept JSON payloads. */
+  audioBase64?: string;
+  audioMimeType?: string;
   transcript?: string;
   text?: string;
 };
@@ -20,8 +23,9 @@ export type VoiceInferenceResponse = {
  * Server-side inference gateway contract.
  *
  * Provider credentials and model endpoints stay outside the browser.
- * The concrete transport can be implemented by a Supabase Edge Function
- * or another authenticated backend without changing the voice UI.
+ * Audio can be represented by a storage reference or a provider-safe
+ * base64 payload during development. Production should prefer Storage
+ * references for larger recordings rather than embedding large audio in JSON.
  */
 export interface VoiceInferenceGateway {
   infer(request: VoiceInferenceRequest): Promise<VoiceInferenceResponse>;
