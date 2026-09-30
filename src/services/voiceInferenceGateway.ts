@@ -9,17 +9,19 @@ export type VoiceInferenceRequest = {
 };
 
 export type VoiceInferenceResponse = {
+  status?: string;
   transcript?: string;
   intent?: unknown;
   audioReference?: string;
+  message?: string;
 };
 
 /**
  * Server-side inference gateway contract.
  *
- * Provider credentials and model endpoints must stay outside the browser.
- * The concrete transport can later be implemented by a Supabase Edge
- * Function or another authenticated backend without changing the voice UI.
+ * Provider credentials and model endpoints stay outside the browser.
+ * The concrete transport can be implemented by a Supabase Edge Function
+ * or another authenticated backend without changing the voice UI.
  */
 export interface VoiceInferenceGateway {
   infer(request: VoiceInferenceRequest): Promise<VoiceInferenceResponse>;
@@ -35,10 +37,17 @@ export class HttpVoiceInferenceGateway implements VoiceInferenceGateway {
       body: JSON.stringify(request),
     });
 
-    if (!response.ok) {
-      throw new Error(`Voice inference request failed with status ${response.status}.`);
+    let payload: VoiceInferenceResponse;
+    try {
+      payload = (await response.json()) as VoiceInferenceResponse;
+    } catch {
+      throw new Error(`Voice inference returned an invalid response (HTTP ${response.status}).`);
     }
 
-    return (await response.json()) as VoiceInferenceResponse;
+    if (!response.ok) {
+      throw new Error(payload.message ?? `Voice inference request failed with status ${response.status}.`);
+    }
+
+    return payload;
   }
 }
