@@ -14,29 +14,65 @@ export type BibleDatasetValidationResult = {
 export function validateBibleDataset(
   verses: BibleDatasetVerse[],
   expectedBooks: readonly string[],
+  expectedChapterCounts?: Readonly<Record<string, number>>,
 ): BibleDatasetValidationResult {
   const errors: string[] = [];
   const seen = new Set<string>();
   const books = new Set<string>();
+  const chaptersByBook = new Map<string, Set<number>>();
 
   for (const [index, verse] of verses.entries()) {
-    if (!verse.book?.trim()) errors.push(`Row ${index + 1}: missing book.`);
+    const row = index + 1;
+    const book = verse.book?.trim();
+
+    if (!book) errors.push(`Row ${row}: missing book.`);
     if (!Number.isInteger(verse.chapter) || verse.chapter < 1) {
-      errors.push(`Row ${index + 1}: invalid chapter.`);
+      errors.push(`Row ${row}: invalid chapter.`);
     }
     if (!Number.isInteger(verse.verse) || verse.verse < 1) {
-      errors.push(`Row ${index + 1}: invalid verse.`);
+      errors.push(`Row ${row}: invalid verse.`);
     }
-    if (!verse.text?.trim()) errors.push(`Row ${index + 1}: empty verse text.`);
+    if (!verse.text?.trim()) errors.push(`Row ${row}: empty verse text.`);
 
-    const key = `${verse.book}:${verse.chapter}:${verse.verse}`;
+    if (!book || !Number.isInteger(verse.chapter) || !Number.isInteger(verse.verse)) continue;
+
+    const key = `${book}:${verse.chapter}:${verse.verse}`;
     if (seen.has(key)) errors.push(`Duplicate verse: ${key}.`);
     seen.add(key);
-    books.add(verse.book);
+    books.add(book);
+
+    const chapters = chaptersByBook.get(book) ?? new Set<number>();
+    chapters.add(verse.chapter);
+    chaptersByBook.set(book, chapters);
   }
 
   for (const book of expectedBooks) {
-    if (!books.has(book)) errors.push(`Missing book: ${book}.`);
+    if (!books.has(book)) {
+      errors.push(`Missing book: ${book}.`);
+      continue;
+    }
+
+    if (!expectedChapterCounts) continue;
+
+    const expectedCount = expectedChapterCounts[book];
+    const chapters = chaptersByBook.get(book) ?? new Set<number>();
+
+    if (expectedCount === undefined) {
+      errors.push(`Missing expected chapter count for book: ${book}.`);
+      continue;
+    }
+
+    for (let chapter = 1; chapter <= expectedCount; chapter += 1) {
+      if (!chapters.has(chapter)) {
+        errors.push(`Missing chapter: ${book} ${chapter}.`);
+      }
+    }
+
+    for (const chapter of chapters) {
+      if (chapter > expectedCount) {
+        errors.push(`Unexpected chapter: ${book} ${chapter}.`);
+      }
+    }
   }
 
   return { valid: errors.length === 0, errors };
