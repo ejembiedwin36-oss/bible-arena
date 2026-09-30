@@ -1,0 +1,87 @@
+.bible-reader-panel {
+  display: grid;
+  gap: 1.25rem;
+  max-width: 1100px;
+  margin: 0 auto;
+  padding: 1.5rem 1rem 3rem;
+}
+
+.bible-reader-header {
+  display: flex;
+  justify-content: space-between;
+  gap: 1rem;
+  align-items: end;
+}
+
+.bible-reader-header h1 {
+  margin: 0.35rem 0;
+}
+
+.bible-reader-header p {
+  margin: 0;
+  opacity: 0.75;
+}
+
+.bible-reader-controls {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 0.9rem;
+}
+
+.bible-reader-controls label {
+  display: grid;
+  gap: 0.4rem;
+  font-weight: 600;
+}
+
+.bible-reader-controls select {
+  width: 100%;
+  min-height: 2.75rem;
+  padding: 0.5rem 0.65rem;
+  border-radius: 0.6rem;
+  border: 1px solid currentColor;
+  background: transparent;
+}
+
+.bible-chapter {
+  padding: 1.5rem;
+  border-radius: 1rem;
+  line-height: 1.9;
+}
+
+.bible-chapter p {
+  margin: 0 0 0.85rem;
+}
+
+.bible-chapter sup {
+  font-weight: 700;
+  margin-right: 0.25rem;
+}
+
+.bible-chapter-nav {
+  display: flex;
+  justify-content: space-between;
+  gap: 1rem;
+}
+
+.bible-chapter-nav button {
+  min-width: 8rem;
+  min-height: 2.75rem;
+  padding: 0.5rem 1rem;
+  border-radius: 0.6rem;
+}
+
+.reader-error {
+  margin: 0;
+}
+
+@media (max-width: 720px) {
+  .bible-reader-header {
+    align-items: start;
+    flex-direction: column;
+  }
+
+  .bible-reader-controls {
+    grid-template-columns: 1fr;
+  }
+}
