@@ -1,7 +1,10 @@
-import { useMemo, useState } from 'react';
+import { useEffect, useMemo, useState } from 'react';
 import { bibleArenaLanguages, type BibleArenaLanguage } from '../data/languageRegistry';
+import { supabase } from '../lib/supabase';
 import {
   createLanguagePreference,
+  loadLanguagePreferences,
+  saveLanguagePreferences,
   setBibleLanguage,
   setInterfaceLanguage,
   setResponseLanguage,
@@ -36,12 +39,56 @@ function supports(language: BibleArenaLanguage, capability: keyof BibleArenaLang
 
 export function LanguageSettingsPanel({ initialPreferences, onChange }: LanguageSettingsPanelProps) {
   const [preferences, setPreferences] = useState(() => createLanguagePreference(initialPreferences));
+  const [saving, setSaving] = useState(false);
+  const [loaded, setLoaded] = useState(false);
+  const [message, setMessage] = useState<string | null>(null);
   const languages = useMemo(() => [...bibleArenaLanguages].sort((a, b) => a.priority - b.priority), []);
 
-  function update(key: PreferenceKey, languageId: string) {
+  useEffect(() => {
+    let cancelled = false;
+
+    async function load() {
+      const { data } = await supabase.auth.getUser();
+      if (!data.user) {
+        setLoaded(true);
+        return;
+      }
+
+      try {
+        const saved = await loadLanguagePreferences(data.user.id);
+        if (!cancelled) {
+          setPreferences(saved);
+          onChange?.(saved);
+        }
+      } catch {
+        if (!cancelled) setMessage('We could not load your saved language preferences.');
+      } finally {
+        if (!cancelled) setLoaded(true);
+      }
+    }
+
+    void load();
+    return () => { cancelled = true; };
+  }, [onChange]);
+
+  async function update(key: PreferenceKey, languageId: string) {
     const next = setters[key](preferences, languageId);
     setPreferences(next);
     onChange?.(next);
+    setSaving(true);
+    setMessage(null);
+
+    try {
+      const { data } = await supabase.auth.getUser();
+      if (data.user) {
+        await saveLanguagePreferences(data.user.id, next);
+        setMessage('Language preferences saved.');
+      }
+    } catch {
+      setMessage('The language changed on this screen, but could not be saved.');
+    } finally {
+      setSaving(false);
+    }
   }
 
   return (
@@ -58,7 +105,7 @@ export function LanguageSettingsPanel({ initialPreferences, onChange }: Language
         {fields.map((field) => (
           <label key={field.key} className="language-setting-field">
             <span>{field.label}</span>
-            <select value={preferences[field.key]} onChange={(event) => update(field.key, event.target.value)}>
+            <select value={preferences[field.key]} disabled={!loaded || saving} onChange={(event) => void update(field.key, event.target.value)}>
               {languages.map((language) => {
                 const available = supports(language, field.capability);
                 return (
@@ -71,6 +118,8 @@ export function LanguageSettingsPanel({ initialPreferences, onChange }: Language
           </label>
         ))}
       </div>
+
+      {message && <p className="language-settings-status" role="status">{message}</p>}
 
       <div className="language-settings-note">
         <strong>Our language promise</strong>
