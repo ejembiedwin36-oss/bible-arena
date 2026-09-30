@@ -19,24 +19,24 @@ describe('language preferences', () => {
 
   it('allows Bible, interface, voice, and response languages to differ', () => {
     const preferences = createLanguagePreference({
-      bibleLanguageId: 'ido',
+      bibleLanguageId: 'id',
       interfaceLanguageId: 'en',
-      voiceInputLanguageId: 'ido',
-      responseLanguageId: 'ido',
+      voiceInputLanguageId: 'id',
+      responseLanguageId: 'id',
     });
 
-    expect(preferences.bibleLanguageId).toBe('ido');
+    expect(preferences.bibleLanguageId).toBe('id');
     expect(preferences.interfaceLanguageId).toBe('en');
-    expect(preferences.voiceInputLanguageId).toBe('ido');
-    expect(preferences.responseLanguageId).toBe('ido');
+    expect(preferences.voiceInputLanguageId).toBe('id');
+    expect(preferences.responseLanguageId).toBe('id');
   });
 
   it('changes one preference without changing the others', () => {
-    const original = createLanguagePreference({ bibleLanguageId: 'ido' });
+    const original = createLanguagePreference({ bibleLanguageId: 'id' });
     const updated = setResponseLanguage(original, 'ig');
 
     expect(updated).toEqual({
-      bibleLanguageId: 'ido',
+      bibleLanguageId: 'id',
       interfaceLanguageId: 'en',
       voiceInputLanguageId: 'en',
       responseLanguageId: 'ig',
@@ -47,7 +47,7 @@ describe('language preferences', () => {
   it('provides separate setters for each preference', () => {
     const original = createLanguagePreference();
 
-    expect(setBibleLanguage(original, 'ido').bibleLanguageId).toBe('ido');
+    expect(setBibleLanguage(original, 'id').bibleLanguageId).toBe('id');
     expect(setInterfaceLanguage(original, 'yo').interfaceLanguageId).toBe('yo');
     expect(setVoiceInputLanguage(original, 'ha').voiceInputLanguageId).toBe('ha');
     expect(setResponseLanguage(original, 'tiv').responseLanguageId).toBe('tiv');
