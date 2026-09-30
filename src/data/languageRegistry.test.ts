@@ -6,7 +6,7 @@ describe('Bible Arena language registry', () => {
     const languages = getLanguagesByPriority();
 
     expect(languages[0].id).toBe('en');
-    expect(languages[1].id).toBe('ido');
+    expect(languages[1].id).toBe('id');
   });
 
   it('keeps the rollout list ordered by priority', () => {
@@ -17,11 +17,17 @@ describe('Bible Arena language registry', () => {
 
   it('tracks capabilities independently per language', () => {
     const english = getLanguage('en');
-    const idoma = getLanguage('ido');
+    const idoma = getLanguage('id');
 
     expect(english?.capabilities.speechRecognition).toBe(true);
     expect(idoma?.capabilities.speechRecognition).toBe(false);
     expect(idoma?.capabilities.bibleText).toBe(false);
+  });
+
+  it('uses the same IDs as the database language catalog', () => {
+    expect(bibleArenaLanguages.map((language) => language.id)).toEqual([
+      'en', 'id', 'ig', 'yo', 'ha', 'tiv', 'igl', 'efi',
+    ]);
   });
 
   it('returns undefined for an unknown language', () => {
