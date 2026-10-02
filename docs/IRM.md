@@ -1,6 +1,6 @@
 # Bible Arena — Implementation Roadmap (IRM)
 
-**Version:** 1.2  
+**Version:** 1.3  
 **Status:** Active implementation source of truth
 
 ## Rule: do not jump phases
@@ -12,27 +12,33 @@ Each phase must be verified before the next phase becomes implementation priorit
 ### Objective
 Establish the application foundation and a trustworthy Bible Reader before adding advanced study, AI, or voice capabilities.
 
-### Current work
+### Completed foundation work
 - [x] GitHub repository established.
 - [x] React/Vite application structure established.
 - [x] Initial responsive application shell.
 - [x] Language registry with English first and Idoma second.
 - [x] Bible Reader UI foundation.
-- [x] Initial Scripture seed data for development.
 - [x] Language capability model.
 - [x] Supabase voice-inference gateway foundation.
+- [x] Canonical Bible book catalogue: 66 books.
+- [x] Canonical chapter catalogue: 1,189 chapters.
+- [x] Bible version/translation schema established.
+- [x] KJV version record established as the English baseline.
+- [x] Reader database query layer aligned with the normalized Supabase schema.
+- [x] Bible catalogue query layer aligned with the normalized Supabase schema.
+- [x] Bible book canonical ordering stored in Supabase.
+- [x] Bible integrity indexes/constraints reviewed and redundant indexes removed after advisor review.
+- [x] Validated KJV import pipeline added to the repository.
 
-### Remaining Phase 1 work
-1. Establish canonical Bible data model.
-2. Establish Bible version/translation model.
-3. Establish book/chapter/verse catalogue.
-4. Establish licensed/public-domain Bible import pipeline.
-5. Connect Reader data to Supabase rather than hard-coded sample Scripture.
-6. Implement complete book → chapter → verse navigation.
-7. Implement version/language availability states from the language registry.
-8. Add Reader persistence for the user's current location.
-9. Add tests for navigation, data integrity, and language ordering.
-10. Verify responsive Reader behaviour.
+### Current Phase 1 work
+1. Execute the validated KJV import in a trusted admin environment.
+2. Verify 66 books, 1,189 chapters, and the complete verse count after import.
+3. Connect the Reader to the imported KJV dataset and remove dependence on development seed Scripture.
+4. Implement complete book → chapter → verse navigation, including chapter boundary handling.
+5. Implement version/language availability states from the language registry.
+6. Add Reader persistence for the user's current location.
+7. Add tests for navigation, data integrity, and language ordering.
+8. Verify responsive Reader behaviour.
 
 ### Phase 1 acceptance criteria
 - A user can open the Reader and select a Bible version.
@@ -43,6 +49,7 @@ Establish the application foundation and a trustworthy Bible Reader before addin
 - Bible text is kept separate from AI/study content.
 - Scripture source and licensing metadata are stored.
 - Reader navigation has automated tests.
+- KJV import provenance is recorded in `bible_import_batches`.
 
 ## Phase 2 — Personal Bible Workspace
 
