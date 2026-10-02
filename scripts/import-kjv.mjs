@@ -89,27 +89,9 @@ async function main() {
     return;
   }
 
-  const { data: existingVerses, error: existingError } = await supabase
-    .from('bible_verses')
-    .select('id')
-    .eq('version_id', version.id);
-  if (existingError) throw existingError;
-
-  if ((existingVerses?.length ?? 0) > 0) {
-    const { error: deleteTranslationError } = await supabase
-      .from('bible_translation_verses')
-      .delete()
-      .eq('translation_id', translation.id);
-    if (deleteTranslationError) throw deleteTranslationError;
-
-    const { error: deleteVerseError } = await supabase
-      .from('bible_verses')
-      .delete()
-      .eq('version_id', version.id);
-    if (deleteVerseError) throw deleteVerseError;
-  }
-
-  const batchRows = [];
+  // Import by upsert instead of deleting verse rows. Existing verse IDs may already
+  // be referenced by topics, Arena questions, notes, bookmarks, or other features.
+  // Preserving those IDs keeps the import safe and repeatable.
   for (const { dbBook, source } of imported) {
     const { data: chapters, error: chaptersError } = await supabase
       .from('bible_chapters')
@@ -134,27 +116,40 @@ async function main() {
 
       const { data: insertedVerses, error: verseError } = await supabase
         .from('bible_verses')
-        .insert(verseRows)
+        .upsert(verseRows, {
+          onConflict: 'version_id,chapter_id,verse_number',
+          ignoreDuplicates: false,
+        })
         .select('id,verse_number');
       if (verseError) throw verseError;
 
-      batchRows.push(...insertedVerses.map((verse) => ({
+      const sourceTextByNumber = new Map(
+        chapter.verses.map((sourceVerse) => [Number(sourceVerse.verse), sourceVerse.text]),
+      );
+
+      const translationRows = insertedVerses.map((verse) => ({
         translation_id: translation.id,
         verse_id: verse.id,
-        verse_text: chapter.verses.find((sourceVerse) => Number(sourceVerse.verse) === verse.verse_number).text,
-      })));
+        verse_text: sourceTextByNumber.get(verse.verse_number),
+      }));
 
-      if (batchRows.length >= 1000) {
-        const { error } = await supabase.from('bible_translation_verses').insert(batchRows.splice(0, batchRows.length));
-        if (error) throw error;
+      if (translationRows.length) {
+        const { error: translationError } = await supabase
+          .from('bible_translation_verses')
+          .upsert(translationRows, {
+            onConflict: 'translation_id,verse_id',
+            ignoreDuplicates: false,
+          });
+        if (translationError) throw translationError;
       }
     }
   }
 
-  if (batchRows.length) {
-    const { error } = await supabase.from('bible_translation_verses').insert(batchRows);
-    if (error) throw error;
-  }
+  const { error: versionUpdateError } = await supabase
+    .from('bible_versions')
+    .update({ is_active: true, rights_verified: true })
+    .eq('id', version.id);
+  if (versionUpdateError) throw versionUpdateError;
 
   const { error: batchError } = await supabase.from('bible_import_batches').insert({
     version_id: version.id,
@@ -171,7 +166,7 @@ async function main() {
   });
   if (batchError) throw batchError;
 
-  console.log(`Imported ${totalVerses} KJV verses successfully.`);
+  console.log(`Imported/upserted ${totalVerses} KJV verses successfully without deleting existing verse IDs.`);
 }
 
 main().catch((error) => {
