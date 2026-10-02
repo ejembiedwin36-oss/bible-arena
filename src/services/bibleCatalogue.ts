@@ -39,7 +39,7 @@ export async function listBibleLanguages(): Promise<BibleLanguage[]> {
     .from('languages')
     .select('id, code, name')
     .eq('is_active', true)
-    .order('sort_order', { ascending: true });
+    .order('priority', { ascending: true });
 
   if (error) throw error;
 
