@@ -41,7 +41,16 @@ async function getSingle(table, column, value) {
 
 async function main() {
   const version = await getSingle('bible_versions', 'abbreviation', 'KJV');
-  const { data: dbBooks, error: booksError } = await supabase.from('bible_books').select('id,canonical_key,name,chapter_count').order('canonical_key');
+  const translation = await getSingle('bible_translations', 'code', 'KJV');
+
+  if (translation.language_code !== 'en') {
+    throw new Error(`KJV translation has unexpected language_code: ${translation.language_code}`);
+  }
+
+  const { data: dbBooks, error: booksError } = await supabase
+    .from('bible_books')
+    .select('id,canonical_key,name,chapter_count')
+    .order('canonical_key');
   if (booksError) throw booksError;
 
   const byKey = new Map(dbBooks.map((book) => [book.canonical_key, book]));
@@ -90,7 +99,7 @@ async function main() {
     const { error: deleteTranslationError } = await supabase
       .from('bible_translation_verses')
       .delete()
-      .eq('translation_id', version.id);
+      .eq('translation_id', translation.id);
     if (deleteTranslationError) throw deleteTranslationError;
 
     const { error: deleteVerseError } = await supabase
@@ -130,7 +139,7 @@ async function main() {
       if (verseError) throw verseError;
 
       batchRows.push(...insertedVerses.map((verse) => ({
-        translation_id: version.id,
+        translation_id: translation.id,
         verse_id: verse.id,
         verse_text: chapter.verses.find((sourceVerse) => Number(sourceVerse.verse) === verse.verse_number).text,
       })));
@@ -149,6 +158,7 @@ async function main() {
 
   const { error: batchError } = await supabase.from('bible_import_batches').insert({
     version_id: version.id,
+    translation_id: translation.id,
     source_name: 'aruljohn/Bible-kjv',
     source_url: SOURCE_REPO,
     license_name: SOURCE_LICENSE,
