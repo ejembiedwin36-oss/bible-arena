@@ -1,5 +1,7 @@
 import os
+import tempfile
 import time
+from pathlib import Path
 
 from fastapi import FastAPI, File, Form, Header, HTTPException, UploadFile
 
@@ -23,8 +25,15 @@ def get_pipeline():
     global _pipeline
     if _pipeline is None:
         from omnilingual_asr.models.inference.pipeline import ASRInferencePipeline
+
         _pipeline = ASRInferencePipeline(model_card=MODEL_NAME, device=DEVICE)
     return _pipeline
+
+
+@app.on_event("startup")
+def load_model_on_startup() -> None:
+    # Load once when the GPU container starts so health checks reflect readiness.
+    get_pipeline()
 
 
 @app.get("/health")
@@ -49,10 +58,20 @@ async def transcribe(
     if len(audio_bytes) > MAX_AUDIO_BYTES:
         raise HTTPException(status_code=413, detail="audio file is too large")
 
+    suffix = Path(audio.filename or "audio.wav").suffix or ".wav"
     started = time.perf_counter()
+
     try:
-        pipeline = get_pipeline()
-        transcriptions = pipeline.transcribe([audio_bytes], lang=[language_code], batch_size=1)
+        with tempfile.NamedTemporaryFile(suffix=suffix, delete=False) as temp_file:
+            temp_file.write(audio_bytes)
+            temp_path = temp_file.name
+
+        try:
+            pipeline = get_pipeline()
+            transcriptions = pipeline.transcribe([temp_path], lang=[language_code], batch_size=1)
+        finally:
+            Path(temp_path).unlink(missing_ok=True)
+
         transcript = transcriptions[0].strip() if transcriptions else ""
     except Exception as exc:
         raise HTTPException(status_code=502, detail=f"ASR inference failed: {exc}") from exc
