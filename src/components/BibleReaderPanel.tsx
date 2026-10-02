@@ -32,6 +32,8 @@ export function BibleReaderPanel({ initialLanguageId }: BibleReaderPanelProps) {
 
   useEffect(() => {
     if (!languageId) return;
+    setChapter(null);
+    setChapterNumber(1);
     void listBibleVersions(languageId)
       .then((loadedVersions) => {
         setVersions(loadedVersions);
@@ -42,17 +44,26 @@ export function BibleReaderPanel({ initialLanguageId }: BibleReaderPanelProps) {
 
   useEffect(() => {
     if (!versionId || !bookId) return;
+    const selectedVersion = versions.find((version) => version.id === versionId);
+    if (!selectedVersion?.translationId) {
+      setChapter(null);
+      setError('This Bible version has no connected translation text yet.');
+      return;
+    }
+
     setLoading(true);
     setError(null);
-    void loadBibleChapter(versionId, bookId, chapterNumber)
+    void loadBibleChapter(selectedVersion.translationId, bookId, chapterNumber)
       .then(setChapter)
       .catch((cause) => setError(cause instanceof Error ? cause.message : 'Unable to load this chapter.'))
       .finally(() => setLoading(false));
-  }, [versionId, bookId, chapterNumber]);
+  }, [versionId, versions, bookId, chapterNumber]);
 
   const selectedLanguage = useMemo(() => languages.find((language) => language.id === languageId), [languages, languageId]);
   const selectedVersion = useMemo(() => versions.find((version) => version.id === versionId), [versions, versionId]);
   const selectedBook = useMemo(() => books.find((book) => book.id === bookId), [books, bookId]);
+  const canGoPrevious = chapterNumber > 1 && !loading;
+  const canGoNext = Boolean(selectedBook && chapterNumber < selectedBook.chapterCount && !loading);
 
   return (
     <section className="bible-reader-panel" aria-label="Bible Reader">
@@ -67,7 +78,7 @@ export function BibleReaderPanel({ initialLanguageId }: BibleReaderPanelProps) {
 
       <div className="bible-reader-controls">
         <label>Language<select value={languageId} onChange={(event) => setLanguageId(event.target.value)}>{languages.map((language) => <option key={language.id} value={language.id}>{language.name}</option>)}</select></label>
-        <label>Version<select value={versionId} onChange={(event) => setVersionId(event.target.value)}>{versions.map((version) => <option key={version.id} value={version.id}>{version.name}</option>)}</select></label>
+        <label>Version<select value={versionId} onChange={(event) => { setVersionId(event.target.value); setChapterNumber(1); }}>{versions.map((version) => <option key={version.id} value={version.id}>{version.name}</option>)}</select></label>
         <label>Book<select value={bookId} onChange={(event) => { setBookId(event.target.value); setChapterNumber(1); }}>{books.map((book) => <option key={book.id} value={book.id}>{book.bookOrder}. {book.name}</option>)}</select></label>
       </div>
 
@@ -80,8 +91,8 @@ export function BibleReaderPanel({ initialLanguageId }: BibleReaderPanelProps) {
       </article>
 
       <nav className="bible-chapter-nav" aria-label="Chapter navigation">
-        <button type="button" disabled={chapterNumber <= 1 || loading} onClick={() => setChapterNumber((current) => current - 1)}>Previous</button>
-        <button type="button" disabled={loading} onClick={() => setChapterNumber((current) => current + 1)}>Next</button>
+        <button type="button" disabled={!canGoPrevious} onClick={() => setChapterNumber((current) => current - 1)}>Previous</button>
+        <button type="button" disabled={!canGoNext} onClick={() => setChapterNumber((current) => current + 1)}>Next</button>
       </nav>
     </section>
   );
