@@ -66,21 +66,34 @@ async function fetchBibleChapter(
 ): Promise<BibleChapter> {
   const { data, error } = await supabase
     .from('bible_translation_verses')
-    .select('verse_number, text')
+    .select('verse_id, verse_text, bible_verses!inner(verse_number, chapter_id, bible_chapters!inner(chapter_number, book_id))')
     .eq('translation_id', translationId)
-    .eq('book_id', bookId)
-    .eq('chapter_number', chapterNumber)
-    .order('verse_number', { ascending: true });
+    .eq('bible_verses.bible_chapters.book_id', bookId)
+    .eq('bible_verses.bible_chapters.chapter_number', chapterNumber)
+    .order('verse_number', { referencedTable: 'bible_verses', ascending: true });
 
   if (error) throw error;
+
+  const rows = (data ?? []) as Array<{
+    verse_id: string;
+    verse_text: string;
+    bible_verses: {
+      verse_number: number;
+      chapter_id: string;
+      bible_chapters: {
+        chapter_number: number;
+        book_id: string;
+      };
+    };
+  }>;
 
   return {
     translationId,
     bookId,
     chapterNumber,
-    verses: (data ?? []).map((verse) => ({
-      verseNumber: verse.verse_number,
-      text: verse.text,
+    verses: rows.map((row) => ({
+      verseNumber: row.bible_verses.verse_number,
+      text: row.verse_text,
     })),
   };
 }
