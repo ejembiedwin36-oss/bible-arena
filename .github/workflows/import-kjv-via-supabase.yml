@@ -1,0 +1,36 @@
+name: Import KJV via Supabase
+
+on:
+  workflow_dispatch:
+    inputs:
+      start_book:
+        description: 'Zero-based first book index'
+        required: true
+        default: '0'
+      end_book:
+        description: 'Exclusive zero-based end book index'
+        required: true
+        default: '66'
+
+jobs:
+  import:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Import selected KJV books through Supabase Edge Function
+        env:
+          SUPABASE_URL: ${{ secrets.SUPABASE_URL }}
+          SUPABASE_SERVICE_ROLE_KEY: ${{ secrets.SUPABASE_SERVICE_ROLE_KEY }}
+          START_BOOK: ${{ inputs.start_book }}
+          END_BOOK: ${{ inputs.end_book }}
+        run: |
+          set -euo pipefail
+          if [ -z "$SUPABASE_URL" ] || [ -z "$SUPABASE_SERVICE_ROLE_KEY" ]; then
+            echo 'Missing SUPABASE_URL or SUPABASE_SERVICE_ROLE_KEY GitHub secret.'
+            exit 1
+          fi
+          curl --fail-with-body --silent --show-error \
+            -X POST "$SUPABASE_URL/functions/v1/import-kjv" \
+            -H "Authorization: Bearer $SUPABASE_SERVICE_ROLE_KEY" \
+            -H "apikey: $SUPABASE_SERVICE_ROLE_KEY" \
+            -H "Content-Type: application/json" \
+            --data "{\"startBook\":$START_BOOK,\"endBook\":$END_BOOK}"
