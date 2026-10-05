@@ -10,19 +10,14 @@ export async function reviewVoiceEvaluationSample(input: {
   status: ReviewStatus;
   reviewerNotes?: string;
 }) {
-  const { data, error } = await supabase
-    .from('voice_language_evaluation_samples')
-    .update({
-      native_transcript: input.nativeTranscript.trim(),
-      intended_meaning: input.intendedMeaning.trim(),
-      intent: input.intent,
-      verification_status: input.status,
-      reviewer_notes: input.reviewerNotes?.trim() || null,
-      reviewer_verified: input.status === 'validated',
-    })
-    .eq('id', input.sampleId)
-    .select('id, verification_status, reviewer_verified')
-    .single();
+  const { data, error } = await supabase.rpc('review_voice_evaluation_sample', {
+    p_sample_id: input.sampleId,
+    p_native_transcript: input.nativeTranscript,
+    p_intended_meaning: input.intendedMeaning,
+    p_intent: input.intent,
+    p_status: input.status,
+    p_notes: input.reviewerNotes ?? null,
+  });
 
   if (error) throw error;
   return data;
