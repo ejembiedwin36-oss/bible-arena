@@ -1,7 +1,7 @@
 """Prepare and validate an Idoma XLS-R training run.
 
-This script intentionally stops before model training until the ML dependencies
-are installed and a real dataset is available. It never fabricates data.
+The script now validates the real preprocessing contract, but deliberately does
+not launch a costly training job automatically. Use --dry-run to verify inputs.
 """
 
 from __future__ import annotations
@@ -14,16 +14,14 @@ from pathlib import Path
 
 def require_module(name: str) -> None:
     if importlib.util.find_spec(name) is None:
-        raise SystemExit(
-            f"Missing dependency: {name}. Install the ML environment before training."
-        )
+        raise SystemExit(f"Missing dependency: {name}. Install the ML environment before training.")
 
 
 def load_config(path: Path) -> dict:
     try:
         import yaml
-    except ImportError:
-        raise SystemExit("Missing dependency: pyyaml")
+    except ImportError as exc:
+        raise SystemExit("Missing dependency: pyyaml") from exc
     with path.open("r", encoding="utf-8") as handle:
         config = yaml.safe_load(handle)
     if not isinstance(config, dict):
@@ -47,6 +45,7 @@ def main() -> int:
     parser.add_argument("--train", required=True, type=Path)
     parser.add_argument("--validation", required=True, type=Path)
     parser.add_argument("--evaluation", required=True, type=Path)
+    parser.add_argument("--processed-audio", type=Path)
     parser.add_argument("--dry-run", action="store_true")
     args = parser.parse_args()
 
@@ -63,14 +62,17 @@ def main() -> int:
         "validation": count_records(args.validation),
         "evaluation": count_records(args.evaluation),
     }
-
     if any(value == 0 for value in counts.values()):
         raise SystemExit("Every dataset split must contain real records before training.")
+
+    if args.processed_audio is not None and not args.processed_audio.exists():
+        raise SystemExit(f"Processed audio directory does not exist: {args.processed_audio}")
 
     summary = {
         "language": config.get("language_code"),
         "base_model": config.get("base_model"),
         "objective": config.get("objective"),
+        "sampling_rate": config.get("sampling_rate"),
         "counts": counts,
         "dry_run": args.dry_run,
     }
@@ -81,9 +83,9 @@ def main() -> int:
         return 0
 
     raise SystemExit(
-        "Training execution is intentionally not enabled in this bootstrap script yet. "
-        "Implement the processor, tokenizer, Trainer configuration, checkpointing, and "
-        "evaluation loop only after the ML environment and real dataset are verified."
+        "Training execution remains gated. The next step is to configure the Hugging Face "
+        "processor, data collator, CTC model, checkpointing, and Trainer only after the "
+        "real dataset and compute environment are verified."
     )
 
 
