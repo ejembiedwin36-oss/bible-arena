@@ -1,4 +1,5 @@
 import { useEffect, useRef, useState } from 'react';
+import { uploadVoiceSample } from '../services/voiceUpload';
 
 type Props = {
   onRecordingReady?: (recording: Blob) => void;
@@ -11,6 +12,7 @@ export function IdomaVoiceRecorder({ onRecordingReady }: Props) {
   const [busy, setBusy] = useState(false);
   const [consent, setConsent] = useState(false);
   const [error, setError] = useState<string | null>(null);
+  const [message, setMessage] = useState<string | null>(null);
   const [seconds, setSeconds] = useState(0);
 
   useEffect(() => {
@@ -37,6 +39,7 @@ export function IdomaVoiceRecorder({ onRecordingReady }: Props) {
     try {
       setBusy(true);
       setError(null);
+      setMessage(null);
       const stream = await navigator.mediaDevices.getUserMedia({ audio: true });
       const recorder = new MediaRecorder(stream);
       chunksRef.current = [];
@@ -46,10 +49,24 @@ export function IdomaVoiceRecorder({ onRecordingReady }: Props) {
         if (event.data.size > 0) chunksRef.current.push(event.data);
       };
 
-      recorder.onstop = () => {
+      recorder.onstop = async () => {
         const recordingBlob = new Blob(chunksRef.current, { type: recorder.mimeType || 'audio/webm' });
         onRecordingReady?.(recordingBlob);
-        stream.getTracks().forEach((track) => track.stop());
+
+        try {
+          setBusy(true);
+          await uploadVoiceSample({
+            recording: recordingBlob,
+            languageCode: 'id',
+            durationMs: seconds * 1000,
+          });
+          setMessage('Recording uploaded securely. It is ready for native-speaker review.');
+        } catch (cause) {
+          setError(cause instanceof Error ? cause.message : 'Unable to upload the recording.');
+        } finally {
+          setBusy(false);
+          stream.getTracks().forEach((track) => track.stop());
+        }
       };
 
       recorder.start();
@@ -74,8 +91,8 @@ export function IdomaVoiceRecorder({ onRecordingReady }: Props) {
       <span className="eyebrow">VOICE · IDOMA</span>
       <h2 id="idoma-voice-title">Record natural Idoma speech</h2>
       <p>
-        Speak naturally in Idoma. We will store the recording separately from its
-        transcript so a native speaker can verify the words and intended meaning.
+        Speak naturally in Idoma. The audio is stored privately and separately from
+        its transcript so a native speaker can verify the words and intended meaning.
       </p>
 
       <label className="voice-consent">
@@ -86,7 +103,7 @@ export function IdomaVoiceRecorder({ onRecordingReady }: Props) {
       <div className="voice-recorder-actions">
         {!recording ? (
           <button type="button" disabled={busy} onClick={startRecording}>
-            {busy ? 'Starting microphone…' : 'Start recording'}
+            {busy ? 'Working…' : 'Start recording'}
           </button>
         ) : (
           <button type="button" onClick={stopRecording}>
@@ -96,6 +113,7 @@ export function IdomaVoiceRecorder({ onRecordingReady }: Props) {
       </div>
 
       {recording && <p className="voice-status">Recording… speak naturally. No prepared Idoma wording is being supplied here.</p>}
+      {message && <div className="notice success">{message}</div>}
       {error && <div className="notice error">{error}</div>}
     </section>
   );
