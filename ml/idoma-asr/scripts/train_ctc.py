@@ -34,10 +34,21 @@ def main() -> int:
     if len(dataset) == 0:
         raise SystemExit("Dataset is empty.")
 
+    required_columns = {"input_values", "labels"}
+    missing_columns = required_columns.difference(dataset.column_names)
+    if missing_columns:
+        raise SystemExit(
+            "Prepared CTC dataset is missing columns: "
+            + ", ".join(sorted(missing_columns))
+            + ". Run scripts/prepare_ctc_features.py first."
+        )
+
     processor = Wav2Vec2Processor.from_pretrained(str(args.processor))
 
     summary = {
         "records": len(dataset),
+        "columns": dataset.column_names,
+        "vocab_size": len(processor.tokenizer),
         "device": "cuda" if torch.cuda.is_available() else "cpu",
         "cuda_name": torch.cuda.get_device_name(0) if torch.cuda.is_available() else None,
         "execute": args.execute,
