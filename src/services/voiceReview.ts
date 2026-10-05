@@ -10,7 +10,7 @@ export async function reviewVoiceEvaluationSample(input: {
   status: ReviewStatus;
   reviewerNotes?: string;
 }) {
-  const { data, error } = await supabase.rpc('review_voice_evaluation_sample', {
+  const { data, error } = await supabase.rpc('review_voice_language_sample', {
     p_sample_id: input.sampleId,
     p_native_transcript: input.nativeTranscript,
     p_intended_meaning: input.intendedMeaning,
@@ -20,5 +20,5 @@ export async function reviewVoiceEvaluationSample(input: {
   });
 
   if (error) throw error;
-  return data;
+  return Array.isArray(data) ? data[0] : data;
 }
