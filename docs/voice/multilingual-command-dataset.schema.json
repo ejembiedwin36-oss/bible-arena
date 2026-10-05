@@ -1,0 +1,34 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "title": "Bible Arena Multilingual Voice Command Dataset Entry",
+  "type": "object",
+  "required": ["id", "languageCode", "intent", "verificationStatus"],
+  "properties": {
+    "id": { "type": "string" },
+    "languageCode": { "type": "string" },
+    "intent": {
+      "type": "string",
+      "enum": [
+        "open_book",
+        "open_book_chapter",
+        "open_verse",
+        "search_scripture",
+        "read_current",
+        "explain_current",
+        "stop_reading"
+      ]
+    },
+    "bookName": { "type": "string" },
+    "chapterNumber": { "type": "integer", "minimum": 1 },
+    "verseNumber": { "type": "integer", "minimum": 1 },
+    "query": { "type": "string" },
+    "transcript": { "type": "string" },
+    "audioReference": { "type": "string" },
+    "verificationStatus": {
+      "type": "string",
+      "enum": ["unverified", "native_reviewed", "validated"]
+    },
+    "reviewerNotes": { "type": "string" }
+  },
+  "additionalProperties": false
+}
