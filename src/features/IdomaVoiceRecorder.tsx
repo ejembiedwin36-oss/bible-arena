@@ -8,6 +8,7 @@ type Props = {
 export function IdomaVoiceRecorder({ onRecordingReady }: Props) {
   const recorderRef = useRef<MediaRecorder | null>(null);
   const chunksRef = useRef<Blob[]>([]);
+  const secondsRef = useRef(0);
   const [recording, setRecording] = useState(false);
   const [busy, setBusy] = useState(false);
   const [consent, setConsent] = useState(false);
@@ -17,7 +18,10 @@ export function IdomaVoiceRecorder({ onRecordingReady }: Props) {
 
   useEffect(() => {
     if (!recording) return;
-    const timer = window.setInterval(() => setSeconds((value) => value + 1), 1000);
+    const timer = window.setInterval(() => {
+      secondsRef.current += 1;
+      setSeconds(secondsRef.current);
+    }, 1000);
     return () => window.clearInterval(timer);
   }, [recording]);
 
@@ -43,6 +47,8 @@ export function IdomaVoiceRecorder({ onRecordingReady }: Props) {
       const stream = await navigator.mediaDevices.getUserMedia({ audio: true });
       const recorder = new MediaRecorder(stream);
       chunksRef.current = [];
+      secondsRef.current = 0;
+      setSeconds(0);
       recorderRef.current = recorder;
 
       recorder.ondataavailable = (event) => {
@@ -58,7 +64,7 @@ export function IdomaVoiceRecorder({ onRecordingReady }: Props) {
           await uploadVoiceSample({
             recording: recordingBlob,
             languageCode: 'id',
-            durationMs: seconds * 1000,
+            durationMs: secondsRef.current * 1000,
           });
           setMessage('Recording uploaded securely. It is ready for native-speaker review.');
         } catch (cause) {
@@ -70,7 +76,6 @@ export function IdomaVoiceRecorder({ onRecordingReady }: Props) {
       };
 
       recorder.start();
-      setSeconds(0);
       setRecording(true);
     } catch (cause) {
       setError(cause instanceof Error ? cause.message : 'Unable to access the microphone.');
