@@ -1,0 +1,21 @@
+language_code: id
+base_model: facebook/wav2vec2-xls-r-300m
+objective: ctc
+sampling_rate: 16000
+text_target: nativeTranscript
+dataset_splits:
+  training: training
+  validation: validation
+  evaluation: evaluation
+training:
+  seed: 42
+  max_steps: null
+  learning_rate: null
+  batch_size: null
+evaluation:
+  metrics:
+    - wer
+    - cer
+notes:
+  - "Tune compute-dependent hyperparameters experimentally."
+  - "Do not select checkpoints using the held-out evaluation split."
