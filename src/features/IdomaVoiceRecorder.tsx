@@ -1,5 +1,6 @@
 import { useEffect, useRef, useState } from 'react';
 import { uploadVoiceSample } from '../services/voiceUpload';
+import { createVoiceEvaluationSample } from '../services/voiceEvaluation';
 
 type Props = {
   onRecordingReady?: (recording: Blob) => void;
@@ -34,7 +35,6 @@ export function IdomaVoiceRecorder({ onRecordingReady }: Props) {
       setError('Speaker consent is required before recording.');
       return;
     }
-
     if (!navigator.mediaDevices?.getUserMedia || !window.MediaRecorder) {
       setError('This browser does not support microphone recording.');
       return;
@@ -61,14 +61,19 @@ export function IdomaVoiceRecorder({ onRecordingReady }: Props) {
 
         try {
           setBusy(true);
-          await uploadVoiceSample({
+          const upload = await uploadVoiceSample({
             recording: recordingBlob,
             languageCode: 'id',
             durationMs: secondsRef.current * 1000,
           });
-          setMessage('Recording uploaded securely. It is ready for native-speaker review.');
+          await createVoiceEvaluationSample({
+            voiceAudioUploadId: upload.id,
+            languageCode: 'id',
+            datasetSplit: 'evaluation',
+          });
+          setMessage('Recording uploaded securely and added as an unverified Idoma evaluation sample.');
         } catch (cause) {
-          setError(cause instanceof Error ? cause.message : 'Unable to upload the recording.');
+          setError(cause instanceof Error ? cause.message : 'Unable to save the recording sample.');
         } finally {
           setBusy(false);
           stream.getTracks().forEach((track) => track.stop());
