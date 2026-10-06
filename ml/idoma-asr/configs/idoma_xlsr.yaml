@@ -10,12 +10,23 @@ dataset_splits:
 training:
   seed: 42
   max_steps: null
-  learning_rate: null
-  batch_size: null
+  learning_rate: 1.0e-4
+  batch_size: 2
+  eval_batch_size: 2
+  gradient_accumulation_steps: 8
+  num_train_epochs: 10
+  weight_decay: 0.0
+  logging_steps: 25
+  evaluation_strategy: epoch
+  save_strategy: epoch
+  save_total_limit: 2
+  fp16: true
+  gradient_checkpointing: false
 evaluation:
   metrics:
     - wer
     - cer
 notes:
+  - "Initial hyperparameters preserve the previously implemented training defaults."
   - "Tune compute-dependent hyperparameters experimentally."
   - "Do not select checkpoints using the held-out evaluation split."
