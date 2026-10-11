@@ -5,6 +5,7 @@ export type VoiceReviewQueueItem = {
   languageCode: string;
   nativeTranscript: string | null;
   intendedMeaning: string | null;
+  intentType: string;
   verificationStatus: string;
   datasetSplit: string | null;
   createdAt: string;
@@ -13,6 +14,12 @@ export type VoiceReviewQueueItem = {
   durationMs: number | null;
   audioUrl: string | null;
 };
+
+function readIntentType(intent: unknown): string {
+  if (!intent || typeof intent !== 'object' || Array.isArray(intent)) return 'unknown';
+  const value = (intent as { type?: unknown }).type;
+  return typeof value === 'string' && value.trim() ? value : 'unknown';
+}
 
 export async function loadVoiceReviewQueue(
   languageCode?: string,
@@ -25,6 +32,7 @@ export async function loadVoiceReviewQueue(
       language_code,
       native_transcript,
       intended_meaning,
+      intent,
       verification_status,
       dataset_split,
       created_at,
@@ -55,6 +63,7 @@ export async function loadVoiceReviewQueue(
         languageCode: item.language_code,
         nativeTranscript: item.native_transcript,
         intendedMeaning: item.intended_meaning,
+        intentType: readIntentType(item.intent),
         verificationStatus: item.verification_status,
         datasetSplit: item.dataset_split,
         createdAt: item.created_at,
