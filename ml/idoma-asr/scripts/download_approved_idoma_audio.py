@@ -177,13 +177,15 @@ def main() -> int:
 
     output_dir = args.output.resolve()
     audio_dir = output_dir / "audio"
-    audio_dir.mkdir(parents=True, exist_ok=True)
-    manifest_rows: list[dict] = []
-    counts = {split: 0 for split in sorted(SPLITS)}
+    manifest_path = output_dir / "eligible_samples.jsonl"
+    if manifest_path.exists():
+        raise ExportError("eligible_samples.jsonl already exists; choose a fresh output directory.")
 
+    # Validate every storage reference and local destination before writing any audio.
+    planned: list[dict] = []
     for sample in approved:
         upload = uploads.get(sample["_upload_id"])
-        if not upload:
+        if not upload or upload.get("language_code") != LANGUAGE:
             raise ExportError(f"Sample {sample['_sample_id']} has no matching Idoma audio upload.")
         storage_path = str(upload.get("storage_path") or "").lstrip("/")
         if not storage_path or any(part in {"", ".", ".."} for part in storage_path.split("/")):
@@ -193,34 +195,41 @@ def main() -> int:
         local_path = audio_dir / local_name
         if local_path.exists():
             raise ExportError(f"Output file already exists; choose a fresh output directory: {local_name}")
-
         encoded_path = urllib.parse.quote(storage_path, safe="/")
-        object_url = f"{base_url}/storage/v1/object/{BUCKET}/{encoded_path}"
-        audio_headers = {
-            "apikey": service_key,
-            "Authorization": f"Bearer {service_key}",
-            "Accept": "*/*",
-        }
-        audio_data = request_bytes(object_url, audio_headers)
+        planned.append({
+            "sample": sample,
+            "local_name": local_name,
+            "local_path": local_path,
+            "object_url": f"{base_url}/storage/v1/object/{BUCKET}/{encoded_path}",
+        })
+
+    audio_dir.mkdir(parents=True, exist_ok=True)
+    manifest_rows: list[dict] = []
+    counts = {split: 0 for split in sorted(SPLITS)}
+    audio_headers = {
+        "apikey": service_key,
+        "Authorization": f"Bearer {service_key}",
+        "Accept": "*/*",
+    }
+    for item in planned:
+        sample = item["sample"]
+        audio_data = request_bytes(item["object_url"], audio_headers)
         if not audio_data:
             raise ExportError(f"Audio object for sample {sample['_sample_id']} is empty.")
+        local_path = item["local_path"]
         temp_path = local_path.with_suffix(local_path.suffix + ".part")
         temp_path.write_bytes(audio_data)
         temp_path.replace(local_path)
 
         manifest_rows.append({
             "id": sample["_sample_id"],
-            "storage_path": f"audio/{local_name}",
+            "storage_path": f"audio/{item['local_name']}",
             "language_code": LANGUAGE,
             "native_transcript": sample["_transcript"],
             "dataset_split": sample["dataset_split"],
             "asr_eligible": True,
         })
         counts[sample["dataset_split"]] += 1
-
-    manifest_path = output_dir / "eligible_samples.jsonl"
-    if manifest_path.exists():
-        raise ExportError("eligible_samples.jsonl already exists; choose a fresh output directory.")
     temporary_manifest = manifest_path.with_suffix(".jsonl.part")
     with temporary_manifest.open("w", encoding="utf-8", newline="\n") as handle:
         for row in manifest_rows:
