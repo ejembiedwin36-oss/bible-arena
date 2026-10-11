@@ -6,12 +6,14 @@ type Props = {
   role: 'reviewer' | 'validator';
   initialTranscript?: string;
   initialMeaning?: string;
+  initialIntentType?: string;
+  onCompleted?: (sampleId: string, status: ReviewStatus) => void;
 };
 
-export function VoiceReviewForm({ sampleId, role, initialTranscript = '', initialMeaning = '' }: Props) {
+export function VoiceReviewForm({ sampleId, role, initialTranscript = '', initialMeaning = '', initialIntentType = 'unknown', onCompleted }: Props) {
   const [transcript, setTranscript] = useState(initialTranscript);
   const [meaning, setMeaning] = useState(initialMeaning);
-  const [intentType, setIntentType] = useState('unknown');
+  const [intentType, setIntentType] = useState(initialIntentType);
   const [notes, setNotes] = useState('');
   const [busy, setBusy] = useState(false);
   const [message, setMessage] = useState<string | null>(null);
@@ -20,11 +22,11 @@ export function VoiceReviewForm({ sampleId, role, initialTranscript = '', initia
   useEffect(() => {
     setTranscript(initialTranscript);
     setMeaning(initialMeaning);
-    setIntentType('unknown');
+    setIntentType(initialIntentType);
     setNotes('');
     setMessage(null);
     setError(null);
-  }, [sampleId, initialTranscript, initialMeaning]);
+  }, [sampleId, initialTranscript, initialMeaning, initialIntentType]);
 
   async function submit(status: ReviewStatus) {
     if (!transcript.trim() || !meaning.trim()) {
@@ -41,6 +43,7 @@ export function VoiceReviewForm({ sampleId, role, initialTranscript = '', initia
       setMessage(null);
       await reviewVoiceEvaluationSample({ sampleId, nativeTranscript: transcript, intendedMeaning: meaning, intent: { type: intentType }, status, reviewerNotes: notes });
       setMessage(`Sample marked ${status.replace('_', ' ')}.`);
+      onCompleted?.(sampleId, status);
     } catch (cause) {
       setError(cause instanceof Error ? cause.message : 'Unable to save review.');
     } finally {
@@ -53,7 +56,6 @@ export function VoiceReviewForm({ sampleId, role, initialTranscript = '', initia
       <span className="eyebrow">{role === 'validator' ? 'LANGUAGE VALIDATION' : 'LANGUAGE REVIEW'}</span>
       <h2 id="voice-review-title">{role === 'validator' ? 'Validate native speech' : 'Review native speech'}</h2>
       <p>Listen to the complete recording first. The native transcript must contain the words actually spoken; intended meaning is recorded separately.</p>
-
       <label>Native transcript<textarea value={transcript} onChange={(event) => setTranscript(event.target.value)} /></label>
       <label>Intended meaning<textarea value={meaning} onChange={(event) => setMeaning(event.target.value)} /></label>
       <label>Bible intent
@@ -62,7 +64,6 @@ export function VoiceReviewForm({ sampleId, role, initialTranscript = '', initia
         </select>
       </label>
       <label>{role === 'validator' ? 'Validator notes' : 'Reviewer notes'}<textarea value={notes} onChange={(event) => setNotes(event.target.value)} /></label>
-
       <div className="voice-review-actions">
         {role === 'reviewer' && <button disabled={busy} type="button" onClick={() => submit('native_reviewed')}>Complete native review</button>}
         {role === 'validator' && <button disabled={busy} type="button" onClick={() => submit('validated')}>Validate sample</button>}
