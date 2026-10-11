@@ -23,3 +23,12 @@ export async function createVoiceContribution(input: {
   if (error) throw error;
   return data;
 }
+
+export async function withdrawVoiceConsent(languageCode: string): Promise<number> {
+  const { data, error } = await supabase.rpc('withdraw_voice_consent', {
+    p_language_code: languageCode,
+  });
+
+  if (error) throw error;
+  return typeof data === 'number' ? data : 0;
+}
