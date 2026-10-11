@@ -48,7 +48,7 @@ export function VoiceReviewQueue({ languageCode, role = 'reviewer' }: Props) {
           </div>
         )}
       </div>
-      {selected && <div className="card"><h3>Listen to sample</h3>{selected.audioUrl ? <audio controls preload="metadata" src={selected.audioUrl} /> : <div className="notice error">Audio preview could not be generated.</div>}<VoiceReviewForm sampleId={selected.id} /></div>}
+      {selected && <div className="card"><h3>Listen to sample</h3>{selected.audioUrl ? <audio controls preload="metadata" src={selected.audioUrl} /> : <div className="notice error">Audio preview could not be generated.</div>}<VoiceReviewForm sampleId={selected.id} role={role} initialTranscript={selected.nativeTranscript ?? ''} initialMeaning={selected.intendedMeaning ?? ''} /></div>}
     </section>
   );
 }
