@@ -1,0 +1,4 @@
+# Meta Omnilingual ASR fallback used to benchmark Idoma speech.
+# Python 3.10-3.13 is supported by the upstream package.
+omnilingual-asr
+jiwer
