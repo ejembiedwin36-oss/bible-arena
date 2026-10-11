@@ -1,10 +1,12 @@
 """Build a Hugging Face audio dataset from an approved Idoma ASR manifest.
 
 The manifest must contain the fields produced by export_asr_manifests.py:
-id, audio, nativeTranscript, language_code.
+id, speaker_id, audio, nativeTranscript, language_code.
 
 Audio paths must resolve to local files before this step. This script does not
-download from Supabase and never invents audio or transcripts.
+download from Supabase and never invents audio or transcripts. The opaque
+speaker_id is preserved as audit metadata so speaker separation can still be
+checked after the JSONL manifest has been converted into a Dataset.
 """
 
 from __future__ import annotations
@@ -12,6 +14,7 @@ from __future__ import annotations
 import argparse
 import json
 from pathlib import Path
+from uuid import UUID
 
 
 def resolve_audio(audio_value: str, audio_root: Path | None) -> Path:
@@ -40,6 +43,7 @@ def main() -> int:
 
     records = []
     seen_ids: set[str] = set()
+    speaker_ids: set[str] = set()
 
     with args.manifest.open("r", encoding="utf-8") as handle:
         for line_number, line in enumerate(handle, start=1):
@@ -47,7 +51,7 @@ def main() -> int:
                 continue
 
             row = json.loads(line)
-            required = {"id", "audio", "nativeTranscript", "language_code"}
+            required = {"id", "speaker_id", "audio", "nativeTranscript", "language_code"}
             missing = required.difference(row)
             if missing:
                 raise SystemExit(
@@ -60,12 +64,23 @@ def main() -> int:
                     f"Line {line_number} is not Idoma: {row['language_code']!r}"
                 )
 
-            sample_id = str(row["id"])
+            sample_id = str(row["id"]).strip()
+            if not sample_id:
+                raise SystemExit(f"Line {line_number} has an empty sample id.")
             if sample_id in seen_ids:
                 raise SystemExit(
                     f"Duplicate sample id at line {line_number}: {sample_id}"
                 )
             seen_ids.add(sample_id)
+
+            speaker_id = str(row["speaker_id"]).strip()
+            try:
+                UUID(speaker_id)
+            except (ValueError, AttributeError) as exc:
+                raise SystemExit(
+                    f"Line {line_number} has invalid speaker_id: {row['speaker_id']!r}"
+                ) from exc
+            speaker_ids.add(speaker_id)
 
             transcript = str(row["nativeTranscript"]).strip()
             if not transcript:
@@ -82,6 +97,7 @@ def main() -> int:
             records.append(
                 {
                     "sample_id": sample_id,
+                    "speaker_id": speaker_id,
                     "audio": str(audio_path.resolve()),
                     "text": transcript,
                     "language_code": "id",
@@ -97,7 +113,9 @@ def main() -> int:
     args.output.parent.mkdir(parents=True, exist_ok=True)
     dataset.save_to_disk(str(args.output))
 
-    print(f"Built {len(dataset)} records at {args.output}")
+    print(
+        f"Built {len(dataset)} records from {len(speaker_ids)} speakers at {args.output}"
+    )
     return 0
 
 
