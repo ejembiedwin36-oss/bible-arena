@@ -1,4 +1,5 @@
 import { useEffect, useMemo, useState } from 'react';
+import { IdomaVoiceInput } from './IdomaVoiceInput';
 import type { BibleChapter } from '../services/bibleReader';
 import { listBibleBooks, listBibleLanguages, listBibleVersions, type BibleBook, type BibleLanguage, type BibleVersion } from '../services/bibleCatalogue';
 import { loadBibleChapter } from '../services/bibleReader';
@@ -62,6 +63,7 @@ export function BibleReaderPanel({ initialLanguageId }: BibleReaderPanelProps) {
   const selectedLanguage = useMemo(() => languages.find((language) => language.id === languageId), [languages, languageId]);
   const selectedVersion = useMemo(() => versions.find((version) => version.id === versionId), [versions, versionId]);
   const selectedBook = useMemo(() => books.find((book) => book.id === bookId), [books, bookId]);
+  const isIdoma = selectedLanguage?.code?.toLowerCase() === 'id' || selectedLanguage?.code?.toLowerCase() === 'idu';
   const canGoPrevious = chapterNumber > 1 && !loading;
   const canGoNext = Boolean(selectedBook && chapterNumber < selectedBook.chapterCount && !loading);
 
@@ -81,6 +83,8 @@ export function BibleReaderPanel({ initialLanguageId }: BibleReaderPanelProps) {
         <label>Version<select value={versionId} onChange={(event) => { setVersionId(event.target.value); setChapterNumber(1); }}>{versions.map((version) => <option key={version.id} value={version.id}>{version.name}</option>)}</select></label>
         <label>Book<select value={bookId} onChange={(event) => { setBookId(event.target.value); setChapterNumber(1); }}>{books.map((book) => <option key={book.id} value={book.id}>{book.bookOrder}. {book.name}</option>)}</select></label>
       </div>
+
+      {isIdoma && <IdomaVoiceInput />}
 
       {error && <p role="alert" className="reader-error">{error}</p>}
       {loading && <p aria-live="polite">Loading chapter…</p>}
