@@ -1,0 +1,22 @@
+{
+  "language": {
+    "name": "Idoma",
+    "iso_639_3": "idu",
+    "app_language_code": "id"
+  },
+  "asr": {
+    "provider": "huggingface",
+    "model_id": "mrheartng/wav2vec2-xls-r-1b-finetuned-idoma",
+    "architecture": "wav2vec2-ctc",
+    "sample_rate_hz": 16000,
+    "access": "gated",
+    "status": "pending_owner_approval"
+  },
+  "security": {
+    "token_environment_variable": "HF_TOKEN",
+    "commit_tokens": false
+  },
+  "fallback": {
+    "use_bible_arena_training_pipeline": true
+  }
+}
