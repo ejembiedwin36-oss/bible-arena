@@ -1,14 +1,16 @@
 """Bible Arena Idoma ASR inference service.
 
-This service keeps Hugging Face credentials and model weights on the server.
-The web application sends audio here and receives only a transcript.
+Keeps Hugging Face credentials and model weights on the server. Browser audio
+is decoded and normalized to mono 16 kHz before inference.
 """
 
 from __future__ import annotations
 
-import io
 import os
+import subprocess
+import tempfile
 from functools import lru_cache
+from pathlib import Path
 
 import soundfile as sf
 import torch
@@ -23,7 +25,7 @@ LANGUAGE_CODE = "idu"
 TARGET_SAMPLE_RATE = 16_000
 MAX_AUDIO_BYTES = 15 * 1024 * 1024
 
-app = FastAPI(title="Bible Arena Idoma ASR", version="0.1.0")
+app = FastAPI(title="Bible Arena Idoma ASR", version="0.2.0")
 
 
 @lru_cache(maxsize=1)
@@ -34,6 +36,46 @@ def load_model():
     model = AutoModelForCTC.from_pretrained(MODEL_ID, token=token)
     model.eval()
     return processor, model
+
+
+def normalize_audio(raw: bytes) -> tuple[object, int]:
+    """Decode common browser audio formats and produce mono 16 kHz samples."""
+    with tempfile.TemporaryDirectory(prefix="bible-arena-asr-") as temp_dir:
+        source = Path(temp_dir) / "input-audio"
+        normalized = Path(temp_dir) / "normalized.wav"
+        source.write_bytes(raw)
+
+        try:
+            subprocess.run(
+                [
+                    "ffmpeg",
+                    "-nostdin",
+                    "-loglevel",
+                    "error",
+                    "-y",
+                    "-i",
+                    str(source),
+                    "-ac",
+                    "1",
+                    "-ar",
+                    str(TARGET_SAMPLE_RATE),
+                    "-f",
+                    "wav",
+                    str(normalized),
+                ],
+                check=True,
+                timeout=30,
+                stdout=subprocess.DEVNULL,
+                stderr=subprocess.PIPE,
+            )
+        except (FileNotFoundError, subprocess.CalledProcessError, subprocess.TimeoutExpired) as exc:
+            raise ValueError("Unsupported or invalid audio file.") from exc
+
+        samples, sample_rate = sf.read(normalized, dtype="float32")
+
+    if samples.size == 0:
+        raise ValueError("Audio file contains no samples.")
+    return samples, sample_rate
 
 
 @app.get("/health")
@@ -54,30 +96,19 @@ async def transcribe(audio: UploadFile = File(...)) -> dict[str, str]:
         raise HTTPException(status_code=413, detail="Audio file is too large.")
 
     try:
-        samples, sample_rate = sf.read(io.BytesIO(raw), dtype="float32", always_2d=True)
-    except Exception as exc:
-        raise HTTPException(status_code=400, detail="Unsupported or invalid audio file.") from exc
-
-    if samples.size == 0:
-        raise HTTPException(status_code=400, detail="Audio file contains no samples.")
-    if sample_rate != TARGET_SAMPLE_RATE:
-        raise HTTPException(
-            status_code=400,
-            detail=f"Audio must be {TARGET_SAMPLE_RATE} Hz; received {sample_rate} Hz.",
-        )
-
-    mono = samples.mean(axis=1)
+        samples, sample_rate = normalize_audio(raw)
+    except ValueError as exc:
+        raise HTTPException(status_code=400, detail=str(exc)) from exc
 
     try:
         processor, model = load_model()
     except Exception as exc:
-        # Do not expose Hugging Face credentials or internal error details.
         raise HTTPException(
             status_code=503,
             detail="Idoma speech model is not available yet.",
         ) from exc
 
-    inputs = processor(mono, sampling_rate=sample_rate, return_tensors="pt")
+    inputs = processor(samples, sampling_rate=sample_rate, return_tensors="pt")
     with torch.inference_mode():
         logits = model(**inputs).logits
 
