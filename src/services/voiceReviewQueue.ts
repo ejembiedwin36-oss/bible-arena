@@ -6,7 +6,7 @@ export type VoiceReviewQueueItem = {
   nativeTranscript: string | null;
   intendedMeaning: string | null;
   verificationStatus: string;
-  datasetSplit: string;
+  datasetSplit: string | null;
   createdAt: string;
   storagePath: string;
   mimeType: string;
@@ -14,7 +14,10 @@ export type VoiceReviewQueueItem = {
   audioUrl: string | null;
 };
 
-export async function loadVoiceReviewQueue(languageCode?: string) {
+export async function loadVoiceReviewQueue(
+  languageCode?: string,
+  role: 'reviewer' | 'validator' = 'reviewer',
+) {
   let query = supabase
     .from('voice_language_evaluation_samples')
     .select(`
@@ -27,7 +30,7 @@ export async function loadVoiceReviewQueue(languageCode?: string) {
       created_at,
       voice_audio_uploads!inner(storage_path, mime_type, duration_ms)
     `)
-    .in('verification_status', ['unverified', 'native_reviewed'])
+    .eq('verification_status', role === 'validator' ? 'native_reviewed' : 'unverified')
     .order('created_at', { ascending: true });
 
   if (languageCode) query = query.eq('language_code', languageCode);
@@ -35,15 +38,17 @@ export async function loadVoiceReviewQueue(languageCode?: string) {
   const { data, error } = await query;
   if (error) throw error;
 
-  const items = await Promise.all(
+  return Promise.all(
     (data ?? []).map(async (item: any) => {
       const upload = Array.isArray(item.voice_audio_uploads)
         ? item.voice_audio_uploads[0]
         : item.voice_audio_uploads;
 
-      const { data: signed } = await supabase.storage
+      const { data: signed, error: signedUrlError } = await supabase.storage
         .from('voice-audio')
         .createSignedUrl(upload.storage_path, 300);
+
+      if (signedUrlError) throw signedUrlError;
 
       return {
         id: item.id,
@@ -60,6 +65,4 @@ export async function loadVoiceReviewQueue(languageCode?: string) {
       } satisfies VoiceReviewQueueItem;
     }),
   );
-
-  return items;
 }
