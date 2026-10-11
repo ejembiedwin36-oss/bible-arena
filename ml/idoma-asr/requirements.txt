@@ -6,3 +6,4 @@ soundfile
 pyyaml
 jiwer
 accelerate
+huggingface_hub
