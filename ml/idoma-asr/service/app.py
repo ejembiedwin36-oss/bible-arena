@@ -1,7 +1,9 @@
 """Bible Arena Idoma ASR inference service.
 
-Keeps Hugging Face credentials and model weights on the server. Browser audio
-is decoded and normalized to mono 16 kHz before inference.
+Uses Meta OmniASR as the default open-source speech-recognition provider.
+Browser audio is decoded and normalized to mono 16 kHz before inference.
+The previously discovered gated Idoma-specific model can still be benchmarked
+separately if access is approved later.
 """
 
 from __future__ import annotations
@@ -13,29 +15,22 @@ from functools import lru_cache
 from pathlib import Path
 
 import soundfile as sf
-import torch
 from fastapi import FastAPI, File, HTTPException, UploadFile
-from transformers import AutoModelForCTC, AutoProcessor
+from omnilingual_asr.models.inference.pipeline import ASRInferencePipeline
 
-MODEL_ID = os.getenv(
-    "IDOMA_ASR_MODEL_ID",
-    "mrheartng/wav2vec2-xls-r-1b-finetuned-idoma",
-)
+MODEL_ID = os.getenv("IDOMA_ASR_MODEL_ID", "omniASR_CTC_300M_v2")
 LANGUAGE_CODE = "idu"
 TARGET_SAMPLE_RATE = 16_000
 MAX_AUDIO_BYTES = 15 * 1024 * 1024
+MAX_AUDIO_SECONDS = 30
 
-app = FastAPI(title="Bible Arena Idoma ASR", version="0.2.0")
+app = FastAPI(title="Bible Arena Idoma ASR", version="0.3.0")
 
 
 @lru_cache(maxsize=1)
-def load_model():
-    """Load the gated model once and reuse it across requests."""
-    token = os.getenv("HF_TOKEN") or None
-    processor = AutoProcessor.from_pretrained(MODEL_ID, token=token)
-    model = AutoModelForCTC.from_pretrained(MODEL_ID, token=token)
-    model.eval()
-    return processor, model
+def load_model() -> ASRInferencePipeline:
+    """Load OmniASR once and reuse it across requests."""
+    return ASRInferencePipeline(model_card=MODEL_ID)
 
 
 def normalize_audio(raw: bytes) -> tuple[object, int]:
@@ -59,6 +54,8 @@ def normalize_audio(raw: bytes) -> tuple[object, int]:
                     "1",
                     "-ar",
                     str(TARGET_SAMPLE_RATE),
+                    "-t",
+                    str(MAX_AUDIO_SECONDS + 1),
                     "-f",
                     "wav",
                     str(normalized),
@@ -75,6 +72,8 @@ def normalize_audio(raw: bytes) -> tuple[object, int]:
 
     if samples.size == 0:
         raise ValueError("Audio file contains no samples.")
+    if len(samples) > TARGET_SAMPLE_RATE * MAX_AUDIO_SECONDS:
+        raise OverflowError(f"Audio must be {MAX_AUDIO_SECONDS} seconds or shorter.")
     return samples, sample_rate
 
 
@@ -97,23 +96,22 @@ async def transcribe(audio: UploadFile = File(...)) -> dict[str, str]:
 
     try:
         samples, sample_rate = normalize_audio(raw)
+    except OverflowError as exc:
+        raise HTTPException(status_code=413, detail=str(exc)) from exc
     except ValueError as exc:
         raise HTTPException(status_code=400, detail=str(exc)) from exc
 
     try:
-        processor, model = load_model()
+        pipeline = load_model()
+        audio_input = {"waveform": samples, "sample_rate": sample_rate}
+        results = pipeline.transcribe([audio_input], batch_size=1)
     except Exception as exc:
         raise HTTPException(
             status_code=503,
-            detail="Idoma speech model is not available yet.",
+            detail="Idoma speech recognition is temporarily unavailable.",
         ) from exc
 
-    inputs = processor(samples, sampling_rate=sample_rate, return_tensors="pt")
-    with torch.inference_mode():
-        logits = model(**inputs).logits
-
-    predicted_ids = torch.argmax(logits, dim=-1)
-    transcript = processor.batch_decode(predicted_ids)[0].strip()
+    transcript = str(results[0]).strip() if results else ""
     if not transcript:
         raise HTTPException(status_code=422, detail="No speech transcript was produced.")
 
