@@ -1,7 +1,5 @@
 fastapi
 uvicorn[standard]
 python-multipart
-torch
-transformers
 soundfile
-huggingface_hub
+omnilingual-asr
