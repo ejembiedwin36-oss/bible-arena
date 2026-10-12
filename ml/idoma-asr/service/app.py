@@ -24,7 +24,7 @@ TARGET_SAMPLE_RATE = 16_000
 MAX_AUDIO_BYTES = 15 * 1024 * 1024
 MAX_AUDIO_SECONDS = 30
 
-app = FastAPI(title="Bible Arena Idoma ASR", version="0.3.0")
+app = FastAPI(title="Bible Arena Idoma ASR", version="0.3.1")
 
 
 @lru_cache(maxsize=1)
@@ -77,6 +77,20 @@ def normalize_audio(raw: bytes) -> tuple[object, int]:
     return samples, sample_rate
 
 
+def transcribe_samples(samples: object, sample_rate: int) -> str:
+    """Write normalized samples to a temporary WAV and run OmniASR on its path.
+
+    OmniASR's public inference pipeline accepts audio file paths. Keeping this
+    boundary explicit avoids depending on undocumented in-memory input shapes.
+    """
+    with tempfile.TemporaryDirectory(prefix="bible-arena-omniasr-") as temp_dir:
+        audio_path = Path(temp_dir) / "idoma.wav"
+        sf.write(audio_path, samples, sample_rate, format="WAV")
+        results = load_model().transcribe([str(audio_path)], batch_size=1)
+
+    return str(results[0]).strip() if results else ""
+
+
 @app.get("/health")
 def health() -> dict[str, str]:
     return {
@@ -102,16 +116,13 @@ async def transcribe(audio: UploadFile = File(...)) -> dict[str, str]:
         raise HTTPException(status_code=400, detail=str(exc)) from exc
 
     try:
-        pipeline = load_model()
-        audio_input = {"waveform": samples, "sample_rate": sample_rate}
-        results = pipeline.transcribe([audio_input], batch_size=1)
+        transcript = transcribe_samples(samples, sample_rate)
     except Exception as exc:
         raise HTTPException(
             status_code=503,
             detail="Idoma speech recognition is temporarily unavailable.",
         ) from exc
 
-    transcript = str(results[0]).strip() if results else ""
     if not transcript:
         raise HTTPException(status_code=422, detail="No speech transcript was produced.")
 
