@@ -5,7 +5,9 @@ import {
   prefetchBibleChapter,
 } from './bibleChapterPrefetch';
 
-const loadBibleChapterMock = vi.fn();
+const { loadBibleChapterMock } = vi.hoisted(() => ({
+  loadBibleChapterMock: vi.fn(),
+}));
 
 vi.mock('./bibleReader', () => ({
   loadBibleChapter: loadBibleChapterMock,
