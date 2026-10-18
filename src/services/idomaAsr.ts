@@ -8,11 +8,9 @@ const DEFAULT_ENDPOINT = '/api/voice/idoma/transcribe';
 const MAX_AUDIO_BYTES = 15 * 1024 * 1024;
 
 /**
- * Sends recorded Idoma audio to Bible Arena's own ASR backend.
- *
- * Private cloud/model credentials must never be placed in browser code.
- * The backend owns external-service authentication and returns only the
- * transcription result needed by the frontend.
+ * Sends recorded Idoma audio to Bible Arena's own server-side ASR proxy.
+ * Cloud credentials must never be placed in browser code. The server owns
+ * Runpod authentication and returns only the transcription result.
  */
 export async function transcribeIdomaAudio(
   audio: Blob,
@@ -26,21 +24,22 @@ export async function transcribeIdomaAudio(
     throw new Error('The audio recording is too large. Please record a shorter clip.');
   }
 
-  const formData = new FormData();
-  formData.append('audio', audio, 'idoma-recording.webm');
-  formData.append('languageCode', 'idu');
-
   const response = await fetch(endpoint, {
     method: 'POST',
-    body: formData,
+    headers: {
+      'Content-Type': audio.type || 'audio/webm',
+    },
+    body: audio,
   });
 
-  const payload = await response.json().catch(() => null) as Partial<IdomaAsrResult> | null;
+  const payload = await response.json().catch(() => null) as
+    | (Partial<IdomaAsrResult> & { error?: string })
+    | null;
 
   if (!response.ok) {
-    const message = response.status === 503
-      ? 'Idoma speech recognition is not available yet.'
-      : `Idoma speech recognition failed with status ${response.status}.`;
+    const message = payload?.error || (response.status === 503
+      ? 'Idoma speech recognition is not configured yet.'
+      : `Idoma speech recognition failed with status ${response.status}.`);
     throw new Error(message);
   }
 
