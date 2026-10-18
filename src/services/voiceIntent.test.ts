@@ -26,6 +26,6 @@ describe('voiceIntent', () => {
 
   it('does not pretend unsupported language understanding is complete', () => {
     const result = parseVoiceIntent('open Matthew chapter 5', { languageCode: 'id' });
-    expect(result.type).toBe('open_book_chapter');
+    expect(result.type).toBe('unknown');
   });
 });
