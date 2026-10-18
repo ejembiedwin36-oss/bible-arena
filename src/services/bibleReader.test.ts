@@ -1,4 +1,4 @@
-import { describe, expect, it, vi, beforeEach } from 'vitest';
+import { beforeEach, describe, expect, it, vi } from 'vitest';
 import { clearBibleChapterCache, getCachedBibleChapter, loadBibleChapter } from './bibleReader';
 
 const { fromMock } = vi.hoisted(() => ({
@@ -9,6 +9,21 @@ vi.mock('../lib/supabase', () => ({
   supabase: { from: fromMock },
 }));
 
+function verseRow(verseNumber: number, verseText: string) {
+  return {
+    verse_id: `verse-${verseNumber}`,
+    verse_text: verseText,
+    bible_verses: {
+      verse_number: verseNumber,
+      chapter_id: 'chapter-genesis-1',
+      bible_chapters: {
+        chapter_number: 1,
+        book_id: 'genesis',
+      },
+    },
+  };
+}
+
 describe('bibleReader', () => {
   beforeEach(() => {
     clearBibleChapterCache();
@@ -17,8 +32,8 @@ describe('bibleReader', () => {
 
   it('loads and caches a chapter', async () => {
     const rows = [
-      { verse_number: 1, text: 'In the beginning.' },
-      { verse_number: 2, text: 'The earth was formless.' },
+      verseRow(1, 'In the beginning.'),
+      verseRow(2, 'The earth was formless.'),
     ];
 
     const query = {
@@ -54,7 +69,7 @@ describe('bibleReader', () => {
     const first = loadBibleChapter('idoma-v1', 'genesis', 1);
     const second = loadBibleChapter('idoma-v1', 'genesis', 1);
 
-    resolveQuery({ data: [{ verse_number: 1, text: 'In the beginning.' }], error: null });
+    resolveQuery({ data: [verseRow(1, 'In the beginning.')], error: null });
 
     await expect(Promise.all([first, second])).resolves.toHaveLength(2);
     expect(fromMock).toHaveBeenCalledTimes(1);
