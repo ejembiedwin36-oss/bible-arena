@@ -44,12 +44,13 @@ export async function runVoiceTurn(
   languageCode: string,
   handleIntent: VoiceActionHandler,
 ): Promise<VoiceSessionState> {
-  const recognition = requireProvider(providers.recognition, 'speech recognition');
-  const understanding = requireProvider(providers.understanding, 'voice understanding');
-
   let state = createVoiceSessionState(languageCode);
+  let recognition: SpeechRecognitionProvider | undefined;
 
   try {
+    recognition = requireProvider(providers.recognition, 'speech recognition');
+    const understanding = requireProvider(providers.understanding, 'voice understanding');
+
     state = { ...state, stage: 'listening' };
     const recognitionResult = await recognition.start(languageCode);
     state = { ...state, transcript: recognitionResult.transcript, stage: 'understanding' };
@@ -75,7 +76,7 @@ export async function runVoiceTurn(
       error: cause instanceof Error ? cause : new Error('Voice turn failed.'),
     };
   } finally {
-    await recognition.stop().catch(() => undefined);
+    await recognition?.stop().catch(() => undefined);
   }
 }
 
