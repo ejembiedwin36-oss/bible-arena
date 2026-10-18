@@ -38,9 +38,11 @@ The requirement is not merely to display the word "Idoma" in a language menu. A 
 
 Text and voice should remain together in the Bible Arena experience rather than treating voice as an unrelated side project.
 
-## 6. Written Idoma Bible Status
+## 6. Written Bible Status
 
-Idoma is represented in the application's language catalogue/database work, but that does **not** mean the complete Idoma Bible text is loaded.
+**English KJV is currently the actual Scripture translation loaded in Bible Arena.** Several languages are represented in the application's language catalogue, but a language entry is not the same thing as an imported Bible translation.
+
+Idoma is represented in the catalogue/database work, but the complete Idoma Bible text is **not** loaded.
 
 The target written translation discovered during research is **Ubáyíbu kú Idɔma / Idoma Common Language Bible (IFBCL)**. The project has deliberately avoided scraping copyrighted Bible text. A YouVersion Platform application route was investigated, but its application required commitments around non-commercial/free/no-paywall/no-ad use that the project owner was not ready to accept. Therefore that route was paused rather than accepting terms without understanding their consequences.
 
@@ -94,7 +96,11 @@ Finding Scripture or biblical audio online does not grant reuse rights. Discover
 
 ### Security boundary
 
-The Runpod API key must never be placed in React/browser code. A Vercel server-side proxy was therefore added between the browser and Runpod. The browser knows only Bible Arena's `/api/voice/idoma/transcribe` route; the server will hold the Runpod credentials.
+The Runpod API key must never be placed in React/browser code. A Vercel server-side proxy was therefore added between the browser and Runpod. The browser knows only Bible Arena's `/api/voice/idoma/transcribe` route; the server holds the Runpod credentials.
+
+### Provider limits affect application design
+
+Vercel can reject an oversized request before Bible Arena's function gets a chance to process it. The browser and proxy therefore use a **4 MB audio limit**, below Vercel's request-body ceiling. This is an example of infrastructure limits becoming part of application validation rather than being treated as an afterthought.
 
 ## 11. Questions and Decisions That Shaped the Product
 
@@ -105,6 +111,8 @@ The Runpod API key must never be placed in React/browser code. A Vercel server-s
 **Should a Runpod API key be put in frontend code to make integration easier?** No. Secrets belong on the server.
 
 **Should development stop while Runpod is unreachable?** No. Work that does not require a live GPU endpoint can continue safely in GitHub.
+
+**Can mocked tests prove that OmniASR understands real Idoma speech well?** No. They can prove Bible Arena handles the provider contract correctly, but real Idoma recordings are required to measure speech-recognition quality.
 
 ## 12. File-by-File Learning Notes
 
@@ -140,22 +148,38 @@ Automated tests for ASR service behavior. These should remain aligned with the c
 
 1. accepts only POST requests;
 2. reads `IDOMA_ASR_RUNPOD_ENDPOINT_ID` and `RUNPOD_API_KEY` from server environment variables;
-3. rejects oversized or non-audio requests;
+3. rejects oversized, empty or non-audio requests;
 4. converts the recording to base64 for the Runpod worker contract;
 5. submits a queue job to Runpod;
 6. polls the job status;
 7. returns the transcript to the browser when complete;
 8. returns controlled errors for failed, cancelled or timed-out jobs.
 
+The proxy uses a **4 MB maximum request size** so browser uploads remain below the hosting request-body ceiling.
+
 **Security lesson:** the React application never receives the Runpod API key.
 
 ### `/api/voice/idoma/transcribe.test.ts`
 
-Tests basic safety behavior of the proxy, including rejecting non-POST requests and returning a controlled 503 response when Runpod has not been configured.
+Automated tests now cover more than the original configuration guard. They verify:
+
+- non-POST requests are rejected;
+- missing Runpod configuration produces a controlled error;
+- non-audio content is rejected before Runpod is contacted;
+- empty audio is rejected before Runpod is contacted;
+- audio over 4 MB is rejected before Runpod is contacted;
+- audio is submitted to the expected Runpod queue endpoint;
+- the expected Runpod job-status endpoint is polled;
+- a completed transcript is trimmed and returned as Idoma (`idu`);
+- rejected Runpod submissions return a safe application error;
+- failed Runpod jobs do not leak private provider error details;
+- a completed job with no usable transcript is rejected.
+
+These tests use a mocked provider, so they can run without GPU spending or a live Runpod endpoint.
 
 ### `/src/services/idomaAsr.ts`
 
-Browser-side service that sends the recorded audio body to Bible Arena's own `/api/voice/idoma/transcribe` endpoint. It validates the returned transcript and `idu` language code. It contains no Runpod secret.
+Browser-side service that sends the recorded audio body to Bible Arena's own `/api/voice/idoma/transcribe` endpoint. It enforces the same 4 MB boundary, validates the returned transcript and `idu` language code, and contains no Runpod secret.
 
 ### `/src/services/idomaRecorder.ts`
 
@@ -163,11 +187,19 @@ Browser microphone wrapper. It requests microphone access, selects a supported r
 
 ### `/src/components/IdomaVoiceInput.tsx`
 
-Visible Idoma microphone interface. It now shows elapsed/remaining recording time, limits recordings to 30 seconds, automatically sends the recording when the limit is reached, explains that a cold speech worker can take longer to start, and stops microphone resources when the component is left.
+Visible Idoma microphone interface. It shows elapsed/remaining recording time, limits recordings to 30 seconds, automatically sends the recording when the limit is reached, explains that a cold speech worker can take longer to start, and stops microphone resources when the component is left.
 
 ### `/src/services/bibleCatalogue.ts`
 
-Loads available languages, Bible versions/translations and Bible books from Supabase. Seeing Idoma in the catalogue does not prove that licensed Idoma verses have been loaded.
+Loads available languages, Bible versions/translations and Bible books from Supabase. Seeing Idoma in the catalogue does not prove that licensed Idoma verses have been loaded. English KJV is currently the actual loaded Scripture translation.
+
+### `/tsconfig.api.json`
+
+Strict TypeScript configuration for production server/API source. Test files are excluded from this particular Node/Vercel type-check because Vitest handles them separately.
+
+### `/.github/workflows/ci.yml`
+
+GitHub's automated quality gate. It checks Python script syntax, installs Node dependencies, type-checks the server-side API, runs the web/API tests, and builds the production application. This caught a NodeNext test-file configuration issue, which was fixed by separating production API type-checking from Vitest test compilation.
 
 ### `/vercel.json`
 
@@ -181,6 +213,7 @@ Controls Vercel routing. The SPA rewrite was changed so `/api/...` requests are 
 - Use Supabase RLS where appropriate.
 - Keep copyrighted Scripture/audio rights separate from technical capability.
 - Keep Runpod credentials only in server-side environment variables.
+- Reject bad requests before they can unnecessarily consume paid GPU resources.
 
 ## 14. Follow One User Action Through the System
 
@@ -189,7 +222,7 @@ Example: **Speak Idoma**
 1. The user presses the microphone button.
 2. `IdomaVoiceInput.tsx` controls recording status and the 30-second limit.
 3. `idomaRecorder.ts` captures microphone audio.
-4. `idomaAsr.ts` sends raw audio to Bible Arena's own API route.
+4. `idomaAsr.ts` validates the recording and sends raw audio to Bible Arena's own API route.
 5. `/api/voice/idoma/transcribe.ts` checks the request and securely authenticates to Runpod.
 6. Runpod queues the job and starts/uses an ASR worker.
 7. `handler.py` receives and decodes the audio job.
@@ -198,20 +231,28 @@ Example: **Speak Idoma**
 10. The proxy returns only the safe transcript result to the browser.
 11. Bible Arena displays/uses the recognized Idoma text.
 
-## 15. What Is Still Unfinished
+Steps 1–5 and the provider interaction contract have application/test coverage. Steps involving a real deployed Runpod worker and genuine Idoma audio still require end-to-end verification.
+
+## 15. What Has Been Verified So Far
+
+The repository's GitHub CI has successfully completed with the newer voice work. The quality checks include server-side API TypeScript checking, web/API tests, and a production Vite build. The mocked Runpod tests also pass as part of that suite.
+
+This means the application logic around the provider is in a much stronger state. It does **not** mean the real Runpod endpoint, GPU model startup, network path, or Idoma recognition accuracy has been proven.
+
+## 16. What Is Still Unfinished
 
 - Runpod GPU/serverless deployment is not yet completed.
-- `RUNPOD_API_KEY` and `IDOMA_ASR_RUNPOD_ENDPOINT_ID` cannot be configured until the real endpoint/account setup is available.
+- `RUNPOD_API_KEY` and `IDOMA_ASR_RUNPOD_ENDPOINT_ID` cannot be configured for the real deployment until the endpoint/account setup is available.
 - End-to-end production Idoma voice transcription has not yet been proven.
 - Real Idoma accuracy has not yet been benchmarked by Bible Arena with a representative test set.
 - The complete authorized Idoma Bible text is not yet loaded.
 - Jesus Film Idoma reuse/training permission has not been obtained.
 - The gated dedicated Idoma Hugging Face model is not a production dependency.
-- The new Vercel proxy still needs deployment-level verification against a real Runpod endpoint.
+- The Vercel proxy still needs deployment-level verification against a real Runpod endpoint.
 
 These are explicit milestones, not hidden failures.
 
-## 16. Documentation Rule From Now On
+## 17. Documentation Rule From Now On
 
 As Bible Arena continues, this guide should record what we were trying to accomplish, why an approach was chosen, important owner decisions, confusing points, challenges and fixes, files changed, warnings/errors, security/licensing decisions, tests actually performed, and unfinished work.
 
