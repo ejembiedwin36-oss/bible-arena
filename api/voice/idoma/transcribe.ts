@@ -1,6 +1,8 @@
 import type { VercelRequest, VercelResponse } from '@vercel/node';
 
-const MAX_AUDIO_BYTES = 15 * 1024 * 1024;
+// Vercel Functions reject request bodies above 4.5 MB before application code
+// can process them. Keep our own limit lower so clients get a predictable error.
+const MAX_AUDIO_BYTES = 4 * 1024 * 1024;
 const RUNPOD_BASE_URL = 'https://api.runpod.ai/v2';
 const POLL_INTERVAL_MS = 1000;
 const MAX_POLLS = 55;
