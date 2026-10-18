@@ -38,7 +38,7 @@ describe('voiceInferenceGateway', () => {
       const gateway = new HttpVoiceInferenceGateway('/api/voice/inference');
       await expect(
         gateway.infer({ operation: 'synthesize', languageCode: 'id', text: 'hello' }),
-      ).rejects.toThrow('status 502');
+      ).rejects.toThrow('HTTP 502');
     } finally {
       globalThis.fetch = originalFetch;
     }
