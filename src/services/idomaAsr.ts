@@ -10,8 +10,9 @@ const MAX_AUDIO_BYTES = 15 * 1024 * 1024;
 /**
  * Sends recorded Idoma audio to Bible Arena's own ASR backend.
  *
- * Hugging Face credentials must never be placed in browser code. The backend
- * owns model authentication and returns only the transcription result.
+ * Private cloud/model credentials must never be placed in browser code.
+ * The backend owns external-service authentication and returns only the
+ * transcription result needed by the frontend.
  */
 export async function transcribeIdomaAudio(
   audio: Blob,
