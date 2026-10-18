@@ -23,20 +23,26 @@ function createResponse() {
   return response;
 }
 
-function createAudioRequest(audio = Buffer.from('idoma audio')) {
+function createAudioRequest(audio = Buffer.from('idoma audio'), contentType = 'audio/webm') {
   return {
     method: 'POST',
-    headers: { 'content-type': 'audio/webm' },
+    headers: { 'content-type': contentType },
     async *[Symbol.asyncIterator]() {
       yield audio;
     },
   };
 }
 
+function configureRunpod() {
+  vi.stubEnv('IDOMA_ASR_RUNPOD_ENDPOINT_ID', 'endpoint-123');
+  vi.stubEnv('RUNPOD_API_KEY', 'test-key');
+}
+
 afterEach(() => {
   vi.useRealTimers();
   vi.unstubAllEnvs();
   vi.unstubAllGlobals();
+  vi.restoreAllMocks();
 });
 
 describe('Idoma transcription API', () => {
@@ -60,10 +66,48 @@ describe('Idoma transcription API', () => {
     expect(res.body).toEqual({ error: 'Idoma speech recognition is not configured.' });
   });
 
+  it('rejects non-audio request bodies before contacting Runpod', async () => {
+    configureRunpod();
+    const fetchMock = vi.fn();
+    vi.stubGlobal('fetch', fetchMock);
+
+    const res = createResponse();
+    await handler(createAudioRequest(Buffer.from('text'), 'text/plain') as never, res as never);
+
+    expect(res.statusCode).toBe(415);
+    expect(res.body).toEqual({ error: 'Send the recording as an audio request body.' });
+    expect(fetchMock).not.toHaveBeenCalled();
+  });
+
+  it('rejects an empty audio request before contacting Runpod', async () => {
+    configureRunpod();
+    const fetchMock = vi.fn();
+    vi.stubGlobal('fetch', fetchMock);
+
+    const res = createResponse();
+    await handler(createAudioRequest(Buffer.alloc(0)) as never, res as never);
+
+    expect(res.statusCode).toBe(400);
+    expect(res.body).toEqual({ error: 'No audio was provided.' });
+    expect(fetchMock).not.toHaveBeenCalled();
+  });
+
+  it('rejects audio larger than the proxy limit before contacting Runpod', async () => {
+    configureRunpod();
+    const fetchMock = vi.fn();
+    vi.stubGlobal('fetch', fetchMock);
+
+    const res = createResponse();
+    await handler(createAudioRequest(Buffer.alloc((4 * 1024 * 1024) + 1)) as never, res as never);
+
+    expect(res.statusCode).toBe(413);
+    expect(res.body).toEqual({ error: 'The audio recording is too large.' });
+    expect(fetchMock).not.toHaveBeenCalled();
+  });
+
   it('submits audio to Runpod and returns the completed Idoma transcript', async () => {
     vi.useFakeTimers();
-    vi.stubEnv('IDOMA_ASR_RUNPOD_ENDPOINT_ID', 'endpoint-123');
-    vi.stubEnv('RUNPOD_API_KEY', 'test-key');
+    configureRunpod();
 
     const fetchMock = vi.fn()
       .mockResolvedValueOnce(new Response(JSON.stringify({ id: 'job-456' }), { status: 200 }))
@@ -90,9 +134,7 @@ describe('Idoma transcription API', () => {
   });
 
   it('returns a safe error when Runpod rejects job submission', async () => {
-    vi.stubEnv('IDOMA_ASR_RUNPOD_ENDPOINT_ID', 'endpoint-123');
-    vi.stubEnv('RUNPOD_API_KEY', 'test-key');
-
+    configureRunpod();
     vi.stubGlobal('fetch', vi.fn().mockResolvedValue(
       new Response(JSON.stringify({ error: 'provider failure' }), { status: 500 }),
     ));
@@ -103,5 +145,49 @@ describe('Idoma transcription API', () => {
 
     expect(res.statusCode).toBe(502);
     expect(res.body).toEqual({ error: 'Could not start Idoma speech recognition.' });
+  });
+
+  it('returns a safe error when a Runpod job fails', async () => {
+    vi.useFakeTimers();
+    configureRunpod();
+    vi.spyOn(console, 'error').mockImplementation(() => undefined);
+
+    const fetchMock = vi.fn()
+      .mockResolvedValueOnce(new Response(JSON.stringify({ id: 'job-456' }), { status: 200 }))
+      .mockResolvedValueOnce(new Response(JSON.stringify({
+        status: 'FAILED',
+        error: 'private provider detail',
+      }), { status: 200 }));
+    vi.stubGlobal('fetch', fetchMock);
+
+    const res = createResponse();
+    const pending = handler(createAudioRequest() as never, res as never);
+    await vi.advanceTimersByTimeAsync(1000);
+    await pending;
+
+    expect(res.statusCode).toBe(502);
+    expect(res.body).toEqual({ error: 'Idoma speech recognition failed.' });
+    expect(JSON.stringify(res.body)).not.toContain('private provider detail');
+  });
+
+  it('rejects a completed Runpod job that contains no transcript', async () => {
+    vi.useFakeTimers();
+    configureRunpod();
+
+    const fetchMock = vi.fn()
+      .mockResolvedValueOnce(new Response(JSON.stringify({ id: 'job-456' }), { status: 200 }))
+      .mockResolvedValueOnce(new Response(JSON.stringify({
+        status: 'COMPLETED',
+        output: { transcript: '   ' },
+      }), { status: 200 }));
+    vi.stubGlobal('fetch', fetchMock);
+
+    const res = createResponse();
+    const pending = handler(createAudioRequest() as never, res as never);
+    await vi.advanceTimersByTimeAsync(1000);
+    await pending;
+
+    expect(res.statusCode).toBe(502);
+    expect(res.body).toEqual({ error: 'Speech recognition returned no transcript.' });
   });
 });
