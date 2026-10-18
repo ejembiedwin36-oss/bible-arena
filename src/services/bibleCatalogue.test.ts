@@ -9,14 +9,12 @@ vi.mock('../lib/supabase', () => ({
   supabase: { from: fromMock },
 }));
 
-function queryReturning(data: unknown[]) {
-  const query = {
+function orderedQueryReturning(data: unknown[]) {
+  return {
     select: vi.fn().mockReturnThis(),
     eq: vi.fn().mockReturnThis(),
     order: vi.fn().mockResolvedValue({ data, error: null }),
   };
-  fromMock.mockReturnValue(query);
-  return query;
 }
 
 describe('bibleCatalogue', () => {
@@ -26,10 +24,10 @@ describe('bibleCatalogue', () => {
   });
 
   it('lists active languages in configured order', async () => {
-    queryReturning([
+    fromMock.mockReturnValue(orderedQueryReturning([
       { id: 'en-id', code: 'en', name: 'English' },
       { id: 'id-id', code: 'id', name: 'Idoma' },
-    ]);
+    ]));
 
     await expect(listBibleLanguages()).resolves.toEqual([
       { id: 'en-id', code: 'en', name: 'English' },
@@ -38,7 +36,9 @@ describe('bibleCatalogue', () => {
   });
 
   it('caches language catalogue requests', async () => {
-    queryReturning([{ id: 'en-id', code: 'en', name: 'English' }]);
+    fromMock.mockReturnValue(orderedQueryReturning([
+      { id: 'en-id', code: 'en', name: 'English' },
+    ]));
 
     await listBibleLanguages();
     await listBibleLanguages();
@@ -46,25 +46,49 @@ describe('bibleCatalogue', () => {
     expect(fromMock).toHaveBeenCalledTimes(1);
   });
 
-  it('lists versions for a selected language', async () => {
-    queryReturning([
+  it('lists versions for a selected language and matches its translation', async () => {
+    const versionQuery = orderedQueryReturning([
       { id: 'v1', name: 'English Bible', abbreviation: 'EB', language_id: 'en-id' },
     ]);
+    const languageQuery = {
+      select: vi.fn().mockReturnThis(),
+      eq: vi.fn().mockReturnThis(),
+      maybeSingle: vi.fn().mockResolvedValue({ data: { code: 'en' }, error: null }),
+    };
+    const translationQuery = {
+      select: vi.fn().mockReturnThis(),
+      eq: vi.fn().mockReturnThis(),
+      then: (resolve: (value: unknown) => unknown) => Promise.resolve({
+        data: [{ id: 'translation-1', code: 'EB', name: 'English Bible' }],
+        error: null,
+      }).then(resolve),
+    };
+
+    fromMock
+      .mockReturnValueOnce(versionQuery)
+      .mockReturnValueOnce(languageQuery)
+      .mockReturnValueOnce(translationQuery);
 
     await expect(listBibleVersions('en-id')).resolves.toEqual([
-      { id: 'v1', name: 'English Bible', abbreviation: 'EB', languageId: 'en-id' },
+      {
+        id: 'v1',
+        name: 'English Bible',
+        abbreviation: 'EB',
+        languageId: 'en-id',
+        translationId: 'translation-1',
+      },
     ]);
   });
 
   it('lists books in canonical order', async () => {
-    queryReturning([
-      { id: 'gen', name: 'Genesis', abbreviation: 'Gen', book_order: 1 },
-      { id: 'exo', name: 'Exodus', abbreviation: 'Exo', book_order: 2 },
-    ]);
+    fromMock.mockReturnValue(orderedQueryReturning([
+      { id: 'gen', name: 'Genesis', abbreviation: 'Gen', book_order: 1, chapter_count: 50 },
+      { id: 'exo', name: 'Exodus', abbreviation: 'Exo', book_order: 2, chapter_count: 40 },
+    ]));
 
     await expect(listBibleBooks()).resolves.toEqual([
-      { id: 'gen', name: 'Genesis', abbreviation: 'Gen', bookOrder: 1 },
-      { id: 'exo', name: 'Exodus', abbreviation: 'Exo', bookOrder: 2 },
+      { id: 'gen', name: 'Genesis', abbreviation: 'Gen', bookOrder: 1, chapterCount: 50 },
+      { id: 'exo', name: 'Exodus', abbreviation: 'Exo', bookOrder: 2, chapterCount: 40 },
     ]);
   });
 });
