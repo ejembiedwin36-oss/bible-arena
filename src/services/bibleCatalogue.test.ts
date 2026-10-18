@@ -1,7 +1,9 @@
 import { beforeEach, describe, expect, it, vi } from 'vitest';
 import { clearBibleCatalogueCache, listBibleBooks, listBibleLanguages, listBibleVersions } from './bibleCatalogue';
 
-const fromMock = vi.fn();
+const { fromMock } = vi.hoisted(() => ({
+  fromMock: vi.fn(),
+}));
 
 vi.mock('../lib/supabase', () => ({
   supabase: { from: fromMock },
