@@ -5,7 +5,8 @@ export type IdomaAsrResult = {
 };
 
 const DEFAULT_ENDPOINT = '/api/voice/idoma/transcribe';
-const MAX_AUDIO_BYTES = 15 * 1024 * 1024;
+// Keep browser uploads below Vercel Functions' 4.5 MB request-body ceiling.
+const MAX_AUDIO_BYTES = 4 * 1024 * 1024;
 
 /**
  * Sends recorded Idoma audio to Bible Arena's own server-side ASR proxy.
