@@ -58,6 +58,30 @@
   margin-right: 0.25rem;
 }
 
+.verse-study-link {
+  display: block;
+  width: 100%;
+  padding: 0.2rem 0.35rem;
+  border: 0;
+  border-radius: 0.4rem;
+  background: transparent;
+  color: inherit;
+  font: inherit;
+  line-height: inherit;
+  text-align: left;
+  cursor: pointer;
+}
+
+.verse-study-link:hover,
+.verse-study-link:focus-visible {
+  background: color-mix(in srgb, currentColor 8%, transparent);
+  outline: none;
+}
+
+.verse-study-link:focus-visible {
+  box-shadow: 0 0 0 2px currentColor;
+}
+
 .bible-chapter-nav {
   display: flex;
   justify-content: space-between;
