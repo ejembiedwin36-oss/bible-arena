@@ -26,6 +26,7 @@ export function VerseStudy({ session }: { session: Session }) {
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
   const [bookmarked, setBookmarked] = useState(false);
+  const [noteId, setNoteId] = useState<string | null>(null);
   const [note, setNote] = useState('');
   const [noteSaving, setNoteSaving] = useState(false);
   const [actionMessage, setActionMessage] = useState<string | null>(null);
@@ -36,6 +37,9 @@ export function VerseStudy({ session }: { session: Session }) {
     (async () => {
       setLoading(true);
       setError(null);
+      setActionMessage(null);
+      setNoteId(null);
+      setNote('');
       const { data: v, error: ve } = await supabase
         .from('bible_verses')
         .select('id, verse_number, text, is_jesus_words, bible_chapters(id, chapter_number, bible_books(canonical_key, name, abbreviation)), bible_versions(id, name, abbreviation)')
@@ -74,14 +78,20 @@ export function VerseStudy({ session }: { session: Session }) {
       }
       setContextVerses((chapterRows ?? []) as ContextVerse[]);
 
-      const { data: existingBookmark } = await supabase
-        .from('bookmarks')
-        .select('id')
-        .eq('user_id', session.user.id)
-        .eq('verse_id', verseId)
-        .maybeSingle();
+      const [{ data: existingBookmark }, { data: existingNotes, error: noteError }] = await Promise.all([
+        supabase.from('bookmarks').select('id').eq('user_id', session.user.id).eq('verse_id', verseId).maybeSingle(),
+        supabase.from('user_notes').select('id, content').eq('user_id', session.user.id).eq('verse_id', verseId).order('created_at', { ascending: false }).limit(1),
+      ]);
       if (cancelled) return;
       setBookmarked(Boolean(existingBookmark));
+      if (noteError) {
+        setError(noteError.message);
+        setLoading(false);
+        return;
+      }
+      const existingNote = existingNotes?.[0];
+      setNoteId(existingNote?.id ?? null);
+      setNote(existingNote?.content ?? '');
 
       const { data: mappings, error: te } = await supabase
         .from('topic_scriptures')
@@ -202,14 +212,22 @@ export function VerseStudy({ session }: { session: Session }) {
       </article>
       <article className="card study-panel">
         <span className="label">Personal reflection</span>
-        <h2>Write a note for this verse</h2>
+        <h2>{noteId ? 'Your note for this verse' : 'Write a note for this verse'}</h2>
         <textarea value={note} onChange={e => setNote(e.target.value)} rows={5} placeholder="What is this verse teaching you?" />
-        <button disabled={noteSaving || !note.trim()} onClick={async () => {
-          setNoteSaving(true); setActionMessage(null);
-          const { error: e } = await supabase.from('user_notes').insert({ user_id: session.user.id, content: note.trim(), verse_id: verse.id, chapter_id: verse.chapter.id });
-          if (e) setActionMessage(e.message); else { setNote(''); setActionMessage('Your note was saved with this verse.'); }
-          setNoteSaving(false);
-        }}>{noteSaving ? 'Saving…' : 'Save verse note'}</button>
+        <div className="study-actions">
+          <button disabled={noteSaving || !note.trim()} onClick={async () => {
+            setNoteSaving(true); setActionMessage(null);
+            if (noteId) {
+              const { error: e } = await supabase.from('user_notes').update({ content: note.trim() }).eq('id', noteId).eq('user_id', session.user.id);
+              if (e) setActionMessage(e.message); else setActionMessage('Your verse note was updated.');
+            } else {
+              const { data, error: e } = await supabase.from('user_notes').insert({ user_id: session.user.id, content: note.trim(), verse_id: verse.id, chapter_id: verse.chapter.id }).select('id').single();
+              if (e) setActionMessage(e.message); else { setNoteId(data.id); setActionMessage('Your note was saved with this verse.'); }
+            }
+            setNoteSaving(false);
+          }}>{noteSaving ? 'Saving…' : noteId ? 'Update verse note' : 'Save verse note'}</button>
+          <button type="button" onClick={() => navigate('/notes')}>View all notes</button>
+        </div>
       </article>
 
       <article className="card study-panel">
