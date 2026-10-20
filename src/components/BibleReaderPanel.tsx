@@ -1,4 +1,5 @@
 import { useEffect, useMemo, useState } from 'react';
+import { useNavigate } from 'react-router-dom';
 import { IdomaVoiceInput } from './IdomaVoiceInput';
 import type { BibleChapter } from '../services/bibleReader';
 import { listBibleBooks, listBibleLanguages, listBibleVersions, type BibleBook, type BibleLanguage, type BibleVersion } from '../services/bibleCatalogue';
@@ -9,6 +10,7 @@ type BibleReaderPanelProps = {
 };
 
 export function BibleReaderPanel({ initialLanguageId }: BibleReaderPanelProps) {
+  const navigate = useNavigate();
   const [languages, setLanguages] = useState<BibleLanguage[]>([]);
   const [versions, setVersions] = useState<BibleVersion[]>([]);
   const [books, setBooks] = useState<BibleBook[]>([]);
@@ -90,7 +92,19 @@ export function BibleReaderPanel({ initialLanguageId }: BibleReaderPanelProps) {
       {loading && <p aria-live="polite">Loading chapter…</p>}
 
       <article className="bible-chapter">
-        {chapter?.verses.map((verse) => <p key={verse.verseNumber}><sup>{verse.verseNumber}</sup> {verse.text}</p>)}
+        {chapter?.verses.map((verse) => (
+          <p key={verse.id}>
+            <button
+              type="button"
+              className="verse-study-link"
+              aria-label={`Study verse ${verse.verseNumber}`}
+              title="Study this verse"
+              onClick={() => navigate(`/explore/verse/${verse.id}`)}
+            >
+              <sup>{verse.verseNumber}</sup> {verse.text}
+            </button>
+          </p>
+        ))}
         {!loading && chapter && chapter.verses.length === 0 && <p>No verses are available for this selection yet.</p>}
       </article>
 
