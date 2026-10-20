@@ -1,6 +1,7 @@
 import { supabase } from '../lib/supabase';
 
 export type BibleChapterVerse = {
+  id: string;
   verseNumber: number;
   text: string;
 };
@@ -92,6 +93,7 @@ async function fetchBibleChapter(
     bookId,
     chapterNumber,
     verses: rows.map((row) => ({
+      id: row.verse_id,
       verseNumber: row.bible_verses.verse_number,
       text: row.verse_text,
     })),
