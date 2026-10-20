@@ -30,7 +30,7 @@ describe('bibleReader', () => {
     fromMock.mockReset();
   });
 
-  it('loads and caches a chapter', async () => {
+  it('loads and caches a chapter with verse IDs for study navigation', async () => {
     const rows = [
       verseRow(1, 'In the beginning.'),
       verseRow(2, 'The earth was formless.'),
@@ -46,8 +46,8 @@ describe('bibleReader', () => {
     const chapter = await loadBibleChapter('idoma-v1', 'genesis', 1);
 
     expect(chapter.verses).toEqual([
-      { verseNumber: 1, text: 'In the beginning.' },
-      { verseNumber: 2, text: 'The earth was formless.' },
+      { id: 'verse-1', verseNumber: 1, text: 'In the beginning.' },
+      { id: 'verse-2', verseNumber: 2, text: 'The earth was formless.' },
     ]);
     expect(getCachedBibleChapter('idoma-v1', 'genesis', 1)).toEqual(chapter);
     expect(fromMock).toHaveBeenCalledTimes(1);
