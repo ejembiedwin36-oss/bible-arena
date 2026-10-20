@@ -226,6 +226,12 @@ export function VerseStudy({ session }: { session: Session }) {
             }
             setNoteSaving(false);
           }}>{noteSaving ? 'Saving…' : noteId ? 'Update verse note' : 'Save verse note'}</button>
+          {noteId && <button className="danger-button" disabled={noteSaving} onClick={async () => {
+            setNoteSaving(true); setActionMessage(null);
+            const { error: e } = await supabase.from('user_notes').delete().eq('id', noteId).eq('user_id', session.user.id);
+            if (e) setActionMessage(e.message); else { setNoteId(null); setNote(''); setActionMessage('Your verse note was deleted.'); }
+            setNoteSaving(false);
+          }}>Delete verse note</button>}
           <button type="button" onClick={() => navigate('/notes')}>View all notes</button>
         </div>
       </article>
