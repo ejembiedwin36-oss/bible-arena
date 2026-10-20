@@ -1,0 +1,61 @@
+name: Connect saved Scripture navigation
+
+on:
+  push:
+    paths:
+      - '.github/workflows/connect-saved-scripture.yml'
+
+permissions:
+  contents: write
+
+jobs:
+  patch-navigation:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: main
+      - name: Connect bookmarks and notes to verse study
+        shell: python
+        run: |
+          from pathlib import Path
+
+          path = Path('src/App.tsx')
+          source = path.read_text()
+
+          replacements = [
+              (
+                  '<button className="reference-button" onClick={() => navigate(`/bible/${item.verse.chapter.book.canonical_key}/${item.verse.chapter.chapter_number}`)}>{item.verse.chapter.book.name} {item.verse.chapter.chapter_number}:{item.verse.verse_number}</button><p>“{item.verse.text}”</p></div><div className="bookmark-actions"><button onClick={() => navigate(`/bible/${item.verse.chapter.book.canonical_key}/${item.verse.chapter.chapter_number}`)}>Read →</button>',
+                  '<button className="reference-button" onClick={() => navigate(`/explore/verse/${item.verse.id}`)}>{item.verse.chapter.book.name} {item.verse.chapter.chapter_number}:{item.verse.verse_number}</button><p>“{item.verse.text}”</p></div><div className="bookmark-actions"><button onClick={() => navigate(`/explore/verse/${item.verse.id}`)}>Study verse →</button><button onClick={() => navigate(`/bible/${item.verse.chapter.book.canonical_key}/${item.verse.chapter.chapter_number}`)}>Read chapter →</button>'
+              ),
+              (
+                  'verse: { verse_number: number; text: string; chapter:',
+                  'verse: { id: string; verse_number: number; text: string; chapter:'
+              ),
+              (
+                  ".select('id, content, created_at, bible_verses(verse_number, text, bible_chapters(chapter_number, bible_books(canonical_key, name, abbreviation)))')",
+                  ".select('id, content, created_at, bible_verses(id, verse_number, text, bible_chapters(chapter_number, bible_books(canonical_key, name, abbreviation)))')"
+              ),
+              (
+                  'verse: rawVerse && rawChapter && rawBook ? {\n          verse_number: rawVerse.verse_number,',
+                  'verse: rawVerse && rawChapter && rawBook ? {\n          id: rawVerse.id,\n          verse_number: rawVerse.verse_number,'
+              ),
+              (
+                  '<strong>{item.verse ? <button className="reference-button" onClick={() => navigate(`/bible/${item.verse!.chapter.book.canonical_key}/${item.verse!.chapter.chapter_number}`)}>{item.verse.chapter.book.name} {item.verse.chapter.chapter_number}:{item.verse.verse_number}</button> : \'Personal note\'}</strong>\n      {item.verse && <small>“{item.verse.text}”</small>}\n      <p>{item.content}</p><time>{new Date(item.created_at).toLocaleString()}</time>',
+                  '<strong>{item.verse ? <button className="reference-button" onClick={() => navigate(`/explore/verse/${item.verse!.id}`)}>{item.verse.chapter.book.name} {item.verse.chapter.chapter_number}:{item.verse.verse_number}</button> : \'Personal note\'}</strong>\n      {item.verse && <small>“{item.verse.text}”</small>}\n      <p>{item.content}</p>\n      {item.verse && <div className="bookmark-actions"><button onClick={() => navigate(`/explore/verse/${item.verse!.id}`)}>Study verse →</button><button onClick={() => navigate(`/bible/${item.verse!.chapter.book.canonical_key}/${item.verse!.chapter.chapter_number}`)}>Read chapter →</button></div>}\n      <time>{new Date(item.created_at).toLocaleString()}</time>'
+              ),
+          ]
+
+          for old, new in replacements:
+              if old not in source:
+                  raise SystemExit(f'Expected App.tsx text was not found: {old[:80]}')
+              source = source.replace(old, new, 1)
+
+          path.write_text(source)
+      - name: Commit navigation update
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add src/App.tsx
+          git commit -m "Connect bookmarks and notes to verse study"
+          git push origin main
