@@ -38,7 +38,7 @@ export function VerseStudy({ session }: { session: Session }) {
       setError(null);
       const { data: v, error: ve } = await supabase
         .from('bible_verses')
-        .select('id, verse_number, text, is_jesus_words, bible_chapters(id, chapter_number, bible_books(canonical_key, name, abbreviation)), bible_versions(name, abbreviation)')
+        .select('id, verse_number, text, is_jesus_words, bible_chapters(id, chapter_number, bible_books(canonical_key, name, abbreviation)), bible_versions(id, name, abbreviation)')
         .eq('id', verseId)
         .maybeSingle();
 
@@ -54,20 +54,24 @@ export function VerseStudy({ session }: { session: Session }) {
       const book = Array.isArray(chapter?.bible_books) ? chapter.bible_books[0] : chapter?.bible_books;
       const version = Array.isArray(raw.bible_versions) ? raw.bible_versions[0] : raw.bible_versions;
 
-      if (!chapter || !book || !version) {
+      if (!chapter || !book || !version?.id) {
         setError('Verse context is incomplete.');
         setLoading(false);
         return;
       }
 
-
-      const { data: chapterRows } = await supabase
+      const { data: chapterRows, error: chapterError } = await supabase
         .from('bible_verses')
         .select('id, verse_number, text, is_jesus_words')
         .eq('chapter_id', chapter.id)
-        .eq('version_id', raw.bible_versions?.id ?? version.id)
+        .eq('version_id', version.id)
         .order('verse_number', { ascending: true });
       if (cancelled) return;
+      if (chapterError) {
+        setError(chapterError.message);
+        setLoading(false);
+        return;
+      }
       setContextVerses((chapterRows ?? []) as ContextVerse[]);
 
       const { data: existingBookmark } = await supabase
@@ -109,6 +113,8 @@ export function VerseStudy({ session }: { session: Session }) {
           return { id: rv.id, verse_number: rv.verse_number, text: rv.text, chapter_number: rc.chapter_number, book_key: rb.canonical_key, book_name: rb.name, version_abbreviation: ver.abbreviation };
         }).filter(Boolean) as RelatedVerse[];
         setRelated(relatedVerses);
+      } else {
+        setRelated([]);
       }
 
       setVerse({
@@ -132,7 +138,7 @@ export function VerseStudy({ session }: { session: Session }) {
     })();
 
     return () => { cancelled = true; };
-  }, [verseId]);
+  }, [verseId, session.user.id]);
 
   if (loading) return <main className="verse-study page-card"><p>Loading verse study…</p></main>;
 
