@@ -54,29 +54,49 @@ The project initially prepared infrastructure for collecting and reviewing its o
 
 Important limitation: the selected CTC model is not magically forced to understand Idoma just because the application knows the language code. Its real accuracy must be measured with genuine Idoma speech.
 
-The current Idoma ASR service normalizes browser audio to mono 16 kHz and sends it through OmniASR. A Runpod Serverless worker is being prepared so the heavy speech model can run on GPU infrastructure separately from the normal Bible Arena web frontend.
+The current Idoma ASR service normalizes browser audio to mono 16 kHz and sends it through OmniASR. The integration code remains prepared for a GPU-hosted worker, but live hosting is deliberately postponed while a suitable affordable/free deployment route is found.
 
-Current high-level path:
+Prepared high-level path:
 
-`User microphone -> Bible Arena frontend -> Vercel secure proxy -> Runpod Idoma ASR worker -> OmniASR -> transcript -> Bible Arena`
+`User microphone -> Bible Arena frontend -> Vercel secure proxy -> GPU Idoma ASR worker -> OmniASR -> transcript -> Bible Arena`
+
+Voice remains a core Bible Arena requirement. **Only the hosting/deployment step is postponed; the feature itself has not been dropped.**
 
 ## 8. Jesus Film Idoma Resource Lead
 
 The JESUS film has an Idoma (`idu`) language resource. This is a useful research lead because genuine native Idoma biblical speech could help evaluate speech recognition. However, existence does **not** grant Bible Arena permission to download, redistribute, or train a machine-learning model on copyrighted film audio.
 
-The project must verify transcript availability and obtain appropriate permission/licensing before incorporating copyrighted audio/transcripts into Bible Arena or a training dataset. OmniASR deployment continues independently so the project is not blocked by licensing discussions.
+The project must verify transcript availability and obtain appropriate permission/licensing before incorporating copyrighted audio/transcripts into Bible Arena or a training dataset.
 
-## 9. Deployment Journey — Runpod
+## 9. Voice Hosting Journey — Runpod and Hugging Face
 
 The project owner connected Runpod to GitHub and limited repository access to Bible Arena rather than granting unnecessary access to every repository.
 
 Runpod initially could not discover the Dockerfile because it was inside `ml/idoma-asr/service/`. A root Dockerfile was added. The service originally used FastAPI/Uvicorn as a normal web service, while Runpod Serverless needs a worker handler/start mechanism, so `handler.py` and the Runpod SDK dependency were added and the container command was changed to launch the worker.
 
-The endpoint configuration reached the GPU/worker settings. The intended conservative starting configuration was one maximum worker, zero active workers, one GPU, and queue-based scaling. Deployment was not completed because the account had no credit balance. Later, `console.runpod.io` repeatedly timed out on the owner's network even though the public Runpod website was reachable. Because the exact network cause was not proven, the project did not pretend to have diagnosed it and continued repository work instead.
+The Runpod endpoint configuration was completed through the worker/GPU settings, including a conservative zero-active/one-maximum-worker configuration. Deployment was deliberately not activated because the account had no credits, no payment method, and the required compute was paid. **No Runpod endpoint is live and no Runpod charge was incurred.**
 
-**Current truth:** no paid Runpod endpoint has been deployed and no production Idoma transcription has been proven yet.
+A Hugging Face Spaces route was also investigated as a possible free alternative. The required Gradio/Docker compute path shown for the account required a paid plan, so no paid Space was created.
 
-## 10. Important Challenges and Lessons
+**Decision:** postpone ASR hosting rather than pay simply to keep moving. Keep the tested integration code ready in GitHub and continue building the rest of Bible Arena. This is a hosting pause, not removal of Idoma voice from the product.
+
+## 10. Bible Reading and Study Flow
+
+Bible Arena now has a connected study path rather than isolated pages.
+
+Current intended flow:
+
+`Bible Reader -> Verse Study <-> Topic Study / Related Scripture -> Chapter context`
+
+Saved Scripture is also connected back into study:
+
+`Bookmarks / verse-linked Notes -> exact Verse Study -> context/topics/related Scripture -> chapter`
+
+The active Bible Reader can select a verse and open its exact Verse Study page. Topic Study references can open exact Verse Study. Verse Study can work with bookmarks and personal verse notes. A verse note can be created, updated, loaded again, or deleted. Bookmarks and verse-linked notes now provide both **Study verse** and **Read chapter** navigation so the user does not lose the wider Scripture context.
+
+General personal notes that are not attached to a verse remain general notes and are not given a fake Scripture link.
+
+## 11. Important Challenges and Lessons
 
 ### Learning while building
 
@@ -88,7 +108,7 @@ Terms such as Serverless, Endpoint, Queue, Dockerfile, GPU and worker caused con
 
 ### External dependencies
 
-The gated Idoma model and Runpod console issue show why one outside service should not block all development. The project continued with an open ASR baseline and prepared the surrounding application architecture while deployment remained unavailable.
+The gated Idoma model and paid hosting options show why one outside service should not block all development. The project kept the open ASR baseline/integration ready while continuing Scripture-study development.
 
 ### Copyright and licensing
 
@@ -96,13 +116,19 @@ Finding Scripture or biblical audio online does not grant reuse rights. Discover
 
 ### Security boundary
 
-The Runpod API key must never be placed in React/browser code. A Vercel server-side proxy was therefore added between the browser and Runpod. The browser knows only Bible Arena's `/api/voice/idoma/transcribe` route; the server holds the Runpod credentials.
+The Runpod API key must never be placed in React/browser code. A Vercel server-side proxy was therefore added between the browser and Runpod. The browser knows only Bible Arena's `/api/voice/idoma/transcribe` route; the server holds provider credentials.
 
 ### Provider limits affect application design
 
-Vercel can reject an oversized request before Bible Arena's function gets a chance to process it. The browser and proxy therefore use a **4 MB audio limit**, below Vercel's request-body ceiling. This is an example of infrastructure limits becoming part of application validation rather than being treated as an afterthought.
+The browser and proxy use a **4 MB audio limit** below the hosting request-body ceiling. This is an example of infrastructure limits becoming part of application validation rather than being treated as an afterthought.
 
-## 11. Questions and Decisions That Shaped the Product
+### Avoiding unsafe database guesses
+
+A later audit found two Bible-data patterns in the repository. The active `App.tsx` reader expects verse text/version data directly through `bible_verses`, while a newer service architecture uses structural verses plus `bible_translation_verses`. The repository's `supabase/migrations` directory currently contains documentation but no committed SQL schema migrations, and live Supabase schema inspection was temporarily unavailable because the connection repeatedly timed out.
+
+**Decision:** protect the working active reader and do not perform a speculative schema rewrite. Verify the real Supabase schema before consolidating the two models.
+
+## 12. Questions and Decisions That Shaped the Product
 
 **Should local-language voice be optional?** No. Idoma text and voice are core to Bible Arena.
 
@@ -110,15 +136,39 @@ Vercel can reject an oversized request before Bible Arena's function gets a chan
 
 **Should a Runpod API key be put in frontend code to make integration easier?** No. Secrets belong on the server.
 
-**Should development stop while Runpod is unreachable?** No. Work that does not require a live GPU endpoint can continue safely in GitHub.
+**Should development stop because paid ASR hosting is postponed?** No. Work that does not require a live GPU endpoint continues safely in GitHub.
 
 **Can mocked tests prove that OmniASR understands real Idoma speech well?** No. They can prove Bible Arena handles the provider contract correctly, but real Idoma recordings are required to measure speech-recognition quality.
 
-## 12. File-by-File Learning Notes
+**Should the newer Bible data model automatically replace the active reader?** No. The active route must be protected until the real Supabase schema proves which model is authoritative.
+
+## 13. File-by-File Learning Notes
+
+### `/src/App.tsx`
+
+This is currently the main application shell and active router. Importantly, the production `/bible/:bookKey/:chapterNumber` route uses the `BibleReader` function defined inside this file. That active reader loads languages/versions, books, chapters and verses, records reading history, manages bookmarks, handles chapter navigation, and sends a selected verse to `/explore/verse/:verseId`.
+
+`App.tsx` also contains the current Bookmarks and My Notes pages. Bookmarks and verse-linked notes now navigate to the exact Verse Study page while preserving a separate Read chapter action.
+
+### `/src/features/VerseStudy.tsx`
+
+The focused verse-study experience. It loads the selected verse and study context, connects to related/topic study, supports bookmarking, and manages a user's verse-linked note. Existing notes are loaded and updated instead of blindly creating duplicates; the user can also delete the verse note and open the full notes list.
+
+### `/src/features/TopicSearch.tsx`
+
+Contains topic discovery/study behavior. Scripture references in Topic Study can open the exact Verse Study route, while chapter navigation remains available for context.
+
+### `/src/features/BibleReader.tsx`, `/src/features/BibleReaderData.ts`, `/src/lib/bibleData.ts`
+
+These form another reader-related layer in the repository. They are **not currently the component used by the active `/bible/:bookKey/:chapterNumber` route**. They should not be deleted or promoted blindly until the Bible data-model consolidation is resolved.
+
+### `/src/services/bibleReader.ts`
+
+Represents the newer translation-oriented Bible data model, using `bible_translation_verses` for translated verse text. This differs from the active `App.tsx` reader's assumptions and is one reason the real Supabase schema must be verified before refactoring.
 
 ### `/Dockerfile`
 
-The repository-root build recipe used for the Runpod ASR worker. It starts from Python 3.11, installs FFmpeg/audio libraries, installs Python dependencies, copies the ASR application and handler, and starts the Runpod worker.
+The repository-root build recipe prepared for the ASR worker.
 
 ### `/ml/idoma-asr/service/app.py`
 
@@ -126,72 +176,35 @@ Core Idoma ASR inference logic. It validates and normalizes audio, loads OmniASR
 
 ### `/ml/idoma-asr/service/handler.py`
 
-The Runpod Serverless entry point. It receives base64 audio, decodes it, reuses the normalization/transcription functions, returns the transcript and calls `runpod.serverless.start(...)`.
-
-### `/ml/idoma-asr/service/requirements.txt`
-
-The Python dependency list for the speech worker, including audio, OmniASR and Runpod packages.
-
-### `/ml/idoma-asr/service/Dockerfile`
-
-The service-local container recipe. The root Dockerfile exists as the deployment-friendly entry point for the whole repository.
-
-### `/ml/idoma-asr/service/test_app.py`
-
-Automated tests for ASR service behavior. These should remain aligned with the current OmniASR/Runpod implementation.
+The prepared Runpod Serverless entry point. It receives base64 audio, decodes it, reuses the normalization/transcription functions, and returns the transcript.
 
 ### `/api/voice/idoma/transcribe.ts`
 
-**What it is:** Bible Arena's secure server-side bridge between the web app and Runpod.
-
-**What it does:**
-
-1. accepts only POST requests;
-2. reads `IDOMA_ASR_RUNPOD_ENDPOINT_ID` and `RUNPOD_API_KEY` from server environment variables;
-3. rejects oversized, empty or non-audio requests;
-4. converts the recording to base64 for the Runpod worker contract;
-5. submits a queue job to Runpod;
-6. polls the job status;
-7. returns the transcript to the browser when complete;
-8. returns controlled errors for failed, cancelled or timed-out jobs.
-
-The proxy uses a **4 MB maximum request size** so browser uploads remain below the hosting request-body ceiling.
-
-**Security lesson:** the React application never receives the Runpod API key.
+Bible Arena's secure server-side bridge prepared between the web app and Runpod. It validates requests, keeps provider credentials server-side, submits/polls a provider job, and returns controlled results/errors.
 
 ### `/api/voice/idoma/transcribe.test.ts`
 
-Automated tests now cover more than the original configuration guard. They verify:
-
-- non-POST requests are rejected;
-- missing Runpod configuration produces a controlled error;
-- non-audio content is rejected before Runpod is contacted;
-- empty audio is rejected before Runpod is contacted;
-- audio over 4 MB is rejected before Runpod is contacted;
-- audio is submitted to the expected Runpod queue endpoint;
-- the expected Runpod job-status endpoint is polled;
-- a completed transcript is trimmed and returned as Idoma (`idu`);
-- rejected Runpod submissions return a safe application error;
-- failed Runpod jobs do not leak private provider error details;
-- a completed job with no usable transcript is rejected.
-
-These tests use a mocked provider, so they can run without GPU spending or a live Runpod endpoint.
+Tests the proxy contract without requiring paid GPU hosting. It covers request validation, provider submission/polling, successful transcript handling, provider failures, cancelled jobs, blank transcripts and timeout behavior.
 
 ### `/src/services/idomaAsr.ts`
 
-Browser-side service that sends the recorded audio body to Bible Arena's own `/api/voice/idoma/transcribe` endpoint. It enforces the same 4 MB boundary, validates the returned transcript and `idu` language code, and contains no Runpod secret.
+Browser-side service that sends recorded audio to Bible Arena's own `/api/voice/idoma/transcribe` endpoint. It contains no Runpod secret.
 
 ### `/src/services/idomaRecorder.ts`
 
-Browser microphone wrapper. It requests microphone access, selects a supported recording format, collects audio chunks and stops microphone tracks when recording finishes or is cancelled.
+Browser microphone wrapper that captures supported audio and releases microphone resources safely.
 
 ### `/src/components/IdomaVoiceInput.tsx`
 
-Visible Idoma microphone interface. It shows elapsed/remaining recording time, limits recordings to 30 seconds, automatically sends the recording when the limit is reached, explains that a cold speech worker can take longer to start, and stops microphone resources when the component is left.
+Visible Idoma microphone interface with recording status, a 30-second recording limit, processing feedback and safe microphone cleanup.
 
 ### `/src/services/bibleCatalogue.ts`
 
 Loads available languages, Bible versions/translations and Bible books from Supabase. Seeing Idoma in the catalogue does not prove that licensed Idoma verses have been loaded. English KJV is currently the actual loaded Scripture translation.
+
+### `/supabase/migrations/`
+
+The repository currently does not contain the actual SQL migration history needed to reconstruct the live Bible schema. This is an important project-maintenance gap to address after the live schema can be inspected safely.
 
 ### `/tsconfig.api.json`
 
@@ -199,60 +212,70 @@ Strict TypeScript configuration for production server/API source. Test files are
 
 ### `/.github/workflows/ci.yml`
 
-GitHub's automated quality gate. It checks Python script syntax, installs Node dependencies, type-checks the server-side API, runs the web/API tests, and builds the production application. This caught a NodeNext test-file configuration issue, which was fixed by separating production API type-checking from Vitest test compilation.
+GitHub's automated quality gate. It checks Python script syntax, installs Node dependencies, type-checks the server-side API, runs tests, and builds the production application.
 
 ### `/vercel.json`
 
-Controls Vercel routing. The SPA rewrite was changed so `/api/...` requests are preserved for server functions rather than being incorrectly rewritten to React's `index.html`.
+Controls Vercel routing. The SPA rewrite preserves `/api/...` requests for server functions rather than incorrectly rewriting them to React's `index.html`.
 
-## 13. Important Security Rules
+## 14. Important Security Rules
 
 - Never put private API tokens in frontend/browser source code.
 - Never paste passwords, card details, or secret tokens into chat or source code.
 - Give third-party services only the repository permissions they actually need.
 - Use Supabase RLS where appropriate.
 - Keep copyrighted Scripture/audio rights separate from technical capability.
-- Keep Runpod credentials only in server-side environment variables.
+- Keep provider credentials only in server-side environment variables.
 - Reject bad requests before they can unnecessarily consume paid GPU resources.
 
-## 14. Follow One User Action Through the System
+## 15. Follow User Actions Through the System
 
-Example: **Speak Idoma**
+### Study a saved verse
+
+1. The user reads a chapter in the active Bible Reader.
+2. The user selects or bookmarks a verse.
+3. Selecting **Study verse** opens `/explore/verse/:verseId` for that exact verse.
+4. Verse Study provides focused study/context and related/topic Scripture connections.
+5. The user can save a bookmark or create/update/delete a verse-linked personal note.
+6. Bookmarks and My Notes can return to the same exact Verse Study page later.
+7. **Read chapter** returns the user to the wider chapter context.
+
+### Speak Idoma (prepared flow; live hosting postponed)
 
 1. The user presses the microphone button.
 2. `IdomaVoiceInput.tsx` controls recording status and the 30-second limit.
 3. `idomaRecorder.ts` captures microphone audio.
 4. `idomaAsr.ts` validates the recording and sends raw audio to Bible Arena's own API route.
-5. `/api/voice/idoma/transcribe.ts` checks the request and securely authenticates to Runpod.
-6. Runpod queues the job and starts/uses an ASR worker.
-7. `handler.py` receives and decodes the audio job.
-8. `app.py` normalizes the recording and runs OmniASR.
-9. Runpod returns the job result to the secure proxy.
-10. The proxy returns only the safe transcript result to the browser.
-11. Bible Arena displays/uses the recognized Idoma text.
+5. `/api/voice/idoma/transcribe.ts` validates the request and would securely authenticate to the GPU provider.
+6. The prepared worker would run OmniASR and return a transcript.
 
-Steps 1–5 and the provider interaction contract have application/test coverage. Steps involving a real deployed Runpod worker and genuine Idoma audio still require end-to-end verification.
+The browser/proxy/provider contract has test coverage. A real deployed worker and genuine Idoma audio still require end-to-end verification.
 
-## 15. What Has Been Verified So Far
+## 16. What Has Been Verified So Far
 
-The repository's GitHub CI has successfully completed with the newer voice work. The quality checks include server-side API TypeScript checking, web/API tests, and a production Vite build. The mocked Runpod tests also pass as part of that suite.
+GitHub CI has successfully completed after the recent study-flow changes. The active application routes now connect Bible reading, exact Verse Study, Topic Study, Bookmarks and verse-linked Notes.
 
-This means the application logic around the provider is in a much stronger state. It does **not** mean the real Runpod endpoint, GPU model startup, network path, or Idoma recognition accuracy has been proven.
+The secure ASR provider integration has mocked automated coverage, but this does **not** prove a real GPU endpoint, model startup, network path or Idoma recognition accuracy.
 
-## 16. What Is Still Unfinished
+The current repository audit also established that the active Bible route uses the `BibleReader` inside `App.tsx`, while separate reader/service files represent additional/partly newer architecture. This distinction is now documented so future refactoring does not accidentally replace the working route without evidence.
 
-- Runpod GPU/serverless deployment is not yet completed.
-- `RUNPOD_API_KEY` and `IDOMA_ASR_RUNPOD_ENDPOINT_ID` cannot be configured for the real deployment until the endpoint/account setup is available.
+## 17. What Is Still Unfinished
+
+- Live GPU/serverless Idoma ASR hosting is postponed; no Runpod endpoint is live.
 - End-to-end production Idoma voice transcription has not yet been proven.
 - Real Idoma accuracy has not yet been benchmarked by Bible Arena with a representative test set.
 - The complete authorized Idoma Bible text is not yet loaded.
 - Jesus Film Idoma reuse/training permission has not been obtained.
 - The gated dedicated Idoma Hugging Face model is not a production dependency.
-- The Vercel proxy still needs deployment-level verification against a real Runpod endpoint.
+- The Vercel proxy still needs deployment-level verification against a real GPU endpoint.
+- The real Supabase Bible schema still needs a successful live audit.
+- The duplicate/competing Bible reader data models should be consolidated only after that schema audit.
+- SQL migrations/schema history should eventually be committed so the database structure is reproducible.
+- Devotion, Arena/challenges, Ask AI and parts of Profile remain future modules.
 
 These are explicit milestones, not hidden failures.
 
-## 17. Documentation Rule From Now On
+## 18. Documentation Rule From Now On
 
 As Bible Arena continues, this guide should record what we were trying to accomplish, why an approach was chosen, important owner decisions, confusing points, challenges and fixes, files changed, warnings/errors, security/licensing decisions, tests actually performed, and unfinished work.
 
@@ -260,4 +283,4 @@ The final version should be understandable to a beginner who did not participate
 
 ---
 
-**Next documentation update:** record the successful Runpod endpoint deployment (or any real deployment error), server environment configuration, and the first genuine Idoma transcription test. Do not record these as successful until they have actually happened.
+**Next documentation update:** record the successful live Supabase schema audit and any resulting safe Bible-data consolidation. Voice-hosting documentation should be updated when a suitable deployment route is actually activated and the first genuine Idoma transcription is tested; do not record either as successful before it happens.
