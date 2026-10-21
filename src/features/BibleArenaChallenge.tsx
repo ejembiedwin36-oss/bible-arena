@@ -1,24 +1,10 @@
 import { useMemo, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
-
-type ChallengeQuestion = {
-  question: string;
-  choices: string[];
-  answer: string;
-  reference: string;
-  bookKey: string;
-  chapter: number;
-};
-
-const starterQuestions: ChallengeQuestion[] = [
-  { question: 'In which book do we read about David defeating Goliath?', choices: ['Genesis', '1 Samuel', 'Psalms', 'Acts'], answer: '1 Samuel', reference: '1 Samuel 17', bookKey: '1-samuel', chapter: 17 },
-  { question: 'Which Gospel records Jesus turning water into wine at Cana?', choices: ['Matthew', 'Mark', 'Luke', 'John'], answer: 'John', reference: 'John 2', bookKey: 'john', chapter: 2 },
-  { question: 'Where is the fruit of the Spirit listed?', choices: ['Romans 8', 'Galatians 5', 'Hebrews 11', 'James 1'], answer: 'Galatians 5', reference: 'Galatians 5:22–23', bookKey: 'galatians', chapter: 5 },
-];
+import { starterChallengeQuestions } from '../data/starterChallenge';
 
 export function BibleArenaChallenge() {
   const navigate = useNavigate();
-  const questions = useMemo(() => starterQuestions, []);
+  const questions = useMemo(() => starterChallengeQuestions, []);
   const [index, setIndex] = useState(0);
   const [selected, setSelected] = useState<string | null>(null);
   const [score, setScore] = useState(0);
@@ -33,14 +19,55 @@ export function BibleArenaChallenge() {
 
   function next() {
     if (!selected) return;
-    if (index === questions.length - 1) { setFinished(true); return; }
+    if (index === questions.length - 1) {
+      setFinished(true);
+      return;
+    }
     setIndex(value => value + 1);
     setSelected(null);
   }
 
-  function restart() { setIndex(0); setSelected(null); setScore(0); setFinished(false); }
+  function restart() {
+    setIndex(0);
+    setSelected(null);
+    setScore(0);
+    setFinished(false);
+  }
 
-  if (finished) return <main className="placeholder card"><span className="eyebrow">BIBLE ARENA · STARTER CHALLENGE</span><h1>Challenge complete</h1><p>You scored <strong>{score}/{questions.length}</strong>.</p><p>This starter challenge works without paid AI or GPU hosting. Future Arena challenges can be published from verified Bible Arena content.</p><div className="bookmark-actions"><button onClick={restart}>Try again</button><button onClick={() => navigate('/bible')}>Read the Bible →</button></div></main>;
+  if (finished) {
+    return <main className="placeholder card">
+      <span className="eyebrow">BIBLE ARENA · STARTER CHALLENGE</span>
+      <h1>Challenge complete</h1>
+      <p>You scored <strong>{score}/{questions.length}</strong>.</p>
+      <p>This starter challenge works without paid AI or GPU hosting. Future Arena challenges can be published from verified Bible Arena content.</p>
+      <div className="bookmark-actions">
+        <button onClick={restart}>Try again</button>
+        <button onClick={() => navigate('/bible')}>Read the Bible →</button>
+      </div>
+    </main>;
+  }
 
-  return <main className="placeholder card"><div className="page-heading"><div><span className="eyebrow">BIBLE ARENA · STARTER CHALLENGE</span><h1>Test your Bible knowledge</h1><p>Question {index + 1} of {questions.length}</p></div><span className="count-chip">Score {score}</span></div><section className="settings-section"><h2>{current.question}</h2><div className="language-grid">{current.choices.map(choice => <button key={choice} disabled={Boolean(selected)} onClick={() => choose(choice)}>{choice}</button>)}</div>{selected && <div className={selected === current.answer ? 'notice success' : 'notice error'}>{selected === current.answer ? 'Correct ✓' : `Not quite. The answer is ${current.answer}.`}</div>}{selected && <div className="bookmark-actions"><button onClick={() => navigate(`/bible/${current.bookKey}/${current.chapter}`)}>Check {current.reference} →</button><button onClick={next}>{index === questions.length - 1 ? 'See result' : 'Next question →'}</button></div>}</section></main>;
+  return <main className="placeholder card">
+    <div className="page-heading">
+      <div>
+        <span className="eyebrow">BIBLE ARENA · STARTER CHALLENGE</span>
+        <h1>Test your Bible knowledge</h1>
+        <p>Question {index + 1} of {questions.length}</p>
+      </div>
+      <span className="count-chip">Score {score}</span>
+    </div>
+    <section className="settings-section">
+      <h2>{current.question}</h2>
+      <div className="language-grid">
+        {current.choices.map(choice => <button key={choice} disabled={Boolean(selected)} onClick={() => choose(choice)}>{choice}</button>)}
+      </div>
+      {selected && <div className={selected === current.answer ? 'notice success' : 'notice error'}>
+        {selected === current.answer ? 'Correct ✓' : `Not quite. The answer is ${current.answer}.`}
+      </div>}
+      {selected && <div className="bookmark-actions">
+        <button onClick={() => navigate(`/bible/${current.bookKey}/${current.chapter}`)}>Check {current.reference} →</button>
+        <button onClick={next}>{index === questions.length - 1 ? 'See result' : 'Next question →'}</button>
+      </div>}
+    </section>
+  </main>;
 }
