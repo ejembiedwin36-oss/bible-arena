@@ -1,0 +1,62 @@
+name: Integrate devotion and arena routes
+
+on:
+  push:
+    branches:
+      - integrate-devotion-arena
+    paths:
+      - .github/workflows/integrate-devotion-arena-routes.yml
+
+permissions:
+  contents: write
+
+jobs:
+  integrate-routes:
+    runs-on: ubuntu-24.04
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: integrate-devotion-arena
+      - name: Patch App routes safely
+        shell: python
+        run: |
+          from pathlib import Path
+
+          path = Path('src/App.tsx')
+          text = path.read_text(encoding='utf-8')
+
+          old_import = "import { VerseStudy } from './features/VerseStudy';"
+          new_import = old_import + "\nimport { DailyDevotion } from './features/DailyDevotion';\nimport { BibleArenaChallenge } from './features/BibleArenaChallenge';"
+          old_devotion = '<Route path="/devotion" element={<Placeholder title="Today’s Devotion" description="Daily devotional content, completion tracking, and Scripture reflection will live here." />} />'
+          new_devotion = '<Route path="/devotion" element={<DailyDevotion session={session} />} />'
+          old_arena = '<Route path="/arena" element={<Placeholder title="Bible Arena" description="Challenges, questions, streaks, and friendly Scripture competition will live here." />} />'
+          new_arena = '<Route path="/arena" element={<BibleArenaChallenge />} />'
+
+          replacements = [
+              (old_import, new_import, 'feature imports'),
+              (old_devotion, new_devotion, 'devotion route'),
+              (old_arena, new_arena, 'arena route'),
+          ]
+          for old, new, label in replacements:
+              count = text.count(old)
+              if count != 1:
+                  raise SystemExit(f'Expected exactly one {label}; found {count}. No App.tsx write performed.')
+              text = text.replace(old, new, 1)
+
+          path.write_text(text, encoding='utf-8')
+      - name: Verify intended route changes
+        shell: bash
+        run: |
+          grep -F "import { DailyDevotion } from './features/DailyDevotion';" src/App.tsx
+          grep -F "import { BibleArenaChallenge } from './features/BibleArenaChallenge';" src/App.tsx
+          grep -F '<Route path="/devotion" element={<DailyDevotion session={session} />} />' src/App.tsx
+          grep -F '<Route path="/arena" element={<BibleArenaChallenge />} />' src/App.tsx
+      - name: Commit route integration
+        shell: bash
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add src/App.tsx
+          git diff --cached --check
+          git commit -m "Connect devotion and arena routes"
+          git push origin HEAD:integrate-devotion-arena
