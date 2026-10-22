@@ -84,17 +84,17 @@ A Hugging Face Spaces route was also investigated as a possible free alternative
 
 Bible Arena now has a connected study path rather than isolated pages.
 
-Current intended flow:
-
 `Bible Reader -> Verse Study <-> Topic Study / Related Scripture -> Chapter context`
 
 Saved Scripture is also connected back into study:
 
 `Bookmarks / verse-linked Notes -> exact Verse Study -> context/topics/related Scripture -> chapter`
 
-The active Bible Reader can select a verse and open its exact Verse Study page. Topic Study references can open exact Verse Study. Verse Study can work with bookmarks and personal verse notes. A verse note can be created, updated, loaded again, or deleted. Bookmarks and verse-linked notes now provide both **Study verse** and **Read chapter** navigation so the user does not lose the wider Scripture context.
+The active Bible Reader can select a verse and open its exact Verse Study page. Topic Study references can open exact Verse Study. Verse Study can work with bookmarks and personal verse notes. A verse note can be created, updated, loaded again, or deleted. Bookmarks and verse-linked notes provide both **Study verse** and **Read chapter** navigation so the user does not lose the wider Scripture context.
 
 General personal notes that are not attached to a verse remain general notes and are not given a fake Scripture link.
+
+The application also now has active routes for Daily Devotion and the starter Bible Arena Challenge. `/devotion` renders `DailyDevotion`, and `/arena` renders `BibleArenaChallenge`; these are no longer placeholder routes.
 
 ## 11. Important Challenges and Lessons
 
@@ -128,6 +128,10 @@ A later audit found two Bible-data patterns in the repository. The active `App.t
 
 **Decision:** protect the working active reader and do not perform a speculative schema rewrite. Verify the real Supabase schema before consolidating the two models.
 
+### Safe fallback content
+
+Daily Devotion must not invent Scripture or pretend that unpublished devotional content is verified. The feature therefore has explicit not-published/unavailable states. This lets development continue without filling database gaps with made-up content.
+
 ## 12. Questions and Decisions That Shaped the Product
 
 **Should local-language voice be optional?** No. Idoma text and voice are core to Bible Arena.
@@ -142,13 +146,13 @@ A later audit found two Bible-data patterns in the repository. The active `App.t
 
 **Should the newer Bible data model automatically replace the active reader?** No. The active route must be protected until the real Supabase schema proves which model is authoritative.
 
+**Should Daily Devotion invent content when no verified devotion exists?** No. It should show a clear fallback and keep verified Scripture/content separate from placeholders.
+
 ## 13. File-by-File Learning Notes
 
 ### `/src/App.tsx`
 
-This is currently the main application shell and active router. Importantly, the production `/bible/:bookKey/:chapterNumber` route uses the `BibleReader` function defined inside this file. That active reader loads languages/versions, books, chapters and verses, records reading history, manages bookmarks, handles chapter navigation, and sends a selected verse to `/explore/verse/:verseId`.
-
-`App.tsx` also contains the current Bookmarks and My Notes pages. Bookmarks and verse-linked notes now navigate to the exact Verse Study page while preserving a separate Read chapter action.
+This is currently the main application shell and active router. The production `/bible/:bookKey/:chapterNumber` route uses the `BibleReader` function defined inside this file. The file also routes `/devotion` to `DailyDevotion` and `/arena` to `BibleArenaChallenge`. Bookmarks and verse-linked notes navigate to exact Verse Study while preserving a separate Read chapter action.
 
 ### `/src/features/VerseStudy.tsx`
 
@@ -157,6 +161,18 @@ The focused verse-study experience. It loads the selected verse and study contex
 ### `/src/features/TopicSearch.tsx`
 
 Contains topic discovery/study behavior. Scripture references in Topic Study can open the exact Verse Study route, while chapter navigation remains available for context.
+
+### `/src/features/DailyDevotion.tsx`
+
+The active Daily Devotion page. It uses the user's local calendar date, attempts to load verified devotion content and linked Scripture, supports completion state, and keeps raw database errors away from the user. If no verified devotion is published, it gives a safe fallback instead of inventing Scripture.
+
+### `/src/features/BibleArenaChallenge.tsx`
+
+The active starter challenge experience. It displays multiple-choice questions, checks answers, tracks score, shows feedback, links the user back to the relevant Bible chapter, displays a result, and supports restarting.
+
+### `/src/data/starterChallenge.ts`
+
+Keeps the starter challenge question data separate from the challenge UI. This makes the content easier to review and test independently from presentation logic.
 
 ### `/src/features/BibleReader.tsx`, `/src/features/BibleReaderData.ts`, `/src/lib/bibleData.ts`
 
@@ -240,6 +256,23 @@ Controls Vercel routing. The SPA rewrite preserves `/api/...` requests for serve
 6. Bookmarks and My Notes can return to the same exact Verse Study page later.
 7. **Read chapter** returns the user to the wider chapter context.
 
+### Open Daily Devotion
+
+1. The user opens `/devotion`.
+2. `App.tsx` renders `DailyDevotion`.
+3. The feature calculates the user's local date and attempts to load that day's verified devotion.
+4. If linked Scripture exists, the user can study the exact verse or read its chapter.
+5. A signed-in user can mark the devotion complete when the database path is available.
+6. If verified content is missing or the database path is unavailable, the page shows a safe fallback rather than fabricating content.
+
+### Play the starter Bible Arena Challenge
+
+1. The user opens `/arena`.
+2. `App.tsx` renders `BibleArenaChallenge`.
+3. Questions come from the separated starter challenge data.
+4. The user chooses one answer, receives correct/wrong feedback and can open the referenced Bible chapter.
+5. The challenge advances through its questions, shows the final score and can be restarted.
+
 ### Speak Idoma (prepared flow; live hosting postponed)
 
 1. The user presses the microphone button.
@@ -253,25 +286,31 @@ The browser/proxy/provider contract has test coverage. A real deployed worker an
 
 ## 16. What Has Been Verified So Far
 
-GitHub CI has successfully completed after the recent study-flow changes. The active application routes now connect Bible reading, exact Verse Study, Topic Study, Bookmarks and verse-linked Notes.
+GitHub CI has successfully completed after the study-flow changes. The active application routes connect Bible reading, exact Verse Study, Topic Study, Bookmarks and verse-linked Notes.
+
+Daily Devotion and the starter Bible Arena Challenge have now also been wired into the active application routes. The integrated build was verified through Vercel before promotion, and Vercel subsequently reported the exact integration build on `main` as successfully deployed.
+
+The Daily Devotion fallback behavior and starter challenge data have automated test coverage. This does not prove the unverified Supabase devotion tables exist; it proves the application behavior and content contracts covered by those tests.
 
 The secure ASR provider integration has mocked automated coverage, but this does **not** prove a real GPU endpoint, model startup, network path or Idoma recognition accuracy.
 
-The current repository audit also established that the active Bible route uses the `BibleReader` inside `App.tsx`, while separate reader/service files represent additional/partly newer architecture. This distinction is now documented so future refactoring does not accidentally replace the working route without evidence.
+The repository audit established that the active Bible route uses the `BibleReader` inside `App.tsx`, while separate reader/service files represent additional/partly newer architecture. This distinction is documented so future refactoring does not accidentally replace the working route without evidence.
 
 ## 17. What Is Still Unfinished
 
+- The live Supabase Bible schema still needs a successful audit.
+- The `daily_devotions` and `devotion_completions` schema/content path still needs live verification; Daily Devotion may show its safe fallback until that is confirmed.
+- The duplicate/competing Bible reader data models should be consolidated only after the schema audit.
+- SQL migrations/schema history should eventually be committed so the database structure is reproducible.
 - Live GPU/serverless Idoma ASR hosting is postponed; no Runpod endpoint is live.
 - End-to-end production Idoma voice transcription has not yet been proven.
 - Real Idoma accuracy has not yet been benchmarked by Bible Arena with a representative test set.
 - The complete authorized Idoma Bible text is not yet loaded.
 - Jesus Film Idoma reuse/training permission has not been obtained.
 - The gated dedicated Idoma Hugging Face model is not a production dependency.
-- The Vercel proxy still needs deployment-level verification against a real GPU endpoint.
-- The real Supabase Bible schema still needs a successful live audit.
-- The duplicate/competing Bible reader data models should be consolidated only after that schema audit.
-- SQL migrations/schema history should eventually be committed so the database structure is reproducible.
-- Devotion, Arena/challenges, Ask AI and parts of Profile remain future modules.
+- The Vercel voice proxy still needs deployment-level verification against a real GPU endpoint when hosting becomes available.
+- Ask AI and parts of Profile/progress remain future work.
+- Daily Devotion and Arena are now active modules; they should no longer be described as placeholder/future routes.
 
 These are explicit milestones, not hidden failures.
 
@@ -283,4 +322,4 @@ The final version should be understandable to a beginner who did not participate
 
 ---
 
-**Next documentation update:** record the successful live Supabase schema audit and any resulting safe Bible-data consolidation. Voice-hosting documentation should be updated when a suitable deployment route is actually activated and the first genuine Idoma transcription is tested; do not record either as successful before it happens.
+**Next documentation update:** record the successful live Supabase schema audit and any resulting safe Bible-data consolidation. Also record live Daily Devotion database verification when it occurs. Voice-hosting documentation should be updated when a suitable deployment route is actually activated and the first genuine Idoma transcription is tested; do not record either as successful before it happens.

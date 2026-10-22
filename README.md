@@ -4,7 +4,7 @@ Bible Arena is a multilingual Bible reading, study, devotional, learning, audio,
 
 **Idoma is the first major local-language priority.** Written local-language Scripture and voice/audio are core product requirements rather than optional extras.
 
-> **Current status:** Bible Arena is under active development. English KJV is the Scripture translation currently loaded. Several local languages are configured in the catalogue, but that does not mean their Bible texts have been imported. In particular, the complete licensed Idoma Bible text has not yet been imported. The Idoma speech-recognition integration is implemented through a secure server-side proxy and covered by automated tests, but paid GPU hosting has deliberately been postponed while a suitable hosting path is considered. Bible Reader, Verse Study, Topic Study, bookmarks, and verse-linked personal notes are being connected into one study journey.
+> **Current status:** Bible Arena is under active development. English KJV is the Scripture translation currently loaded. Several local languages are configured in the catalogue, but that does not mean their Bible texts have been imported. In particular, the complete licensed Idoma Bible text has not yet been imported. The Idoma speech-recognition integration is implemented through a secure server-side proxy and covered by automated tests, but paid GPU hosting has deliberately been postponed while a suitable hosting path is considered. The active application now connects Bible Reader, Verse Study, Topic Study, bookmarks, verse-linked personal notes, Daily Devotion, and the starter Bible Arena Challenge. The integrated `main` build has been successfully deployed through Vercel.
 
 ## Documentation
 
@@ -29,7 +29,7 @@ Bible Arena is a multilingual Bible reading, study, devotional, learning, audio,
 - **Database/backend services:** Supabase / PostgreSQL
 - **Tests:** Vitest
 - **Source control:** GitHub
-- **Web deployment:** Vercel configuration is present in the repository
+- **Web deployment:** Vercel
 - **Idoma ASR baseline:** Meta OmniASR
 - **ASR deployment integration:** Runpod Serverless code retained as a hosting option; live paid deployment is postponed
 - **Audio normalization:** FFmpeg / libsndfile
@@ -42,12 +42,13 @@ bible-arena/
 │   └── voice/idoma/
 │       ├── transcribe.ts        # Secure Vercel proxy to Runpod
 │       └── transcribe.test.ts   # Proxy/API tests
-├── src/                         # React/TypeScript application
+├── src/
 │   ├── components/              # Reusable UI components
-│   ├── features/                # Verse/topic study features
+│   ├── data/                    # Verified starter challenge content
+│   ├── features/                # Study, devotion, topic, and challenge features
 │   └── services/                # Browser/application service logic
 ├── ml/
-│   └── idoma-asr/               # Idoma speech-recognition work
+│   └── idoma-asr/
 │       └── service/
 │           ├── app.py           # OmniASR loading/audio/transcription logic
 │           ├── handler.py       # Runpod Serverless worker entry point
@@ -66,37 +67,16 @@ The exact repository contains additional files beyond this overview. The structu
 
 ## Prerequisites
 
-For normal frontend development, install:
-
-- Node.js with npm
-- Git
-
-For local Idoma ASR development, also install:
-
-- Python 3.11 (the deployment container currently uses Python 3.11)
-- FFmpeg
-- system audio support compatible with `libsndfile`
+For normal frontend development, install Node.js with npm and Git. For local Idoma ASR development, also install Python 3.11, FFmpeg, and system audio support compatible with `libsndfile`.
 
 A Supabase project is required for database-backed application features. GPU infrastructure is only needed when running the speech model in a suitable inference environment.
 
 ## Install and run the frontend
 
-Clone the repository and enter the project folder:
-
 ```bash
 git clone https://github.com/ejembiedwin36-oss/bible-arena.git
 cd bible-arena
-```
-
-Install JavaScript dependencies:
-
-```bash
 npm install
-```
-
-Start the Vite development server:
-
-```bash
 npm run dev
 ```
 
@@ -151,53 +131,51 @@ User microphone
   → Bible Arena
 ```
 
-Important files:
+Important files include `src/components/IdomaVoiceInput.tsx`, `src/services/idomaRecorder.ts`, `src/services/idomaAsr.ts`, `api/voice/idoma/transcribe.ts`, `api/voice/idoma/transcribe.test.ts`, `ml/idoma-asr/service/app.py`, and `ml/idoma-asr/service/handler.py`.
 
-- `src/components/IdomaVoiceInput.tsx` — visible microphone/transcription UI and recording feedback.
-- `src/services/idomaRecorder.ts` — browser recording logic.
-- `src/services/idomaAsr.ts` — validates and sends recorded audio to Bible Arena's server route.
-- `api/voice/idoma/transcribe.ts` — validates the request, protects Runpod credentials, submits the job, polls its status, and returns a safe response.
-- `api/voice/idoma/transcribe.test.ts` — tests input validation and mocked Runpod success/failure flows without requiring paid GPU execution.
-- `ml/idoma-asr/service/app.py` — normalizes audio and runs OmniASR.
-- `ml/idoma-asr/service/handler.py` — accepts Runpod jobs and returns transcripts.
-- `Dockerfile` — builds the worker from the repository root for Runpod.
-
-The browser/server proxy currently limits an audio request to **4 MB**, keeping it below Vercel Functions' request-body ceiling. The recording UI also targets short speech clips, with a 30-second recording limit. The Runpod worker performs its own duration/audio validation as an additional boundary.
-
-The external Idoma code used by standards/integrations is `idu`. Do not confuse it with the project's earlier internal `id` code; ISO `id` normally refers to Indonesian.
+The browser/server proxy currently limits an audio request to **4 MB**. The recording UI targets short speech clips with a 30-second recording limit. The external Idoma code used by standards/integrations is `idu`; do not confuse it with the project's earlier internal `id` code, because ISO `id` normally refers to Indonesian.
 
 ## Run the ASR service locally
-
-From the ASR service directory, create and activate a Python virtual environment using the normal commands for your operating system, then install the requirements:
 
 ```bash
 cd ml/idoma-asr/service
 python -m pip install -r requirements.txt
 ```
 
-The deployment handler is intended for Runpod Serverless. The core inference functions live in `app.py` and should be tested independently as development continues.
-
-Model downloads can be large, and local inference requirements depend on the machine. Do not assume a normal laptop will provide the same performance as a GPU worker.
+The deployment handler is intended for Runpod Serverless. Model downloads can be large, and local inference requirements depend on the machine. Do not assume a normal laptop will provide the same performance as a GPU worker.
 
 ## Docker / Runpod deployment
 
 The root `Dockerfile` exists because Runpod's GitHub deployment flow expects an easily discoverable container recipe. It installs the required audio libraries and Python packages, copies `app.py` and `handler.py`, and starts the Runpod worker handler.
 
-The Runpod endpoint is **not currently live**. The Serverless configuration was prepared, but deployment was stopped before adding credit or a payment method because GPU execution is paid. No production Runpod endpoint was activated and the project did not incur Runpod charges. A Hugging Face Spaces/ZeroGPU route was also investigated, but the account flow shown during setup required a paid plan for the Gradio/Docker compute needed by OmniASR. Voice/audio remains a core Bible Arena requirement; only the hosting step is postponed. The existing integration code is retained so a suitable hosting option can be connected later without rebuilding the voice feature from scratch.
+The Runpod endpoint is **not currently live**. Deployment was stopped before adding credit or a payment method because GPU execution is paid. No production Runpod endpoint was activated and the project did not incur Runpod charges. A Hugging Face Spaces compute route was also investigated, but the required Gradio/Docker path shown during setup required a paid plan. Voice/audio remains a core Bible Arena requirement; only hosting is postponed.
 
 ## Bible study integration
 
-Bible Arena's study foundation is now being connected around exact verse IDs rather than treating each page as an isolated feature.
-
-Current implemented connections include:
+Bible Arena now has a connected study journey built around exact verse IDs:
 
 - Bible Reader → exact Verse Study.
 - Verse Study → surrounding chapter context.
 - Verse Study ↔ verified Topic Study mappings and related Scriptures.
 - Verse Study ↔ bookmarks.
 - Verse Study ↔ verse-linked personal notes, including loading, updating, and deleting a saved reflection.
+- Bookmarks and verse-linked Notes → exact Verse Study or wider chapter context.
 
-These integrations do not imply that every planned study feature is complete. They establish the navigation and data relationships needed for a coherent study journey.
+This establishes a coherent navigation/data foundation while the project continues to verify and consolidate its Bible data model.
+
+## Daily Devotion
+
+The active `/devotion` route now renders the Daily Devotion feature rather than a placeholder. It is designed to load the devotion for the user's local date, display its linked Scripture, reflection question and prayer, and let a signed-in user mark the devotion complete.
+
+The feature deliberately does **not** invent a devotion or placeholder Scripture when verified content is unavailable. Database/provider details are not exposed as raw user-facing errors.
+
+Important limitation: the live Supabase schema for `daily_devotions` and `devotion_completions` has not yet been verified because the database connector timed out during the schema audit. No speculative schema change was made. Until the required tables and verified content are confirmed, the page may correctly show its safe unavailable/not-published fallback.
+
+## Bible Arena Challenge
+
+The active `/arena` route now renders the starter Bible Arena Challenge rather than a placeholder. The starter challenge uses separated question data, multiple-choice answers, score/feedback, Scripture references, chapter navigation, result display, and restart behavior.
+
+Automated checks protect basic challenge-data integrity, including ensuring that a correct answer is present among the choices and that Scripture navigation targets are defined.
 
 ## Bible content and licensing
 
@@ -207,29 +185,19 @@ Bible Arena does not treat publicly viewable Bible text/audio as automatically r
 
 The Idoma Common Language Bible (`Ubáyíbu kú Idɔma / IFBCL`) has been identified as a target written resource, but the complete authorized text has not yet been loaded into Bible Arena. Do not add scraped copyrighted verses as placeholders.
 
-## Testing
+## Testing and deployment
 
-Run the web/API test suite with:
+Run the web/API test suite with `npm test` and strict server-side API type-checking with `npm run typecheck:api`.
 
-```bash
-npm test
-```
+The Idoma proxy tests cover request/configuration guards and mocked provider success/failure behavior. Passing mocked integration tests does **not** prove real Idoma transcription accuracy; genuine Idoma recordings are required for that measurement.
 
-Run strict server-side API type-checking with:
-
-```bash
-npm run typecheck:api
-```
-
-The Idoma proxy tests cover method/configuration guards, invalid content types, empty audio, oversized audio, mocked Runpod submission, successful transcript return, failed jobs, and completed jobs that contain no usable transcript.
-
-ASR tests also live under `ml/idoma-asr/service/`. Speech-recognition quality must ultimately be evaluated using genuine Idoma recordings. Passing mocked integration tests proves application behavior around the provider; it does **not** prove real Idoma transcription accuracy.
+The integrated application containing the active Daily Devotion and Bible Arena Challenge routes was promoted to `main` after its preview deployment succeeded. Vercel then reported the exact `main` integration build as successfully deployed.
 
 ## Security rules
 
 - Never put private cloud/API credentials in browser source.
 - Never commit `.env` secrets.
-- Keep Runpod credentials on the server side if that deployment path is activated.
+- Keep Runpod credentials server-side if that deployment path is activated.
 - Reject unsuitable/oversized requests before spending GPU resources where possible.
 - Apply Supabase access controls/RLS where appropriate.
 - Keep private notes and user data protected.
@@ -238,23 +206,18 @@ ASR tests also live under `ml/idoma-asr/service/`. Speech-recognition quality mu
 
 ## Current development priorities
 
-1. Continue connecting Bible Reader, Verse Study, Topic Study, bookmarks, and personal notes into one coherent study journey.
-2. Verify study pages against the current Supabase Bible schema and remove any remaining assumptions from older data models.
+1. Verify the live Supabase Bible/devotion schema and resolve the remaining duplicate Bible data-model assumptions without breaking the working reader.
+2. Confirm the Daily Devotion tables/content path and test the feature against real verified devotion records.
 3. Continue the legitimate licensing/content-access path for written Idoma Scripture and audio.
 4. Add additional Bible translations only when their content and usage rights are properly established.
 5. Keep the Idoma voice/OmniASR integration ready while evaluating a suitable hosting path; do not activate paid GPU infrastructure without explicit approval.
-6. When voice hosting becomes available, test the full microphone → secure proxy → ASR → transcript path with genuine Idoma speech and measure real transcription quality.
-7. Keep the beginner project guide and technical documentation updated as milestones are completed.
+6. When voice hosting becomes available, test microphone → secure proxy → ASR → transcript with genuine Idoma speech and measure real transcription quality.
+7. Continue expanding Bible Arena learning/challenge content with verified Scripture references.
+8. Keep this README and the beginner project guide synchronized with completed milestones.
 
 ## Contributing / development discipline
 
-Keep changes small and understandable. Before merging important work:
-
-- run relevant tests;
-- avoid committing secrets;
-- document new environment requirements;
-- update the beginner guide when a meaningful challenge, decision, error, or lesson occurs;
-- update this README when setup/run/deployment instructions change.
+Keep changes small and understandable. Before merging important work, run relevant tests, avoid committing secrets, document new environment requirements, update the beginner guide after meaningful decisions/errors/lessons, and update this README when setup/run/deployment instructions change.
 
 ## Project status disclaimer
 
