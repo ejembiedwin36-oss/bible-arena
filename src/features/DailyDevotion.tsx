@@ -3,21 +3,23 @@ import { useNavigate } from 'react-router-dom';
 import type { Session } from '@supabase/supabase-js';
 import { supabase } from '../lib/supabase';
 
+type DevotionVerse = {
+  id: string;
+  verse_number: number;
+  text: string;
+  chapter: {
+    chapter_number: number;
+    book: { canonical_key: string; name: string };
+  };
+};
+
 type Devotion = {
   id: string;
   title: string;
   body: string;
   reflection_question: string | null;
   prayer: string | null;
-  verse: {
-    id: string;
-    verse_number: number;
-    text: string;
-    chapter: {
-      chapter_number: number;
-      book: { canonical_key: string; name: string };
-    };
-  } | null;
+  verses: DevotionVerse[];
 };
 
 function localDateKey(date = new Date()) {
@@ -42,9 +44,9 @@ export function DailyDevotion({ session }: { session: Session }) {
       setCompleted(false);
       const today = localDateKey();
       const { data, error: devotionError } = await supabase
-        .from('daily_devotions')
-        .select('id,title,body,reflection_question,prayer,bible_verses(id,verse_number,text,bible_chapters(chapter_number,bible_books(canonical_key,name)))')
-        .eq('devotion_date', today)
+        .from('devotions')
+        .select('id,title,message,reflection_question,prayer,devotion_scriptures(bible_verses(id,verse_number,text,bible_chapters(chapter_number,bible_books(canonical_key,name))))')
+        .eq('published_on', today)
         .maybeSingle();
       if (cancelled) return;
       if (devotionError) {
@@ -58,26 +60,37 @@ export function DailyDevotion({ session }: { session: Session }) {
         setLoading(false);
         return;
       }
+
       const raw = data as any;
-      const rawVerse = Array.isArray(raw.bible_verses) ? raw.bible_verses[0] : raw.bible_verses;
-      const rawChapter = Array.isArray(rawVerse?.bible_chapters) ? rawVerse.bible_chapters[0] : rawVerse?.bible_chapters;
-      const rawBook = Array.isArray(rawChapter?.bible_books) ? rawChapter.bible_books[0] : rawChapter?.bible_books;
-      setDevotion({
-        id: raw.id,
-        title: raw.title,
-        body: raw.body,
-        reflection_question: raw.reflection_question ?? null,
-        prayer: raw.prayer ?? null,
-        verse: rawVerse && rawChapter && rawBook ? {
+      const links = Array.isArray(raw.devotion_scriptures) ? raw.devotion_scriptures : [];
+      const verses: DevotionVerse[] = links.flatMap((link: any) => {
+        const rawVerse = Array.isArray(link?.bible_verses) ? link.bible_verses[0] : link?.bible_verses;
+        const rawChapter = Array.isArray(rawVerse?.bible_chapters) ? rawVerse.bible_chapters[0] : rawVerse?.bible_chapters;
+        const rawBook = Array.isArray(rawChapter?.bible_books) ? rawChapter.bible_books[0] : rawChapter?.bible_books;
+        if (!rawVerse || !rawChapter || !rawBook) return [];
+        return [{
           id: rawVerse.id,
           verse_number: rawVerse.verse_number,
           text: rawVerse.text,
-          chapter: { chapter_number: rawChapter.chapter_number, book: { canonical_key: rawBook.canonical_key, name: rawBook.name } },
-        } : null,
+          chapter: {
+            chapter_number: rawChapter.chapter_number,
+            book: { canonical_key: rawBook.canonical_key, name: rawBook.name },
+          },
+        }];
       });
+
+      setDevotion({
+        id: raw.id,
+        title: raw.title,
+        body: raw.message,
+        reflection_question: raw.reflection_question ?? null,
+        prayer: raw.prayer ?? null,
+        verses,
+      });
+
       const { data: completion, error: completionError } = await supabase
         .from('devotion_completions')
-        .select('id')
+        .select('devotion_id')
         .eq('user_id', session.user.id)
         .eq('devotion_id', raw.id)
         .maybeSingle();
@@ -115,12 +128,12 @@ export function DailyDevotion({ session }: { session: Session }) {
       {completed && <span className="count-chip">Completed ✓</span>}
       {error && <div className="notice error">{error}</div>}
     </section>
-    {devotion.verse && <section className="card">
+    {devotion.verses.map((verse) => <section className="card" key={verse.id}>
       <span className="label">TODAY’S SCRIPTURE</span>
-      <button className="reference-button" onClick={() => navigate(`/explore/verse/${devotion.verse!.id}`)}>{devotion.verse.chapter.book.name} {devotion.verse.chapter.chapter_number}:{devotion.verse.verse_number}</button>
-      <p>“{devotion.verse.text}”</p>
-      <div className="bookmark-actions"><button onClick={() => navigate(`/explore/verse/${devotion.verse!.id}`)}>Study verse →</button><button onClick={() => navigate(`/bible/${devotion.verse!.chapter.book.canonical_key}/${devotion.verse!.chapter.chapter_number}`)}>Read chapter →</button></div>
-    </section>}
+      <button className="reference-button" onClick={() => navigate(`/explore/verse/${verse.id}`)}>{verse.chapter.book.name} {verse.chapter.chapter_number}:{verse.verse_number}</button>
+      <p>“{verse.text}”</p>
+      <div className="bookmark-actions"><button onClick={() => navigate(`/explore/verse/${verse.id}`)}>Study verse →</button><button onClick={() => navigate(`/bible/${verse.chapter.book.canonical_key}/${verse.chapter.chapter_number}`)}>Read chapter →</button></div>
+    </section>)}
     {devotion.reflection_question && <section className="card"><span className="label">REFLECT</span><h2>Think about this</h2><p>{devotion.reflection_question}</p></section>}
     {devotion.prayer && <section className="card"><span className="label">PRAYER</span><h2>Pray</h2><p>{devotion.prayer}</p></section>}
     <section className="card"><button className="plan-complete" disabled={completed} onClick={markComplete}>{completed ? 'Completed ✓' : 'Mark today’s devotion complete'}</button></section>
