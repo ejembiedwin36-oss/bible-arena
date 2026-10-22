@@ -20,6 +20,13 @@ type Devotion = {
   } | null;
 };
 
+function localDateKey(date = new Date()) {
+  const year = date.getFullYear();
+  const month = String(date.getMonth() + 1).padStart(2, '0');
+  const day = String(date.getDate()).padStart(2, '0');
+  return `${year}-${month}-${day}`;
+}
+
 export function DailyDevotion({ session }: { session: Session }) {
   const navigate = useNavigate();
   const [devotion, setDevotion] = useState<Devotion | null>(null);
@@ -32,7 +39,8 @@ export function DailyDevotion({ session }: { session: Session }) {
     (async () => {
       setLoading(true);
       setError(null);
-      const today = new Date().toISOString().slice(0, 10);
+      setCompleted(false);
+      const today = localDateKey();
       const { data, error: devotionError } = await supabase
         .from('daily_devotions')
         .select('id,title,body,reflection_question,prayer,bible_verses(id,verse_number,text,bible_chapters(chapter_number,bible_books(canonical_key,name)))')
@@ -40,7 +48,8 @@ export function DailyDevotion({ session }: { session: Session }) {
         .maybeSingle();
       if (cancelled) return;
       if (devotionError) {
-        setError(devotionError.message);
+        console.error('Unable to load daily devotion', devotionError);
+        setError('Today’s devotion could not be loaded right now.');
         setLoading(false);
         return;
       }
@@ -66,24 +75,36 @@ export function DailyDevotion({ session }: { session: Session }) {
           chapter: { chapter_number: rawChapter.chapter_number, book: { canonical_key: rawBook.canonical_key, name: rawBook.name } },
         } : null,
       });
-      const { data: completion } = await supabase.from('devotion_completions').select('id').eq('user_id', session.user.id).eq('devotion_id', raw.id).maybeSingle();
-      if (!cancelled) {
-        setCompleted(Boolean(completion));
-        setLoading(false);
-      }
+      const { data: completion, error: completionError } = await supabase
+        .from('devotion_completions')
+        .select('id')
+        .eq('user_id', session.user.id)
+        .eq('devotion_id', raw.id)
+        .maybeSingle();
+      if (cancelled) return;
+      if (completionError) console.error('Unable to load devotion completion', completionError);
+      setCompleted(Boolean(completion));
+      setLoading(false);
     })();
     return () => { cancelled = true; };
   }, [session.user.id]);
 
   async function markComplete() {
     if (!devotion || completed) return;
-    const { error: completionError } = await supabase.from('devotion_completions').insert({ user_id: session.user.id, devotion_id: devotion.id });
-    if (completionError) setError(completionError.message);
-    else setCompleted(true);
+    setError(null);
+    const { error: completionError } = await supabase
+      .from('devotion_completions')
+      .insert({ user_id: session.user.id, devotion_id: devotion.id });
+    if (completionError) {
+      console.error('Unable to save devotion completion', completionError);
+      setError('Your completion could not be saved right now. Please try again.');
+    } else {
+      setCompleted(true);
+    }
   }
 
   if (loading) return <main className="placeholder card"><p>Loading today’s devotion…</p></main>;
-  if (error) return <main className="placeholder card"><span className="eyebrow">DAILY DEVOTION</span><h1>Devotion unavailable</h1><p>{error}</p><p>Your Bible Reader and study tools are still available.</p><button onClick={() => navigate('/bible')}>Open Bible →</button></main>;
+  if (error && !devotion) return <main className="placeholder card"><span className="eyebrow">DAILY DEVOTION</span><h1>Devotion unavailable</h1><p>{error}</p><p>Your Bible Reader and study tools are still available.</p><button onClick={() => navigate('/bible')}>Open Bible →</button></main>;
   if (!devotion) return <main className="placeholder card"><span className="eyebrow">DAILY DEVOTION</span><h1>Today’s devotion is not published yet.</h1><p>When a verified devotion is published for today, it will appear here. We do not generate placeholder Scripture or devotional content.</p><button onClick={() => navigate('/bible')}>Read the Bible →</button></main>;
 
   return <main className="topic-study">
@@ -92,6 +113,7 @@ export function DailyDevotion({ session }: { session: Session }) {
       <h1>{devotion.title}</h1>
       <p>{devotion.body}</p>
       {completed && <span className="count-chip">Completed ✓</span>}
+      {error && <div className="notice error">{error}</div>}
     </section>
     {devotion.verse && <section className="card">
       <span className="label">TODAY’S SCRIPTURE</span>
