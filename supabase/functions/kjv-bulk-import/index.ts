@@ -20,6 +20,16 @@ Deno.serve(async (req) => {
   if (authError || !user) return new Response("Unauthorized", { status: 401 });
 
   const db = createClient(url, service);
+  const { data: maintenanceUser, error: maintenanceError } = await db
+    .from("maintenance_users")
+    .select("user_id")
+    .eq("user_id", user.id)
+    .maybeSingle();
+  if (maintenanceError) {
+    return Response.json({ error: "Unable to verify maintenance access" }, { status: 500 });
+  }
+  if (!maintenanceUser) return new Response("Forbidden", { status: 403 });
+
   const { data: books, error: be } = await db
     .from("bible_books")
     .select("id,name,book_order")
