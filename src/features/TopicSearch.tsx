@@ -5,11 +5,56 @@ import { supabase } from '../lib/supabase';
 type Topic = { id: string; name: string; description: string | null };
 type TopicScripture = { topic_id: string; relevance_rank: number | null; verse: { id: string; verse_number: number; text: string; chapter: { id: string; chapter_number: number; book: { canonical_key: string; name: string } }; version: { abbreviation: string; name: string } } };
 
+type SearchVerse = { id:string; verse_number:number; text:string; bible_chapters: { chapter_number:number; bible_books:{name:string;canonical_key:string} } | null };
+const associations:Record<string,string[]> = {
+  excellence:['excellent','wisdom','understanding','diligent'],
+  faith:['faith','believe','trust'], prayer:['pray','prayer','supplication'],
+  patience:['patient','longsuffering'], purity:['pure','holy','holiness'],
+  forgiveness:['forgive','mercy'], love:['love','charity']
+};
+function termsFor(query:string):string[] {
+  const words=(query.toLowerCase().match(/[a-z]+/g)??[]).filter(w=>!['the','of','a','an','and','in','for','spirit','biblical','about','scripture'].includes(w));
+  return [...new Set(words.flatMap(w=>[w,...(associations[w]??[])]))].filter(w=>w.length>2);
+}
 export function TopicSearch() {
-  const navigate = useNavigate(); const [topics,setTopics]=useState<Topic[]>([]); const [query,setQuery]=useState(''); const [loading,setLoading]=useState(true); const [error,setError]=useState<string|null>(null);
+  const navigate=useNavigate();
+  const [topics,setTopics]=useState<Topic[]>([]);
+  const [query,setQuery]=useState('');
+  const [loading,setLoading]=useState(true);
+  const [searching,setSearching]=useState(false);
+  const [error,setError]=useState<string|null>(null);
+  const [verses,setVerses]=useState<SearchVerse[]>([]);
   useEffect(()=>{supabase.from('topics').select('id,name,description').order('name').then(({data,error:e})=>{if(e)setError(e.message);setTopics(data??[]);setLoading(false);});},[]);
   const filtered=useMemo(()=>{const q=query.trim().toLowerCase();return q?topics.filter(t=>`${t.name} ${t.description??''}`.toLowerCase().includes(q)):topics;},[topics,query]);
-  return <main className="topic-page"><section className="topic-hero card"><div><span className="eyebrow">TOPIC STUDY</span><h1>Find Scripture by topic.</h1><p>Search verified study topics and discover the Scriptures connected to each one.</p></div><input className="catalog-search" value={query} onChange={e=>setQuery(e.target.value)} placeholder="Search topics…" aria-label="Search topics"/></section>{loading&&<section className="card catalog-message">Loading topics…</section>}{error&&<section className="card catalog-message"><h2>Unable to load topics</h2><p>{error}</p></section>}{!loading&&!error&&filtered.length===0&&<section className="card empty-state"><strong>{topics.length===0?'No topics have been published yet.':'No topics match your search.'}</strong><p>{topics.length===0?'Topic mappings will appear here as verified Scripture study data is added.':'Try another topic name or keyword.'}</p></section>}{filtered.length>0&&<section className="topic-grid">{filtered.map(t=><button key={t.id} className="topic-card card" onClick={()=>navigate(`/explore/topic/${t.id}`)}><span className="study-icon">⌕</span><div><strong>{t.name}</strong><p>{t.description??'Explore Scriptures connected to this topic.'}</p></div></button>)}</section>}</main>;
+  useEffect(()=>{
+    const q=query.trim();
+    if(q.length<3){setVerses([]);setSearching(false);return;}
+    let cancelled=false;
+    const timer=setTimeout(async()=>{
+      setSearching(true);
+      const terms=termsFor(q);
+      if(!terms.length){setVerses([]);setSearching(false);return;}
+      const {data,error:e}=await supabase.from('bible_verses')
+        .select('id,verse_number,text,bible_chapters(chapter_number,bible_books(name,canonical_key))')
+        .or(terms.map(t=>`text.ilike.%${t}%`).join(',')).limit(80);
+      if(cancelled)return;
+      setError(e?.message??null);
+      const found=(data??[]) as unknown as SearchVerse[];
+      const score=(v:SearchVerse)=>terms.reduce((sum,term)=>sum+(v.text.toLowerCase().includes(term)?(term===terms[0]?5:1):0),0);
+      setVerses(e?[]:[...found].sort((a,b)=>score(b)-score(a)));
+
+      setSearching(false);
+    },350);
+    return()=>{cancelled=true;clearTimeout(timer);};
+  },[query]);
+  return <main className="topic-page">
+    <section className="topic-hero card"><div><span className="eyebrow">SCRIPTURE SEARCH</span><h1>Find Scripture by topic or keyword.</h1><p>Browse study topics and search the KJV text for relevant words. All displayed verses come from the Bible database.</p></div><input className="catalog-search" value={query} onChange={e=>setQuery(e.target.value)} placeholder="Try: Spirit of Excellence, prayer, faith…" aria-label="Search topics and Scripture"/></section>
+    {loading&&<section className="card catalog-message">Loading topics…</section>}
+    {error&&<section className="card catalog-message"><h2>Search unavailable</h2><p>{error}</p></section>}
+    {filtered.length>0&&<section className="topic-grid">{filtered.map(t=><button key={t.id} className="topic-card card" onClick={()=>navigate(`/explore/topic/${t.id}`)}><span className="study-icon">⌕</span><div><strong>{t.name}</strong><p>{t.description??'Explore Scriptures connected to this topic.'}</p></div></button>)}</section>}
+    {query.trim().length>=3&&<section className="saved-list" aria-live="polite"><h2>Matching KJV Scriptures</h2>{searching&&<p>Searching verses…</p>}{!searching&&!error&&verses.length===0&&<p>No matching verses found. Try another keyword.</p>}{!searching&&verses.map(v=>{const chapter=v.bible_chapters;const book=chapter?.bible_books;return <article key={v.id} className="bookmark-card"><div className="bookmark-main"><span className="label">KJV</span><button className="reference-button" onClick={()=>navigate(`/explore/verse/${v.id}`)}>{book?.name??'Bible'} {chapter?.chapter_number}:{v.verse_number}</button><p>{v.text}</p></div><div className="bookmark-actions"><button onClick={()=>navigate(`/explore/verse/${v.id}`)}>Study verse →</button>{book&&chapter&&<button onClick={()=>navigate(`/bible/${book.canonical_key}/${chapter.chapter_number}`)}>Read chapter →</button>}</div></article>;})}</section>}
+    {!loading&&!error&&query.trim().length===0&&topics.length===0&&<section className="card empty-state"><strong>No study topics published yet.</strong><p>Search for a Scripture keyword above.</p></section>}
+  </main>;
 }
 
 export function TopicStudy(){
