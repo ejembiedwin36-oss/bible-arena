@@ -12,6 +12,13 @@ describe('full KJV red-letter alignment', () => {
     expect(parts[parts.length - 1].red).toBe(false);
   });
 
+  it('marks Matthew 5:8 entirely red when the KJV words match', () => {
+    const verse = 'Blessed are the pure in heart: for they shall see God.';
+    expect(alignRedLetters('{Blessed [are] the pure in heart: for they shall see God.}', verse)).toEqual([
+      { text: verse, red: true },
+    ]);
+  });
+
   it('refuses to highlight text when the translation does not align', () => {
     expect(alignRedLetters('{I am the way}', 'I am a different translation')).toEqual([
       { text: 'I am a different translation', red: false },
