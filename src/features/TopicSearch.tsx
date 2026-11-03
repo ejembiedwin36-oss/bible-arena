@@ -14,8 +14,7 @@ const associations:Record<string,string[]> = {
 };
 function termsFor(query:string):string[] {
   const words=(query.toLowerCase().match(/[a-z]+/g)??[]).filter(w=>!['the','of','a','an','and','in','for','spirit','biblical','about','scripture'].includes(w));
-  const main=words.at(-1)??'';
-  return [...new Set([main,...(associations[main]??[])])].filter(w=>w.length>2);
+  return [...new Set(words.flatMap(w=>[w,...(associations[w]??[])]))].filter(w=>w.length>2);
 }
 export function TopicSearch() {
   const navigate=useNavigate();
@@ -40,7 +39,10 @@ export function TopicSearch() {
         .or(terms.map(t=>`text.ilike.%${t}%`).join(',')).limit(80);
       if(cancelled)return;
       setError(e?.message??null);
-      setVerses(e?[]:(data??[]) as unknown as SearchVerse[]);
+      const found=(data??[]) as unknown as SearchVerse[];
+      const score=(v:SearchVerse)=>terms.reduce((sum,term)=>sum+(v.text.toLowerCase().includes(term)?(term===terms[0]?5:1):0),0);
+      setVerses(e?[]:[...found].sort((a,b)=>score(b)-score(a)));
+
       setSearching(false);
     },350);
     return()=>{cancelled=true;clearTimeout(timer);};
