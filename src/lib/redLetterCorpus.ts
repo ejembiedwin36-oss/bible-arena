@@ -10,6 +10,8 @@ const files: Record<string, string> = {
 };
 const cache = new Map<string, Promise<BookData | null>>();
 
+export type RedLetterLoadState = { data: BookData | null; loading: boolean; error: boolean };
+
 function loadBook(book: string): Promise<BookData | null> {
   const file = files[book.toLowerCase()];
   if (!file) return Promise.resolve(null);
@@ -76,15 +78,18 @@ function append(parts: RedLetterSegment[], text: string, red: boolean) {
   else parts.push({ text, red });
 }
 
-export function useRedLetterBook(book: string | undefined, enabled: boolean) {
-  const [data, setData] = useState<BookData | null>(null);
+export function useRedLetterBook(book: string | undefined, enabled: boolean): RedLetterLoadState {
+  const [state, setState] = useState<RedLetterLoadState>({ data: null, loading: false, error: false });
   useEffect(() => {
     let active = true;
-    setData(null);
-    if (enabled && book) void loadBook(book).then((result) => { if (active) setData(result); });
+    const supported = Boolean(book && files[book.toLowerCase()]);
+    setState({ data: null, loading: enabled && supported, error: false });
+    if (enabled && book && supported) void loadBook(book).then((result) => {
+      if (active) setState({ data: result, loading: false, error: !result });
+    });
     return () => { active = false; };
   }, [book, enabled]);
-  return data;
+  return state;
 }
 
 export function redLetterVerse(data: BookData | null, chapter: number, verse: number, displayed: string): RedLetterSegment[] {
