@@ -109,3 +109,23 @@
     grid-template-columns: 1fr;
   }
 }
+
+.red-letter-toggle {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.55rem;
+  font-weight: 600;
+}
+
+.red-letter-toggle input {
+  width: 1.1rem;
+  height: 1.1rem;
+}
+
+.jesus-red-letter {
+  color: #b91c1c;
+}
+
+@media (prefers-color-scheme: dark) {
+  .jesus-red-letter { color: #ff7777; }
+}
