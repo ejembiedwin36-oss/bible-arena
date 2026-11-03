@@ -1,33 +1,23 @@
 import { describe, expect, it } from 'vitest';
 import { alignRedLetters } from './redLetterCorpus';
 
-describe('full KJV red-letter alignment', () => {
-  it('marks Jesus words while preserving narration and verse text', () => {
-    const text = 'And Jesus answering said unto him, Suffer it to be so now: for thus it becometh us to fulfil all righteousness. Then he suffered him.';
-    const source = 'And Jesus answering said unto him, {Suffer [it to be so] now: for thus it becometh us to fulfil all righteousness.} Then he suffered him.';
-    const parts = alignRedLetters(source, text);
-    expect(parts.map((part) => part.text).join('')).toBe(text);
-    expect(parts.some((part) => part.red && part.text.includes('Suffer'))).toBe(true);
-    expect(parts[0].red).toBe(false);
-    expect(parts[parts.length - 1].red).toBe(false);
-  });
-
-  it('marks Matthew 5:8 entirely red when the KJV words match', () => {
+describe('KJV red-letter marker alignment', () => {
+  it('highlights Matthew 5:8 while preserving the exact verse', () => {
     const verse = 'Blessed are the pure in heart: for they shall see God.';
-    expect(alignRedLetters('{Blessed [are] the pure in heart: for they shall see God.}', verse)).toEqual([
-      { text: verse, red: true },
-    ]);
+    const parts = alignRedLetters(verse, verse, [{ start: 0, end: 7 }, { start: 12, end: 54 }]);
+    expect(parts.map((part) => part.text).join('')).toBe(verse);
+    expect(parts.filter((part) => part.red).map((part) => part.text).join('')).toBe('Blessed the pure in heart: for they shall see God.');
   });
 
-  it('refuses to highlight text when the translation does not align', () => {
-    expect(alignRedLetters('{I am the way}', 'I am a different translation')).toEqual([
-      { text: 'I am a different translation', red: false },
-    ]);
+  it('does not color narration outside Jesus speech', () => {
+    const verse = 'Jesus said, Peace be unto you.';
+    const parts = alignRedLetters(verse, verse, [{ start: 12, end: verse.length }]);
+    expect(parts[0]).toEqual({ text: 'Jesus said, ', red: false });
+    expect(parts[1].red).toBe(true);
   });
 
-  it('handles consecutive red and non-red segments without changing text', () => {
-    const parts = alignRedLetters('He said {Peace be unto you} and departed.', 'He said Peace be unto you and departed.');
-    expect(parts.map((part) => part.text).join('')).toBe('He said Peace be unto you and departed.');
-    expect(parts.some((part) => part.red)).toBe(true);
+  it('refuses mismatched text and invalid offsets', () => {
+    expect(alignRedLetters('KJV wording', 'other wording', [{ start: 0, end: 3 }])).toEqual([{ text: 'other wording', red: false }]);
+    expect(alignRedLetters('text', 'text', [{ start: 0, end: 99 }])).toEqual([{ text: 'text', red: false }]);
   });
 });
