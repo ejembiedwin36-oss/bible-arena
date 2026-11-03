@@ -6,7 +6,7 @@ describe('KJV red-letter marker alignment', () => {
     const verse = 'Blessed are the pure in heart: for they shall see God.';
     const parts = alignRedLetters(verse, verse, [{ start: 0, end: 7 }, { start: 12, end: 54 }]);
     expect(parts.map((part) => part.text).join('')).toBe(verse);
-    expect(parts.filter((part) => part.red).map((part) => part.text).join('')).toBe('Blessed the pure in heart: for they shall see God.');
+    expect(parts.filter((part) => part.red).map((part) => part.text).join('')).toBe('Blessedthe pure in heart: for they shall see God.');
   });
 
   it('does not color narration outside Jesus speech', () => {
