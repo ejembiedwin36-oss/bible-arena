@@ -6,7 +6,7 @@ describe('red-letter KJV passages', () => {
     const text = 'Jesus saith unto him, I am the way, the truth, and the life: no man cometh unto the Father, but by me.';
     const segments = getRedLetterSegments('John', 14, 6, text);
     expect(segments[0]).toEqual({ text: 'Jesus saith unto him, ', red: false });
-    expect(segments.slice(1).map((segment) => segment.text).join('')).toBe(text.slice(22));
+    expect(segments.map((segment) => segment.text).join('')).toBe(text);
     expect(segments[1].red).toBe(true);
   });
 
