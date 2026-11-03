@@ -69,6 +69,7 @@ export function BibleReaderPanel({ initialLanguageId }: BibleReaderPanelProps) {
   const selectedBook = useMemo(() => books.find((book) => book.id === bookId), [books, bookId]);
   const isKjv = selectedVersion?.abbreviation?.toUpperCase() === 'KJV';
   const redLetterBook = useRedLetterBook(selectedBook?.name, redLettersEnabled && isKjv);
+  const redVerseCount = chapter?.verses.filter((verse) => redLetterVerse(redLetterBook.data, chapterNumber, verse.verseNumber, verse.text).some((segment) => segment.red)).length ?? 0;
   const isIdoma = selectedLanguage?.code?.toLowerCase() === 'id' || selectedLanguage?.code?.toLowerCase() === 'idu';
   const canGoPrevious = chapterNumber > 1 && !loading;
   const canGoNext = Boolean(selectedBook && chapterNumber < selectedBook.chapterCount && !loading);
@@ -94,6 +95,8 @@ export function BibleReaderPanel({ initialLanguageId }: BibleReaderPanelProps) {
 
       {redLettersEnabled && isKjv && redLetterBook.loading && <p role="status">Loading red-letter annotations…</p>}
       {redLettersEnabled && isKjv && redLetterBook.error && <p role="alert">Red-letter annotations could not load. Scripture remains readable in normal text.</p>}
+
+      {redLettersEnabled && isKjv && redLetterBook.data && chapter && <p role="status" className="red-letter-status">Red-letter verses highlighted in this chapter: {redVerseCount} of {chapter.verses.length}.{redVerseCount === 0 ? ' No matching red-letter passages were found. Check the selected chapter or report a missing annotation.' : ''}</p>}
 
       {isIdoma && <IdomaVoiceInput />}
 
