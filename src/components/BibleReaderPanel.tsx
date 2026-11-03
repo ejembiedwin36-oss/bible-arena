@@ -1,6 +1,7 @@
 import { useEffect, useMemo, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { IdomaVoiceInput } from './IdomaVoiceInput';
+import { getRedLetterSegments } from '../lib/redLetter';
 import type { BibleChapter } from '../services/bibleReader';
 import { listBibleBooks, listBibleLanguages, listBibleVersions, type BibleBook, type BibleLanguage, type BibleVersion } from '../services/bibleCatalogue';
 import { loadBibleChapter } from '../services/bibleReader';
@@ -20,6 +21,7 @@ export function BibleReaderPanel({ initialLanguageId }: BibleReaderPanelProps) {
   const [chapterNumber, setChapterNumber] = useState(1);
   const [chapter, setChapter] = useState<BibleChapter | null>(null);
   const [loading, setLoading] = useState(false);
+  const [redLettersEnabled, setRedLettersEnabled] = useState(true);
   const [error, setError] = useState<string | null>(null);
 
   useEffect(() => {
@@ -86,6 +88,8 @@ export function BibleReaderPanel({ initialLanguageId }: BibleReaderPanelProps) {
         <label>Book<select value={bookId} onChange={(event) => { setBookId(event.target.value); setChapterNumber(1); }}>{books.map((book) => <option key={book.id} value={book.id}>{book.bookOrder}. {book.name}</option>)}</select></label>
       </div>
 
+      <label className="red-letter-toggle"><input type="checkbox" checked={redLettersEnabled} onChange={(event) => setRedLettersEnabled(event.target.checked)} /> Show Jesus’ words in red (selected KJV passages)</label>
+
       {isIdoma && <IdomaVoiceInput />}
 
       {error && <p role="alert" className="reader-error">{error}</p>}
@@ -101,7 +105,7 @@ export function BibleReaderPanel({ initialLanguageId }: BibleReaderPanelProps) {
               title="Study this verse"
               onClick={() => navigate(`/explore/verse/${verse.id}`)}
             >
-              <sup>{verse.verseNumber}</sup> {verse.text}
+              <sup>{verse.verseNumber}</sup>{' '}{redLettersEnabled && selectedVersion?.abbreviation?.toUpperCase() === 'KJV' && selectedBook ? getRedLetterSegments(selectedBook.name, chapterNumber, verse.verseNumber, verse.text).map((segment, index) => segment.red ? <span key={index} className="jesus-red-letter">{segment.text}</span> : <span key={index}>{segment.text}</span>) : verse.text}
             </button>
           </p>
         ))}
