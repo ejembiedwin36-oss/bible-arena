@@ -92,6 +92,9 @@ export function BibleReaderPanel({ initialLanguageId }: BibleReaderPanelProps) {
 
       <label className="red-letter-toggle"><input type="checkbox" checked={redLettersEnabled} onChange={(event) => setRedLettersEnabled(event.target.checked)} /> Show Jesus’ words in red (KJV)</label>
 
+      {redLettersEnabled && isKjv && redLetterBook.loading && <p role="status">Loading red-letter annotations…</p>}
+      {redLettersEnabled && isKjv && redLetterBook.error && <p role="alert">Red-letter annotations could not load. Scripture remains readable in normal text.</p>}
+
       {isIdoma && <IdomaVoiceInput />}
 
       {error && <p role="alert" className="reader-error">{error}</p>}
@@ -107,7 +110,7 @@ export function BibleReaderPanel({ initialLanguageId }: BibleReaderPanelProps) {
               title="Study this verse"
               onClick={() => navigate(`/explore/verse/${verse.id}`)}
             >
-              <sup>{verse.verseNumber}</sup>{' '}{redLettersEnabled && isKjv ? redLetterVerse(redLetterBook, chapterNumber, verse.verseNumber, verse.text).map((segment, index) => segment.red ? <span key={index} className="jesus-red-letter">{segment.text}</span> : <span key={index}>{segment.text}</span>) : verse.text}
+              <sup>{verse.verseNumber}</sup>{' '}{redLettersEnabled && isKjv ? redLetterVerse(redLetterBook.data, chapterNumber, verse.verseNumber, verse.text).map((segment, index) => segment.red ? <span key={index} className="jesus-red-letter">{segment.text}</span> : <span key={index}>{segment.text}</span>) : verse.text}
             </button>
           </p>
         ))}
