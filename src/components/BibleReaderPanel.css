@@ -122,10 +122,12 @@
   height: 1.1rem;
 }
 
-.jesus-red-letter {
-  color: #b91c1c;
+.bible-reader-panel .bible-chapter .verse-study-link .jesus-red-letter {
+  color: #b91c1c !important;
 }
 
 @media (prefers-color-scheme: dark) {
-  .jesus-red-letter { color: #ff7777; }
+  .bible-reader-panel .bible-chapter .verse-study-link .jesus-red-letter { color: #ff7777 !important; }
 }
+
+.red-letter-status { margin: 0; font-size: 0.875rem; opacity: 0.85; }
