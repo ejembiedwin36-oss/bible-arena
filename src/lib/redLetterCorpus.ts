@@ -2,7 +2,7 @@ import { useEffect, useState } from 'react';
 import type { RedLetterSegment } from './redLetter';
 
 type Span = { start: number; end: number };
-type AnnotatedVerse = { text: string; spans: Span[] };
+type AnnotatedVerse = { text: string; spans: Span[]; addedWords?: Span[] };
 type CorpusBook = Record<string, Record<string, AnnotatedVerse>>;
 export type RedLetterLoadState = { data: CorpusBook | null; loading: boolean; error: boolean };
 
@@ -41,16 +41,27 @@ export function useRedLetterBook(book: string | undefined, enabled: boolean): Re
   return state;
 }
 
-export function alignRedLetters(source: string, displayed: string, spans: Span[]): RedLetterSegment[] {
+export function alignRedLetters(source: string, displayed: string, spans: Span[], addedWords: Span[] = []): RedLetterSegment[] {
   if (source !== displayed) return [{ text: displayed, red: false }];
   const characters = Array.from(displayed);
-  const valid = spans.every((span) =>
+  const valid = [...spans, ...addedWords].every((span) =>
     Number.isInteger(span.start) && Number.isInteger(span.end) &&
     span.start >= 0 && span.end <= characters.length && span.start < span.end,
   );
   if (!valid) return [{ text: displayed, red: false }];
   const red = Array(characters.length).fill(false) as boolean[];
   for (const span of spans) for (let i = span.start; i < span.end; i++) red[i] = true;
+  // Translator-added KJV words within marked speech should also be red.
+  // Never extend coloring across narration or outside marked speech.
+  for (const word of addedWords) {
+    let left = word.start;
+    while (left > 0 && /\s/.test(characters[left - 1])) left--;
+    let right = word.end;
+    while (right < characters.length && /\s/.test(characters[right])) right++;
+    if (left > 0 && right < characters.length && red[left - 1] && red[right]) {
+      for (let i = left; i < right; i++) red[i] = true;
+    }
+  }
   const result: RedLetterSegment[] = [];
   for (let i = 0; i < characters.length; i++) {
     const previous = result[result.length - 1];
@@ -62,5 +73,5 @@ export function alignRedLetters(source: string, displayed: string, spans: Span[]
 
 export function redLetterVerse(data: CorpusBook | null, chapter: number, verse: number, displayed: string): RedLetterSegment[] {
   const annotation = data?.[String(chapter)]?.[String(verse)];
-  return annotation ? alignRedLetters(annotation.text, displayed, annotation.spans) : [{ text: displayed, red: false }];
+  return annotation ? alignRedLetters(annotation.text, displayed, annotation.spans, annotation.addedWords) : [{ text: displayed, red: false }];
 }
