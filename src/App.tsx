@@ -89,6 +89,27 @@ function BibleCatalogue() {
 }
 
 // Scripture is immutable for a published version: reuse recently opened chapters during navigation.
+let readerOptionsCache: { languages: { id: string; code: string; name: string }[]; versions: Version[] } | null = null;
+let readerOptionsRequest: Promise<{ languages: { id: string; code: string; name: string }[]; versions: Version[] }> | null = null;
+async function loadReaderOptions() {
+  if (readerOptionsCache) return readerOptionsCache;
+  if (readerOptionsRequest) return readerOptionsRequest;
+  readerOptionsRequest = (async () => {
+    const [{ data: ls, error: le }, { data: vs, error: ve }] = await Promise.all([
+      supabase.from('languages').select('id, code, name').eq('is_active', true).order('name'),
+      supabase.from('bible_versions').select('id, name, abbreviation, language_id, languages(code, name)').eq('is_active', true).order('name')
+    ]);
+    if (le || ve) throw le ?? ve;
+    const languages = ls ?? [];
+    const versions = ((vs ?? []) as any[]).map(v => {
+      const language = Array.isArray(v.languages) ? v.languages[0] : v.languages;
+      return { id: v.id, name: v.name, abbreviation: v.abbreviation, language_id: v.language_id, language_code: language?.code ?? '', language_name: language?.name ?? '' };
+    }) as Version[];
+    readerOptionsCache = { languages, versions };
+    return readerOptionsCache;
+  })().finally(() => { readerOptionsRequest = null; });
+  return readerOptionsRequest;
+}
 const readerChapterCache = new Map<string, ReaderState>();
 const readerBookCache = new Map<string, Book>();
 const readerChapterIdCache = new Map<string, { id: string; chapter_number: number }>();
@@ -114,7 +135,16 @@ async function cachedChapterVerses(chapterId: string, versionId: string): Promis
 
 function BibleReader({ session }: { session: Session }) {
   const { bookKey, chapterNumber } = useParams(); const navigate = useNavigate(); const chapter = Number(chapterNumber ?? 1); const [reader, setReader] = useState<ReaderState | null>(null); const [versions, setVersions] = useState<Version[]>([]); const [languages, setLanguages] = useState<{ id: string; code: string; name: string }[]>([]); const [languageId, setLanguageId] = useState(''); const [versionId, setVersionId] = useState(''); const [selected, setSelected] = useState<string | null>(null); const [bookmarked, setBookmarked] = useState<string[]>([]); const [loading, setLoading] = useState(true); const [error, setError] = useState<string | null>(null);
-  useEffect(() => { (async () => { const [{ data: ls }, { data: vs }] = await Promise.all([supabase.from('languages').select('id, code, name').eq('is_active', true).order('name'), supabase.from('bible_versions').select('id, name, abbreviation, language_id, languages(code, name)').eq('is_active', true).order('name')]); const languageList = ls ?? []; const versionList = ((vs ?? []) as any[]).map(v => { const language = Array.isArray(v.languages) ? v.languages[0] : v.languages; return { id: v.id, name: v.name, abbreviation: v.abbreviation, language_id: v.language_id, language_code: language?.code ?? '', language_name: language?.name ?? '' }; }) as Version[]; setLanguages(languageList); setVersions(versionList); if (!languageId && versionList[0]) setLanguageId(versionList[0].language_id); })(); }, []);
+  useEffect(() => {
+    let cancelled = false;
+    void loadReaderOptions().then(({ languages: languageList, versions: versionList }) => {
+      if (cancelled) return;
+      setLanguages(languageList);
+      setVersions(versionList);
+      if (versionList[0]) setLanguageId(current => current || versionList[0].language_id);
+    }).catch(() => { if (!cancelled) setError('Unable to load Bible translations. Please refresh and try again.'); });
+    return () => { cancelled = true; };
+  }, []);
   useEffect(() => { const available = versions.filter(v => v.language_id === languageId); if (available.length && !available.some(v => v.id === versionId)) setVersionId(available[0].id); else if (!available.length) setVersionId(''); }, [languageId, versions]);
   useEffect(() => {
     if (!bookKey || !versionId || !Number.isInteger(chapter) || chapter < 1) return;
