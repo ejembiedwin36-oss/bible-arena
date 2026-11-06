@@ -13,13 +13,20 @@ describe('KJV red-letter marker alignment', () => {
 
   it('bundles Matthew 5:8 red letters locally', () => {
     const verse = matthew['5']['8'];
-    expect(redLetterVerse(matthew, 5, 8, verse.text).some((part) => part.red)).toBe(true);
+    expect(redLetterVerse(matthew, 5, 8, verse.text)).toEqual([{ text: verse.text, red: true }]);
   });
   it('highlights Matthew 5:8 while preserving the exact verse', () => {
     const verse = 'Blessed are the pure in heart: for they shall see God.';
     const parts = alignRedLetters(verse, verse, [{ start: 0, end: 7 }, { start: 12, end: 54 }]);
     expect(parts.map((part) => part.text).join('')).toBe(verse);
     expect(parts.filter((part) => part.red).map((part) => part.text).join('')).toBe('Blessedthe pure in heart: for they shall see God.');
+  });
+
+  it('keeps translated words red within Jesus speech but not in narration', () => {
+    const verse = 'Narration: Blessed are the poor in spirit: for theirs is the kingdom of heaven.';
+    const start = verse.indexOf('Blessed');
+    const parts = alignRedLetters(verse, verse, [{ start, end: start + 7 }, { start: start + 12, end: verse.length }], [{ start: start + 8, end: start + 11 }]);
+    expect(parts).toEqual([{ text: 'Narration: ', red: false }, { text: verse.slice(start), red: true }]);
   });
 
   it('does not color narration outside Jesus speech', () => {
