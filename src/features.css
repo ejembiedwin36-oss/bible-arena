@@ -31,3 +31,8 @@
 .plan-status{margin-top:10px;color:var(--muted);font-size:13px;font-weight:700}.completed-plan{background:#faf8f2}.plan-complete-banner{margin-top:22px;padding:20px;border:1px solid var(--line);border-radius:16px;background:#faf8f2}.plan-complete-banner strong{font-size:17px}.plan-complete-banner p{margin:6px 0 0;color:var(--muted);line-height:1.6}
 
 .settings-page{max-width:760px}.settings-intro{color:var(--muted);line-height:1.7}.settings-section{margin-top:24px;padding:20px;border:1px solid var(--line);border-radius:16px;background:#faf8f2}.settings-section select{display:block;margin-top:10px;width:min(420px,100%);padding:11px 12px;border:1px solid var(--line);border-radius:10px;background:#fff;font:inherit}.settings-section p{color:var(--muted);line-height:1.7}.settings-section small{display:block;margin-top:8px;color:var(--muted)}
+
+/* The primary /bible/:book/:chapter reader uses these inline segments. */
+.reader .verse-row .jesus-red-letter { color: #b91c1c !important; }
+@media (prefers-color-scheme: dark) { .reader .verse-row .jesus-red-letter { color: #ff7777 !important; } }
+.reader .red-letter-status { font-size: .875rem; opacity: .8; }
