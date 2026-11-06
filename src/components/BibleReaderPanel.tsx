@@ -107,6 +107,8 @@ export function BibleReaderPanel({ initialLanguageId }: BibleReaderPanelProps) {
         <label>Book<select value={bookId} onChange={(event) => { setBookId(event.target.value); setChapterNumber(1); }}>{books.map((book) => <option key={book.id} value={book.id}>{book.bookOrder}. {book.name}</option>)}</select></label>
       </div>
 
+      <label className="bible-chapter-select">Chapter <select aria-label="Select chapter" value={chapterNumber} disabled={!selectedBook || loading} onChange={(event) => setChapterNumber(Number(event.target.value))}>{Array.from({ length: selectedBook?.chapterCount ?? 0 }, (_, index) => <option key={index + 1} value={index + 1}>{index + 1}</option>)}</select></label>
+
       <label className="red-letter-toggle"><input type="checkbox" checked={redLettersEnabled} onChange={(event) => setRedLettersEnabled(event.target.checked)} /> Show Jesus’ words in red (KJV)</label>
 
       {redLettersEnabled && isKjv && redLetterBook.loading && <p role="status">Loading red-letter annotations…</p>}
