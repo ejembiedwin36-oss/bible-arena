@@ -160,7 +160,7 @@ function BibleReader({ session }: { session: Session }) {
       setLanguages(languageList);
       setVersions(versionList);
       if (versionList[0]) setLanguageId(current => current || versionList[0].language_id);
-    }).catch(() => { if (!cancelled) setError('Unable to load Bible translations. Please refresh and try again.'); });
+    }).catch(() => { if (!cancelled) { setError('Unable to load Bible translations. Please refresh and try again.'); setLoading(false); } });
     return () => { cancelled = true; };
   }, []);
   useEffect(() => { const available = versions.filter(v => v.language_id === languageId); if (available.length && !available.some(v => v.id === versionId)) setVersionId(available[0].id); else if (!available.length) setVersionId(''); }, [languageId, versions]);
