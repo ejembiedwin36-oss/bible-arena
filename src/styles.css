@@ -5,3 +5,39 @@
 .nav-section{display:flex;flex-direction:column;gap:5px;margin-bottom:18px}.nav-section-title{padding:0 14px 7px;font-size:10px;font-weight:800;letter-spacing:.12em;text-transform:uppercase;color:var(--soft)}.topbar-actions{display:flex;align-items:center;gap:10px}.account-name{font-size:13px;color:var(--muted);max-width:180px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}.explore{max-width:1180px;margin:0 auto;padding:32px;display:grid;gap:20px}.explore-hero{display:flex;align-items:end;justify-content:space-between;gap:24px;padding:34px;border:1px solid var(--line);border-radius:22px;background:linear-gradient(135deg,#fff,#faf8f2)}.explore-hero h1{margin:7px 0 10px;letter-spacing:-.035em}.explore-hero p{max-width:650px;color:var(--muted);line-height:1.7}.explore-hero .catalog-search{width:min(360px,100%)}.study-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:16px}.study-card{display:flex;align-items:flex-start;gap:16px;text-align:left;padding:22px;border:1px solid var(--line);border-radius:18px;background:#fff;cursor:pointer}.study-card:hover{transform:translateY(-2px);box-shadow:0 14px 30px rgba(23,32,51,.08);border-color:#ddd6c5}.study-icon{font-size:25px;line-height:1}.study-card strong{font-size:15px}.study-card p{margin:6px 0 0;color:var(--muted);line-height:1.55;font-size:13px}.explore-books{padding:24px;border:1px solid var(--line);border-radius:22px;background:#fff}.study-note{padding:26px;border:1px solid rgba(154,123,66,.18);border-radius:22px;background:#faf8f2}.study-note h2{margin:8px 0}.study-note p{max-width:760px;color:var(--muted);line-height:1.7}.book-grid.compact{grid-template-columns:repeat(4,1fr)}
 @media(max-width:850px){.layout{grid-template-columns:1fr;padding-bottom:76px}.sidebar{position:fixed;left:0;right:0;bottom:0;z-index:30;height:68px;border-right:0;border-top:1px solid #e7e9f0;padding:8px 10px;flex-direction:row;align-items:center;overflow-x:auto;gap:4px;box-shadow:0 -8px 24px rgba(23,32,51,.06)}.sidebar a{flex:0 0 auto;padding:10px 12px;font-size:12px}.sidebar form{display:none}.nav-section{flex-direction:row;align-items:center;margin:0;gap:4px}.nav-section-title{display:none}.home,.reader,.catalog,.explore{padding:18px}.home .hero{grid-template-columns:1fr;padding:30px}.home>.grid{grid-template-columns:1fr}.topbar{padding:0 18px}.reader-toolbar,.catalog-hero{align-items:flex-start;flex-direction:column}.reader-controls{width:100%;flex-wrap:wrap}.reader-controls select{flex:1;min-width:180px}.chapter{padding:18px}.chapter-heading{align-items:flex-start;flex-direction:column}.chapter-nav{width:100%;flex-wrap:wrap}.chapter-nav select{flex:1;min-width:130px}.verse-row{grid-template-columns:28px 1fr 34px}.verse-row p{font-size:17px;line-height:1.7}.auth-card{padding:28px}.explore-hero{align-items:stretch;flex-direction:column}.explore-hero .catalog-search{width:100%}.study-grid{grid-template-columns:1fr}.book-grid.compact{grid-template-columns:repeat(2,1fr)}}
 @media(max-width:520px){.book-grid{grid-template-columns:1fr}.book-grid.compact{grid-template-columns:1fr}.catalog-hero h1{font-size:31px}.chapter-nav button{flex:1}.catalog-search{width:100%}.home .hero{padding:24px}.hero h1{font-size:35px}.home .verse strong{font-size:21px}.reader-toolbar h1{font-size:29px}.home>.grid .card{min-height:auto}.account-name{display:none}}
+
+/* Bible Reader: comfortable scripture reading, with independent verse actions. */
+.reader { width: 100%; }
+.reader .reader-toolbar { display:flex; justify-content:space-between; align-items:center; gap:1rem; padding:1.4rem 1.65rem; background:var(--surface,#fff); }
+.reader .reader-toolbar h1 { margin:.3rem 0 0; font-size:clamp(1.65rem,3vw,2.25rem); }
+.reader .reader-controls { display:flex; align-items:center; gap:.6rem; flex-wrap:wrap; }
+.reader .reader-controls select, .reader .chapter-nav select { min-height:42px; max-width:100%; padding:.55rem .75rem; border:1px solid var(--line,#ddd); border-radius:10px; background:#fff; color:var(--ink,#172033); }
+.reader .chapter { padding:clamp(1.1rem,3vw,2.2rem); background:var(--surface,#fff); }
+.reader .chapter-heading { display:flex; justify-content:space-between; align-items:center; gap:1rem; padding-bottom:1rem; margin-bottom:1rem; border-bottom:1px solid var(--line,#e7e9f0); }
+.reader .chapter-heading h2 { margin:.3rem 0 0; font-family:Georgia,'Times New Roman',serif; font-size:clamp(1.8rem,3vw,2.5rem); }
+.reader .chapter-nav { display:flex; align-items:center; gap:.5rem; }
+.reader .chapter-nav button { min-height:42px; padding:.55rem .85rem; border:1px solid var(--line,#e7e9f0); border-radius:10px; background:#fff; color:var(--ink,#172033); cursor:pointer; }
+.reader .chapter-nav button:disabled { opacity:.45; cursor:not-allowed; }
+.reader .verses { display:grid; gap:0; }
+.reader .verse-row { display:grid; grid-template-columns:2rem minmax(0,1fr) 2.5rem; align-items:start; gap:.55rem; padding:.65rem .55rem; border-bottom:1px solid rgba(104,112,134,.1); border-radius:8px; cursor:pointer; }
+.reader .verse-row:hover { background:#f8f9fc; }
+.reader .verse-row sup { position:static; font-size:.76rem; line-height:1.9; color:var(--muted,#687086); font-weight:700; }
+.reader .verse-row p { min-width:0; margin:0; font-family:Georgia,'Times New Roman',serif; font-size:1.13rem; line-height:1.85; overflow-wrap:anywhere; color:var(--ink,#172033); }
+.reader .verse-row .bookmark { display:flex; align-items:center; justify-content:center; width:36px; height:36px; padding:0; border-radius:8px; font-size:1.35rem; color:var(--gold,#9a7b42); }
+.reader .verse-row .bookmark:hover, .reader .verse-row .bookmark:focus-visible { background:#f2eee4; }
+.reader .verse-row:focus-within { outline:2px solid #9a7b42; outline-offset:2px; }
+.reader .verse-row p .jesus-red-letter { color:#b91c1c !important; }
+.reader .red-letter-status { grid-column:1/-1; margin:0 0 .65rem; font-size:.8rem; color:var(--muted,#687086); }
+@media(max-width:850px) {
+  .reader .reader-toolbar, .reader .chapter-heading { align-items:stretch; flex-direction:column; }
+  .reader .reader-controls { width:100%; }
+  .reader .chapter-nav { width:100%; }
+  .reader .chapter-nav select { flex:1; min-width:0; }
+}
+@media(max-width:520px) {
+  .reader { padding:12px; }
+  .reader .chapter { padding:1rem .7rem; }
+  .reader .verse-row { grid-template-columns:1.25rem minmax(0,1fr) 2.25rem; gap:.35rem; padding:.6rem .25rem; }
+  .reader .verse-row p { font-size:1.04rem; line-height:1.75; }
+  .reader .chapter-nav button { padding:.55rem .45rem; }
+}
