@@ -96,7 +96,7 @@ export async function listBibleVersions(languageId: string): Promise<BibleVersio
       name: version.name,
       abbreviation: version.abbreviation,
       languageId: version.language_id,
-      translationId: translation?.id ?? null,
+      translationId: translation?.id ?? (version.abbreviation?.toUpperCase() === 'WEB' ? version.id : null),
     };
   });
 
