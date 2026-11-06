@@ -10,10 +10,13 @@ export function useBibleChapterVerses(chapterId: string | null, versionId: strin
   useEffect(() => {
     if (!chapterId || !versionId) {
       setVerses([]);
+      setLoading(false);
+      setError(null);
       return;
     }
 
     let cancelled = false;
+    setVerses([]);
     setLoading(true);
     setError(null);
 
