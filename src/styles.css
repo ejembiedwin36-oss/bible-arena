@@ -41,3 +41,6 @@
   .reader .verse-row p { font-size:1.04rem; line-height:1.75; }
   .reader .chapter-nav button { padding:.55rem .45rem; }
 }
+
+.reader .translation-availability { width:100%; margin:.5rem 0 0; color:var(--muted,#687086); font-size:.85rem; line-height:1.5; }
+.reader .reader-controls option:disabled { color:#777; }
