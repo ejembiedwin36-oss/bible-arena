@@ -18,26 +18,32 @@ const loaders: Record<string, () => Promise<{ default: CorpusBook }>> = {
   '2 corinthians': () => import('../data/redLetters/2Corinthians.json'),
   revelation: () => import('../data/redLetters/Revelation.json'),
 };
+// WEB annotations are curated separately; never reuse KJV offsets for translated text.
+const webLoaders: Record<string, () => Promise<{ default: CorpusBook }>> = {
+  matthew: () => import('../data/webRedLetters/Matthew.json'),
+  john: () => import('../data/webRedLetters/John.json'),
+};
 const cache = new Map<string, Promise<CorpusBook | null>>();
-async function loadBook(book: string): Promise<CorpusBook | null> {
+async function loadBook(book: string, version: string): Promise<CorpusBook | null> {
   const key = book.toLowerCase();
-  const loader = loaders[key];
+  const loader = (version === 'WEB' ? webLoaders : loaders)[key];
   if (!loader) return null;
-  if (!cache.has(key)) cache.set(key, loader().then((module) => module.default).catch(() => null));
-  return (await cache.get(key)) ?? null;
+  const cacheKey = `${version}:${key}`;
+  if (!cache.has(cacheKey)) cache.set(cacheKey, loader().then((module) => module.default).catch(() => null));
+  return (await cache.get(cacheKey)) ?? null;
 }
 
-export function useRedLetterBook(book: string | undefined, enabled: boolean): RedLetterLoadState {
+export function useRedLetterBook(book: string | undefined, enabled: boolean, version = 'KJV'): RedLetterLoadState {
   const [state, setState] = useState<RedLetterLoadState>({ data: null, loading: false, error: false });
   useEffect(() => {
     let active = true;
-    const supported = Boolean(book && loaders[book.toLowerCase()]);
+    const supported = Boolean(book && (version === 'WEB' ? webLoaders : loaders)[book.toLowerCase()]);
     setState({ data: null, loading: enabled && supported, error: false });
-    if (enabled && book && supported) void loadBook(book).then((data) => {
+    if (enabled && book && supported) void loadBook(book, version).then((data) => {
       if (active) setState({ data, loading: false, error: !data });
     });
     return () => { active = false; };
-  }, [book, enabled]);
+  }, [book, enabled, version]);
   return state;
 }
 
