@@ -41,3 +41,26 @@ describe('KJV red-letter marker alignment', () => {
     expect(alignRedLetters('text', 'text', [{ start: 0, end: 99 }])).toEqual([{ text: 'text', red: false }]);
   });
 });
+
+import webMatthew from '../data/webRedLetters/Matthew.json';
+import webJohn from '../data/webRedLetters/John.json';
+
+describe('WEB red-letter annotations', () => {
+  it('highlights Jesus speech in Matthew 5:8 with exact WEB text', () => {
+    const verse = webMatthew['5']['8'];
+    expect(redLetterVerse(webMatthew, 5, 8, verse.text)).toEqual([{ text: verse.text, red: true }]);
+  });
+  it('keeps John 3:3 narration black and speech red', () => {
+    const verse = webJohn['3']['3'];
+    const parts = redLetterVerse(webJohn, 3, 3, verse.text);
+    expect(parts[0]).toEqual({ text: 'Jesus answered him, “', red: false });
+    expect(parts.some(part => part.red)).toBe(true);
+    expect(parts.map(part => part.text).join('')).toBe(verse.text);
+  });
+  it('does not invent WEB red letters in unreviewed verses', () => {
+    expect(redLetterVerse(webJohn, 3, 2, 'Nicodemus spoke')).toEqual([{ text: 'Nicodemus spoke', red: false }]);
+  });
+  it('does not apply red letters when WEB wording changes', () => {
+    expect(redLetterVerse(webMatthew, 5, 8, 'Changed wording')).toEqual([{ text: 'Changed wording', red: false }]);
+  });
+});
