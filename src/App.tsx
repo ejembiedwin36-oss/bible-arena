@@ -89,6 +89,9 @@ function BibleCatalogue() {
 }
 
 // Scripture is immutable for a published version: reuse recently opened chapters during navigation.
+const readerChapterCache = new Map<string, ReaderState>();
+const readerBookCache = new Map<string, Book>();
+const readerChapterIdCache = new Map<string, { id: string; chapter_number: number }>();
 const chapterVerseCache = new Map<string, ReaderVerse[]>();
 const chapterVerseRequests = new Map<string, Promise<ReaderVerse[]>>();
 async function cachedChapterVerses(chapterId: string, versionId: string): Promise<ReaderVerse[]> {
@@ -113,7 +116,53 @@ function BibleReader({ session }: { session: Session }) {
   const { bookKey, chapterNumber } = useParams(); const navigate = useNavigate(); const chapter = Number(chapterNumber ?? 1); const [reader, setReader] = useState<ReaderState | null>(null); const [versions, setVersions] = useState<Version[]>([]); const [languages, setLanguages] = useState<{ id: string; code: string; name: string }[]>([]); const [languageId, setLanguageId] = useState(''); const [versionId, setVersionId] = useState(''); const [selected, setSelected] = useState<string | null>(null); const [bookmarked, setBookmarked] = useState<string[]>([]); const [loading, setLoading] = useState(true); const [error, setError] = useState<string | null>(null);
   useEffect(() => { (async () => { const [{ data: ls }, { data: vs }] = await Promise.all([supabase.from('languages').select('id, code, name').eq('is_active', true).order('name'), supabase.from('bible_versions').select('id, name, abbreviation, language_id, languages(code, name)').eq('is_active', true).order('name')]); const languageList = ls ?? []; const versionList = ((vs ?? []) as any[]).map(v => { const language = Array.isArray(v.languages) ? v.languages[0] : v.languages; return { id: v.id, name: v.name, abbreviation: v.abbreviation, language_id: v.language_id, language_code: language?.code ?? '', language_name: language?.name ?? '' }; }) as Version[]; setLanguages(languageList); setVersions(versionList); if (!languageId && versionList[0]) setLanguageId(versionList[0].language_id); })(); }, []);
   useEffect(() => { const available = versions.filter(v => v.language_id === languageId); if (available.length && !available.some(v => v.id === versionId)) setVersionId(available[0].id); else if (!available.length) setVersionId(''); }, [languageId, versions]);
-  useEffect(() => { if (!bookKey || !versionId || !Number.isInteger(chapter) || chapter < 1) return; let cancelled = false; async function load() { setLoading(true); setError(null); setReader(null); setSelected(null); const { data: book, error: be } = await supabase.from('bible_books').select('id, canonical_key, name, abbreviation, testament, category, chapter_count').eq('canonical_key', bookKey).maybeSingle(); if (be || !book) { if (!cancelled) { setError(be?.message ?? 'Book not found.'); setLoading(false); } return; } const { data: ch, error: ce } = await supabase.from('bible_chapters').select('id, chapter_number').eq('book_id', book.id).eq('chapter_number', chapter).maybeSingle(); if (ce || !ch) { if (!cancelled) { setError(ce?.message ?? `Chapter ${chapter} is not available.`); setLoading(false); } return; } const version = versions.find(v => v.id === versionId && v.language_id === languageId); if (!version) return; try { const verses = await cachedChapterVerses(ch.id, version.id); if (!cancelled) { setReader({ book, chapter: ch.chapter_number, chapterId: ch.id, version, verses }); setLoading(false); } } catch (cause) { if (!cancelled) { setError(cause instanceof Error ? cause.message : 'Unable to load Scripture.'); setLoading(false); } } } load(); return () => { cancelled = true; }; }, [bookKey, chapter, versionId, versions, languageId]);
+  useEffect(() => {
+    if (!bookKey || !versionId || !Number.isInteger(chapter) || chapter < 1) return;
+    const version = versions.find(v => v.id === versionId && v.language_id === languageId);
+    if (!version) return;
+    let cancelled = false;
+    const key = bookKey + ':' + chapter + ':' + versionId;
+    const saved = readerChapterCache.get(key);
+    setError(null);
+    setSelected(null);
+    if (saved) {
+      setReader(saved);
+      setLoading(false);
+      return;
+    }
+    setLoading(true);
+    setReader(null);
+    async function load() {
+      try {
+        let book = readerBookCache.get(bookKey!);
+        if (!book) {
+          const { data, error } = await supabase.from('bible_books').select('id, canonical_key, name, abbreviation, testament, category, chapter_count').eq('canonical_key', bookKey!).maybeSingle();
+          if (error) throw error;
+          if (!data) throw new Error('Book not found.');
+          book = data;
+          readerBookCache.set(bookKey!, book);
+        }
+        const chapterKey = book.id + ':' + chapter;
+        let ch = readerChapterIdCache.get(chapterKey);
+        if (!ch) {
+          const { data, error } = await supabase.from('bible_chapters').select('id, chapter_number').eq('book_id', book.id).eq('chapter_number', chapter).maybeSingle();
+          if (error) throw error;
+          if (!data) throw new Error('Chapter ' + chapter + ' is not available.');
+          ch = data;
+          readerChapterIdCache.set(chapterKey, ch);
+        }
+        const verses = await cachedChapterVerses(ch.id, version.id);
+        const result: ReaderState = { book, chapter: ch.chapter_number, chapterId: ch.id, version, verses };
+        if (readerChapterCache.size >= 40) readerChapterCache.delete(readerChapterCache.keys().next().value!);
+        readerChapterCache.set(key, result);
+        if (!cancelled) { setReader(result); setLoading(false); }
+      } catch (cause) {
+        if (!cancelled) { setError(cause instanceof Error ? cause.message : 'Unable to load Scripture.'); setLoading(false); }
+      }
+    }
+    void load();
+    return () => { cancelled = true; };
+  }, [bookKey, chapter, versionId, versions, languageId]);
   useEffect(() => { if (!reader) return; supabase.from('reading_history').insert({ user_id: session.user.id, chapter_id: reader.chapterId, version_id: reader.version.id }); supabase.from('bookmarks').select('verse_id').eq('user_id', session.user.id).not('verse_id', 'is', null).then(({ data }) => setBookmarked((data ?? []).map(row => row.verse_id).filter((id): id is string => Boolean(id)))); }, [reader, session.user.id]);
   async function toggleBookmark(verseId: string) { if (bookmarked.includes(verseId)) { const { error: e } = await supabase.from('bookmarks').delete().eq('user_id', session.user.id).eq('verse_id', verseId); if (!e) setBookmarked(current => current.filter(id => id !== verseId)); } else { const { error: e } = await supabase.from('bookmarks').insert({ user_id: session.user.id, verse_id: verseId }); if (!e) setBookmarked(current => [...current, verseId]); } }
   const readerVersion = reader?.version.abbreviation?.toUpperCase() ?? '';
