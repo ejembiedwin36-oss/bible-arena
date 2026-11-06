@@ -75,6 +75,30 @@ async function fetchBibleChapter(
 
   if (error) throw error;
 
+  // WEB is imported in bible_verses by version_id, not in the legacy
+  // bible_translation_verses table. Preserve the existing KJV path.
+  if ((data ?? []).length === 0) {
+    const { data: directRows, error: directError } = await supabase
+      .from('bible_verses')
+      .select('id, verse_number, text, bible_chapters!inner(chapter_number, book_id)')
+      .eq('version_id', translationId)
+      .eq('bible_chapters.book_id', bookId)
+      .eq('bible_chapters.chapter_number', chapterNumber)
+      .order('verse_number', { ascending: true });
+
+    if (directError) throw directError;
+    return {
+      translationId,
+      bookId,
+      chapterNumber,
+      verses: (directRows ?? []).map((row) => ({
+        id: row.id,
+        verseNumber: row.verse_number,
+        text: row.text,
+      })),
+    };
+  }
+
   const rows = (data ?? []) as Array<{
     verse_id: string;
     verse_text: string;
