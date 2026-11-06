@@ -163,7 +163,17 @@ function BibleReader({ session }: { session: Session }) {
     void load();
     return () => { cancelled = true; };
   }, [bookKey, chapter, versionId, versions, languageId]);
-  useEffect(() => { if (!reader) return; supabase.from('reading_history').insert({ user_id: session.user.id, chapter_id: reader.chapterId, version_id: reader.version.id }); supabase.from('bookmarks').select('verse_id').eq('user_id', session.user.id).not('verse_id', 'is', null).then(({ data }) => setBookmarked((data ?? []).map(row => row.verse_id).filter((id): id is string => Boolean(id)))); }, [reader, session.user.id]);
+  useEffect(() => {
+    let cancelled = false;
+    void supabase.from('bookmarks').select('verse_id').eq('user_id', session.user.id).not('verse_id', 'is', null).then(({ data, error }) => {
+      if (!cancelled && !error) setBookmarked((data ?? []).map(row => row.verse_id).filter((id): id is string => Boolean(id)));
+    });
+    return () => { cancelled = true; };
+  }, [session.user.id]);
+  useEffect(() => {
+    if (!reader) return;
+    void supabase.from('reading_history').insert({ user_id: session.user.id, chapter_id: reader.chapterId, version_id: reader.version.id });
+  }, [reader, session.user.id]);
   async function toggleBookmark(verseId: string) { if (bookmarked.includes(verseId)) { const { error: e } = await supabase.from('bookmarks').delete().eq('user_id', session.user.id).eq('verse_id', verseId); if (!e) setBookmarked(current => current.filter(id => id !== verseId)); } else { const { error: e } = await supabase.from('bookmarks').insert({ user_id: session.user.id, verse_id: verseId }); if (!e) setBookmarked(current => [...current, verseId]); } }
   const readerVersion = reader?.version.abbreviation?.toUpperCase() ?? '';
   const supportsRedLetters = readerVersion === 'KJV' || readerVersion === 'WEB';
