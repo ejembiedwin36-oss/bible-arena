@@ -37,31 +37,47 @@ export function BibleReaderPanel({ initialLanguageId }: BibleReaderPanelProps) {
 
   useEffect(() => {
     if (!languageId) return;
+    let cancelled = false;
     setChapter(null);
     setChapterNumber(1);
+    setVersions([]);
+    setVersionId('');
+    setError(null);
     void listBibleVersions(languageId)
       .then((loadedVersions) => {
+        if (cancelled) return;
         setVersions(loadedVersions);
-        setVersionId((current) => loadedVersions.some((version) => version.id === current) ? current : loadedVersions[0]?.id || '');
+        setVersionId(loadedVersions[0]?.id || '');
       })
-      .catch((cause) => setError(cause instanceof Error ? cause.message : 'Unable to load Bible versions.'));
+      .catch((cause) => {
+        if (!cancelled) setError(cause instanceof Error ? cause.message : 'Unable to load Bible versions.');
+      });
+    return () => { cancelled = true; };
   }, [languageId]);
 
   useEffect(() => {
-    if (!versionId || !bookId) return;
+    let cancelled = false;
+    setChapter(null);
+    setError(null);
+    if (!versionId || !bookId) {
+      setLoading(false);
+      return;
+    }
     const selectedVersion = versions.find((version) => version.id === versionId);
     if (!selectedVersion?.translationId) {
-      setChapter(null);
+      setLoading(false);
       setError('This Bible version has no connected translation text yet.');
       return;
     }
 
     setLoading(true);
-    setError(null);
     void loadBibleChapter(selectedVersion.translationId, bookId, chapterNumber)
-      .then(setChapter)
-      .catch((cause) => setError(cause instanceof Error ? cause.message : 'Unable to load this chapter.'))
-      .finally(() => setLoading(false));
+      .then((loadedChapter) => { if (!cancelled) setChapter(loadedChapter); })
+      .catch((cause) => {
+        if (!cancelled) setError(cause instanceof Error ? cause.message : 'Unable to load this chapter.');
+      })
+      .finally(() => { if (!cancelled) setLoading(false); });
+    return () => { cancelled = true; };
   }, [versionId, versions, bookId, chapterNumber]);
 
   const selectedLanguage = useMemo(() => languages.find((language) => language.id === languageId), [languages, languageId]);
