@@ -133,6 +133,24 @@ async function cachedChapterVerses(chapterId: string, versionId: string): Promis
   return request;
 }
 
+async function prefetchAdjacentChapter(book: Book, chapterNumber: number, version: Version): Promise<void> {
+  if (chapterNumber < 1 || chapterNumber > book.chapter_count) return;
+  const key = book.canonical_key + ':' + chapterNumber + ':' + version.id;
+  if (readerChapterCache.has(key)) return;
+  const chapterKey = book.id + ':' + chapterNumber;
+  let chapter = readerChapterIdCache.get(chapterKey);
+  if (!chapter) {
+    const { data, error } = await supabase.from('bible_chapters').select('id, chapter_number').eq('book_id', book.id).eq('chapter_number', chapterNumber).maybeSingle();
+    if (error || !data) return;
+    chapter = data;
+    readerChapterIdCache.set(chapterKey, chapter);
+  }
+  const verses = await cachedChapterVerses(chapter.id, version.id);
+  const result: ReaderState = { book, chapter: chapter.chapter_number, chapterId: chapter.id, version, verses };
+  if (readerChapterCache.size >= 40) readerChapterCache.delete(readerChapterCache.keys().next().value!);
+  readerChapterCache.set(key, result);
+}
+
 function BibleReader({ session }: { session: Session }) {
   const { bookKey, chapterNumber } = useParams(); const navigate = useNavigate(); const chapter = Number(chapterNumber ?? 1); const [reader, setReader] = useState<ReaderState | null>(null); const [versions, setVersions] = useState<Version[]>([]); const [languages, setLanguages] = useState<{ id: string; code: string; name: string }[]>([]); const [languageId, setLanguageId] = useState(''); const [versionId, setVersionId] = useState(''); const [selected, setSelected] = useState<string | null>(null); const [bookmarked, setBookmarked] = useState<string[]>([]); const [loading, setLoading] = useState(true); const [error, setError] = useState<string | null>(null);
   useEffect(() => {
@@ -186,6 +204,11 @@ function BibleReader({ session }: { session: Session }) {
         if (readerChapterCache.size >= 40) readerChapterCache.delete(readerChapterCache.keys().next().value!);
         readerChapterCache.set(key, result);
         if (!cancelled) { setReader(result); setLoading(false); }
+        // Prefetch adjacent chapters after rendering the current one; never block the reader.
+        if (!cancelled) {
+          void prefetchAdjacentChapter(book, chapter + 1, version).catch(() => {});
+          void prefetchAdjacentChapter(book, chapter - 1, version).catch(() => {});
+        }
       } catch (cause) {
         if (!cancelled) { setError(cause instanceof Error ? cause.message : 'Unable to load Scripture.'); setLoading(false); }
       }
