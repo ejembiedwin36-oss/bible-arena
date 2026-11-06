@@ -1,4 +1,4 @@
-import { useEffect, useMemo, useState } from 'react';
+import { useEffect, useMemo, useRef, useState } from 'react';
 import { NavLink, Route, Routes, useNavigate, useParams } from 'react-router-dom';
 import type { FormEvent } from 'react';
 import type { Session } from '@supabase/supabase-js';
@@ -152,7 +152,7 @@ async function prefetchAdjacentChapter(book: Book, chapterNumber: number, versio
 }
 
 function BibleReader({ session }: { session: Session }) {
-  const { bookKey, chapterNumber } = useParams(); const navigate = useNavigate(); const chapter = Number(chapterNumber ?? 1); const [reader, setReader] = useState<ReaderState | null>(null); const [versions, setVersions] = useState<Version[]>([]); const [languages, setLanguages] = useState<{ id: string; code: string; name: string }[]>([]); const [languageId, setLanguageId] = useState(''); const [versionId, setVersionId] = useState(''); const [selected, setSelected] = useState<string | null>(null); const [bookmarked, setBookmarked] = useState<string[]>([]); const [loading, setLoading] = useState(true); const [error, setError] = useState<string | null>(null);
+  const { bookKey, chapterNumber } = useParams(); const navigate = useNavigate(); const chapter = Number(chapterNumber ?? 1); const [reader, setReader] = useState<ReaderState | null>(null); const [versions, setVersions] = useState<Version[]>([]); const [languages, setLanguages] = useState<{ id: string; code: string; name: string }[]>([]); const [languageId, setLanguageId] = useState(''); const [versionId, setVersionId] = useState(''); const [selected, setSelected] = useState<string | null>(null); const [bookmarked, setBookmarked] = useState<string[]>([]); const bookmarkChanges = useRef(new Map<string, boolean>()); const [loading, setLoading] = useState(true); const [error, setError] = useState<string | null>(null);
   useEffect(() => {
     let cancelled = false;
     void loadReaderOptions().then(({ languages: languageList, versions: versionList }) => {
@@ -219,7 +219,7 @@ function BibleReader({ session }: { session: Session }) {
   useEffect(() => {
     let cancelled = false;
     void supabase.from('bookmarks').select('verse_id').eq('user_id', session.user.id).not('verse_id', 'is', null).then(({ data, error }) => {
-      if (!cancelled && !error) setBookmarked((data ?? []).map(row => row.verse_id).filter((id): id is string => Boolean(id)));
+      if (!cancelled && !error) { const saved = new Set((data ?? []).map(row => row.verse_id).filter((id): id is string => Boolean(id))); bookmarkChanges.current.forEach((present, id) => { if (present) saved.add(id); else saved.delete(id); }); setBookmarked([...saved]); }
     });
     return () => { cancelled = true; };
   }, [session.user.id]);
@@ -227,7 +227,7 @@ function BibleReader({ session }: { session: Session }) {
     if (!reader) return;
     void supabase.from('reading_history').insert({ user_id: session.user.id, chapter_id: reader.chapterId, version_id: reader.version.id });
   }, [reader, session.user.id]);
-  async function toggleBookmark(verseId: string) { if (bookmarked.includes(verseId)) { const { error: e } = await supabase.from('bookmarks').delete().eq('user_id', session.user.id).eq('verse_id', verseId); if (!e) setBookmarked(current => current.filter(id => id !== verseId)); } else { const { error: e } = await supabase.from('bookmarks').insert({ user_id: session.user.id, verse_id: verseId }); if (!e) setBookmarked(current => [...current, verseId]); } }
+  async function toggleBookmark(verseId: string) { if (bookmarked.includes(verseId)) { const { error: e } = await supabase.from('bookmarks').delete().eq('user_id', session.user.id).eq('verse_id', verseId); if (!e) { bookmarkChanges.current.set(verseId, false); setBookmarked(current => current.filter(id => id !== verseId)); } } else { const { error: e } = await supabase.from('bookmarks').insert({ user_id: session.user.id, verse_id: verseId }); if (!e) { bookmarkChanges.current.set(verseId, true); setBookmarked(current => current.includes(verseId) ? current : [...current, verseId]); } } }
   const readerVersion = reader?.version.abbreviation?.toUpperCase() ?? '';
   const supportsRedLetters = readerVersion === 'KJV' || readerVersion === 'WEB';
   const redLetterBook = useRedLetterBook(reader?.book.name, supportsRedLetters, readerVersion);
