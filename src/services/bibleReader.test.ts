@@ -36,12 +36,19 @@ describe('bibleReader', () => {
       verseRow(2, 'The earth was formless.'),
     ];
 
-    const query = {
+    const directQuery = {
+      select: vi.fn().mockReturnThis(),
+      eq: vi.fn().mockReturnThis(),
+      order: vi.fn().mockResolvedValue({ data: [], error: null }),
+    };
+    const legacyQuery = {
       select: vi.fn().mockReturnThis(),
       eq: vi.fn().mockReturnThis(),
       order: vi.fn().mockResolvedValue({ data: rows, error: null }),
     };
-    fromMock.mockReturnValue(query);
+    fromMock.mockImplementation((table: string) =>
+      table === 'bible_verses' ? directQuery : legacyQuery,
+    );
 
     const chapter = await loadBibleChapter('idoma-v1', 'genesis', 1);
 
@@ -50,7 +57,7 @@ describe('bibleReader', () => {
       { id: 'verse-2', verseNumber: 2, text: 'The earth was formless.' },
     ]);
     expect(getCachedBibleChapter('idoma-v1', 'genesis', 1)).toEqual(chapter);
-    expect(fromMock).toHaveBeenCalledTimes(1);
+    expect(fromMock).toHaveBeenCalledTimes(2);
   });
 
   it('deduplicates concurrent requests for the same chapter', async () => {
