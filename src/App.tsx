@@ -386,12 +386,15 @@ function ReadingPlanDetail() {
     if (!planId) return;
     (async () => {
       setLoading(true);
-      const [{ data: p, error: pe }, { data: d, error: de }, { data: r, error: re }, { data: up, error: ue }] = await Promise.all([
+      const [{ data: p, error: pe }, { data: d, error: de }, { data: up, error: ue }] = await Promise.all([
         supabase.from('reading_plans').select('id, name, description, duration_days, is_active').eq('id', planId).eq('is_active', true).maybeSingle(),
         supabase.from('reading_plan_days').select('id, plan_id, day_number, title, description').eq('plan_id', planId).order('day_number'),
-        supabase.from('reading_plan_readings').select('id, plan_day_id, book_id, start_chapter, start_verse, end_chapter, end_verse, sort_order, book:bible_books(canonical_key, name, abbreviation)').in('plan_day_id', (d ?? []).map(day => day.id)).order('sort_order'),
         supabase.from('user_reading_plans').select('id, plan_id').eq('plan_id', planId).order('started_at', { ascending: false }).limit(1).maybeSingle(),
       ]);
+      const dayIds = (d ?? []).map(day => day.id);
+      const { data: r, error: re } = dayIds.length
+        ? await supabase.from('reading_plan_readings').select('id, plan_day_id, book_id, start_chapter, start_verse, end_chapter, end_verse, sort_order, book:bible_books(canonical_key, name, abbreviation)').in('plan_day_id', dayIds).order('sort_order')
+        : { data: [], error: null };
       if (pe || de || re || ue || !p) {
         setError(pe?.message ?? de?.message ?? re?.message ?? ue?.message ?? 'Reading plan was not found.');
         setLoading(false);
