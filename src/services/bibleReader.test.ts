@@ -86,6 +86,22 @@ describe('bibleReader', () => {
     expect(fromMock).toHaveBeenCalledTimes(3);
   });
 
+  it('retries after a failed chapter request instead of caching the error', async () => {
+    const query = {
+      select: vi.fn().mockReturnThis(),
+      eq: vi.fn().mockReturnThis(),
+      order: vi.fn()
+        .mockResolvedValueOnce({ data: null, error: new Error('Temporary network failure') })
+        .mockResolvedValueOnce({ data: [{ id: 'recovered-verse', verse_number: 1, text: 'Recovered text' }], error: null }),
+    };
+    fromMock.mockReturnValue(query);
+    await expect(loadBibleChapter('web', 'genesis', 1)).rejects.toThrow('Temporary network failure');
+    expect(getCachedBibleChapter('web', 'genesis', 1)).toBeNull();
+    const chapter = await loadBibleChapter('web', 'genesis', 1);
+    expect(chapter.verses[0].text).toBe('Recovered text');
+    expect(fromMock).toHaveBeenCalledTimes(2);
+  });
+
   it('deduplicates concurrent requests for the same chapter', async () => {
     let resolveQuery!: (value: { data: unknown[]; error: null }) => void;
     const pending = new Promise<{ data: unknown[]; error: null }>((resolve) => {
