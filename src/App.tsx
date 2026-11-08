@@ -168,6 +168,7 @@ function BibleReader({ session }: { session: Session }) {
     if (!bookKey || !versionId || !Number.isInteger(chapter) || chapter < 1) return;
     const version = versions.find(v => v.id === versionId && v.language_id === languageId);
     if (!version) return;
+    const selectedVersion: Version = version;
     let cancelled = false;
     const key = bookKey + ':' + chapter + ':' + versionId;
     const saved = readerChapterCache.get(key);
@@ -199,15 +200,15 @@ function BibleReader({ session }: { session: Session }) {
           ch = data;
           readerChapterIdCache.set(chapterKey, ch);
         }
-        const verses = await cachedChapterVerses(ch.id, version.id);
-        const result: ReaderState = { book, chapter: ch.chapter_number, chapterId: ch.id, version, verses };
+        const verses = await cachedChapterVerses(ch.id, selectedVersion.id);
+        const result: ReaderState = { book, chapter: ch.chapter_number, chapterId: ch.id, version: selectedVersion, verses };
         if (readerChapterCache.size >= 40) readerChapterCache.delete(readerChapterCache.keys().next().value!);
         readerChapterCache.set(key, result);
         if (!cancelled) { setReader(result); setLoading(false); }
         // Prefetch adjacent chapters after rendering the current one; never block the reader.
         if (!cancelled) {
-          void prefetchAdjacentChapter(book, chapter + 1, version).catch(() => {});
-          void prefetchAdjacentChapter(book, chapter - 1, version).catch(() => {});
+          void prefetchAdjacentChapter(book, chapter + 1, selectedVersion).catch(() => {});
+          void prefetchAdjacentChapter(book, chapter - 1, selectedVersion).catch(() => {});
         }
       } catch (cause) {
         if (!cancelled) { setError(cause instanceof Error ? cause.message : 'Unable to load Scripture.'); setLoading(false); }
