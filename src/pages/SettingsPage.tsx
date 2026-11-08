@@ -1,11 +1,6 @@
-import type { Session } from '@supabase/supabase-js';
 import { LanguageSettingsPanel } from '../components/LanguageSettingsPanel';
 
-type SettingsPageProps = {
-  session: Session;
-};
-
-export function SettingsPage({ session }: SettingsPageProps) {
+export function SettingsPage() {
   return (
     <main className="settings-page">
       <section className="card">
@@ -14,7 +9,7 @@ export function SettingsPage({ session }: SettingsPageProps) {
         <p>Choose how you want to read, use, hear, and interact with Bible Arena.</p>
       </section>
 
-      <LanguageSettingsPanel session={session} />
+      <LanguageSettingsPanel />
     </main>
   );
 }
