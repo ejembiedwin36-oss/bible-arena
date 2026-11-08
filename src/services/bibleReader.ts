@@ -99,7 +99,7 @@ async function fetchBibleChapter(
 
   if (error) throw error;
 
-  const rows = (data ?? []) as Array<{
+  const rows = (data ?? []) as unknown as Array<{
     verse_id: string;
     verse_text: string;
     bible_verses: {
