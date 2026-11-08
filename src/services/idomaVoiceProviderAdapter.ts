@@ -1,5 +1,5 @@
 import type { VoiceIntent } from './voiceIntent';
-import type { SpeechRecognitionProvider, SpeechSynthesisProvider, VoiceUnderstandingProvider, VoiceRecognitionResult } from './voiceProviders';
+import type { SpeechRecognitionProvider, VoiceRecognitionResult } from './voiceProviders';
 
 export type IdomaVoiceAdapterConfig = {
   asrEndpoint?: string;
@@ -15,7 +15,7 @@ export type IdomaVoiceAdapterConfig = {
  * on them. Keeping the adapter here lets the real transport be added without
  * changing VoiceSession or the Reader.
  */
-export class IdomaVoiceProviderAdapter implements SpeechRecognitionProvider, VoiceUnderstandingProvider, SpeechSynthesisProvider {
+export class IdomaVoiceProviderAdapter implements SpeechRecognitionProvider {
   readonly kind = 'speech_recognition' as const;
   readonly understandingKind = 'voice_understanding' as const;
   readonly synthesisKind = 'speech_synthesis' as const;
