@@ -60,6 +60,32 @@ describe('bibleReader', () => {
     expect(fromMock).toHaveBeenCalledTimes(2);
   });
 
+  it('keeps KJV and WEB chapter data isolated when switching translations', async () => {
+    const directQuery = {
+      select: vi.fn().mockReturnThis(),
+      eq: vi.fn().mockReturnThis(),
+      order: vi.fn().mockImplementation(async () => ({
+        data: [{ id: 'web-verse-1', verse_number: 1, text: 'WEB verse text' }],
+        error: null,
+      })),
+    };
+    const legacyQuery = {
+      select: vi.fn().mockReturnThis(),
+      eq: vi.fn().mockReturnThis(),
+      order: vi.fn().mockResolvedValue({ data: [verseRow(1, 'KJV verse text')], error: null }),
+    };
+    fromMock.mockImplementation((table: string) => table === 'bible_verses' ? directQuery : legacyQuery);
+
+    const web = await loadBibleChapter('web', 'genesis', 1);
+    // Simulate WEB having direct verses while KJV falls back to translation verses.
+    directQuery.order.mockResolvedValueOnce({ data: [], error: null });
+    const kjv = await loadBibleChapter('kjv', 'genesis', 1);
+    expect(web.verses[0].text).toBe('WEB verse text');
+    expect(kjv.verses[0].text).toBe('KJV verse text');
+    expect((await loadBibleChapter('web', 'genesis', 1)).verses[0].text).toBe('WEB verse text');
+    expect(fromMock).toHaveBeenCalledTimes(3);
+  });
+
   it('deduplicates concurrent requests for the same chapter', async () => {
     let resolveQuery!: (value: { data: unknown[]; error: null }) => void;
     const pending = new Promise<{ data: unknown[]; error: null }>((resolve) => {
