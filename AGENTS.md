@@ -10,7 +10,7 @@ Bible Arena is a multilingual Bible reading, study, devotion, learning/challenge
 2. `docs/PRODUCT_REQUIREMENTS.md`
 3. `docs/IMPLEMENTATION_ROADMAP.md`
 4. `docs/PROJECT_LOG.md`
-5. `docs/BIBLE_ARENA_BEGINNER_PROJECT_GUIDE.md)
+5. `docs/BIBLE_ARENA_BEGINNER_PROJECT_GUIDE.md`)
 
 The product must distinguish verified Scripture from commentary, study notes, and AI-generated text. Never invent Scripture text, translation coverage, licensing permissions, or language capabilities.
 
@@ -119,9 +119,12 @@ If documentation cannot be updated in the same change, state why and make it the
 - Supabase project ref: `fqsjzjduawcevqlammzm`.
 - Supabase CLI is being run through `npx --yes supabase@latest` (observed version 3.2.0); a global `supabase` command is not installed.
 - The project has been linked to the Supabase project.
-- Schema-only public export is pending because Docker Desktop's Linux engine was not reachable. Docker CLI is installed, but `docker info` reports a missing `dockerDesktopLinuxEngine` pipe.
-- Next step: owner starts Docker Desktop, confirms `docker info` shows a healthy Server section, then retries the read-only schema-only dump to the external audit folder. Never use `--dry-run` again for this command because its printed script exposed a temporary credential in the previous session.
-- No database schema/data changes or migration-history changes were made during this recovery work.
+- Docker Desktop is running; `docker info` shows a healthy Linux Server section (Docker Engine 29.9.2).
+- The read-only schema-only `public` export succeeded to `C:\\Users\\DELL\\Desktop\\bible-arena-schema-audit\\public-schema.sql`; PowerShell verified it exists and is 93,729 bytes. The dump remains outside Git.
+- First dump inventory: 34 tables, 64 RLS policies, 15 functions, 65 indexes. Count functions using both `CREATE FUNCTION` and `CREATE OR REPLACE FUNCTION`.
+- GitHub `supabase/migrations` currently lists its README and one SQL file, `20261025223416_maintenance_users.sql`; that file comments on a preceding version `20261025223408` whose SQL is not present in the current listing. Live production migration history was previously observed to contain 38 records.
+- Next step: continue read-only comparison of the exported schema with tracked migration SQL and inventory dependencies. Do not execute the dump or run `db pull`, `db push`, migration repair, reset, or schema-changing SQL.
+- No production schema/data changes or migration-history changes were made during this recovery work. The dump is an external audit artifact and must not be committed.
 - The local `supabase/.temp/` directory is untracked and must not be committed.
 
 When resuming, first ask for or inspect the latest sanitized Docker status. Continue from the exact next step in `docs/PROJECT_LOG.md`; do not restart completed audits unnecessarily.
