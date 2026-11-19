@@ -298,7 +298,7 @@ The repository audit established that the active Bible route uses the `BibleRead
 
 ## 17. What Is Still Unfinished
 
-- The live Supabase Bible schema still needs a successful audit.
+- A read-only schema-only snapshot of the live Supabase `public` schema has now been exported and its first object counts inspected; the deeper schema/dependency audit and reconciliation remain in progress.
 - The `daily_devotions` and `devotion_completions` schema/content path still needs live verification; Daily Devotion may show its safe fallback until that is confirmed.
 - The duplicate/competing Bible reader data models should be consolidated only after the schema audit.
 - SQL migrations/schema history should eventually be committed so the database structure is reproducible.
@@ -323,3 +323,62 @@ The final version should be understandable to a beginner who did not participate
 ---
 
 **Next documentation update:** record the successful live Supabase schema audit and any resulting safe Bible-data consolidation. Also record live Daily Devotion database verification when it occurs. Voice-hosting documentation should be updated when a suitable deployment route is actually activated and the first genuine Idoma transcription is tested; do not record either as successful before it happens.
+
+
+## 19. November 19, 2026 — Docker and the safe Supabase schema snapshot
+
+### What Docker does in this task
+
+The Supabase CLI can ask PostgreSQL tools packaged in a Docker image to create a database schema dump. There are two separate pieces:
+
+- **Docker CLI:** the `docker` command installed on Windows. It lets PowerShell send instructions to Docker.
+- **Docker Engine:** the background service that actually runs containers. The CLI can be installed while the Engine is stopped.
+- **Docker Desktop:** the Windows application that starts and manages the Engine. In this session, opening Docker Desktop made the Linux/WSL2 Engine available.
+
+The useful health check is `docker info`. A working result includes both **Client** and **Server** sections. Earlier, the Client section existed but the Server connection failed because the Docker Desktop Linux Engine pipe was missing. After Docker Desktop was opened, the Server section appeared and showed Docker Desktop running Linux.
+
+### What a schema-only dump means
+
+A database has both **structure** and **data**:
+
+- Structure describes tables, columns, functions, indexes, policies, and other database objects.
+- Data is the actual stored rows, such as Bible verses, user records, and other content.
+
+The command used was:
+
+```powershell
+npx --yes supabase@latest db dump --remote --schema public --file "$HOME\\Desktop\\bible-arena-schema-audit\\public-schema.sql"
+```
+
+This created a **schema-only** SQL snapshot of the remote `public` schema. It did not export Bible verse rows, and it did not apply SQL changes to the live database. The output file was saved outside the repository so it would not be accidentally committed.
+
+PowerShell verification:
+- `Test-Path` returned `True`.
+- File size was **93,729 bytes**.
+
+### First inventory from the exported snapshot
+
+The first inspection counted:
+
+| Object | Count |
+|---|---:|
+| Tables | 34 |
+| RLS policies | 64 |
+| Functions | 15 |
+| Indexes | 65 |
+
+The first function search looked only for `CREATE FUNCTION` and returned zero. That was a search-pattern mistake: the dump declares these as `CREATE OR REPLACE FUNCTION`. Including that form found 15 functions. **A zero from a narrow text search is not proof that the database has zero functions.**
+
+### What we found in GitHub migration history
+
+The current `supabase/migrations` directory listing contains:
+- `README.md`
+- `20261025223416_maintenance_users.sql`
+
+The SQL file documents the `maintenance_users` table, enables RLS, revokes direct access from public/anon/authenticated, and grants SELECT to `service_role`. Its comments mention an earlier production migration version `20261025223408`, but that earlier SQL file is not in the current directory listing.
+
+The live production migration history was previously inspected as containing 38 records. One checked-in SQL file plus a schema snapshot does **not** reconstruct the original 38 migration steps. Never invent missing migration files from the final schema.
+
+### Safe next step
+
+Continue by comparing the exported `maintenance_users` definition and related grants/RLS with the tracked SQL file, then build a broader object/dependency inventory. Keep the dump local and read-only. Do not run it, `db pull`, `db push`, migration repair, reset, or schema-changing SQL during this recovery investigation.
