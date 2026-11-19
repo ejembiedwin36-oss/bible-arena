@@ -490,3 +490,39 @@ We compared the one SQL filename with the 38 version/name records returned by pr
 We must not recreate those missing files by guessing from their names or by copying the final schema dump into 37 invented migrations. A final schema tells us what exists now, not the exact sequence of changes that created it.
 
 **Safe next step:** Continue a read-only comparison of production database objects with tracked schema/migration artifacts. Do not repair or reset migration history, run `db pull` / `db push`, or execute schema-changing SQL until a reviewed plan is approved.
+
+
+## 2026-11-19 — Understanding bible_books, bible_chapters, constraints, indexes, and RLS
+
+We inspected the production schema export without changing the live database.
+
+### The book and chapter relationship
+
+- `bible_books` stores the Bible book catalogue: its unique ID, canonical identifier, display name, abbreviation, testament, chapter count, book order, and optional study/background fields.
+- `bible_chapters` stores a unique ID, the parent `book_id`, and the chapter number.
+- The foreign key explicitly connects `bible_chapters.book_id` to `bible_books.id` with `ON DELETE CASCADE`. A book therefore owns its chapter rows in this relationship.
+- A unique constraint on `(book_id, chapter_number)` prevents the same book from having duplicate chapter numbers.
+
+### Constraints and indexes in plain language
+
+A **primary key** is the main unique identity of a row. A **unique constraint** prevents duplicate values (or duplicate combinations). A **foreign key** connects a row to a valid row in another table. An **index** is an additional lookup structure that can make searches or sorting faster.
+
+For `bible_books`, the inspected constraints include:
+- Primary key on `id`.
+- Unique `abbreviation`.
+- Unique `canonical_key`.
+- Checks that `chapter_count` is greater than zero and `testament` is `old` or `new`.
+
+The dump also shows unique indexes on `book_order` and `canonical_key`. The `canonical_key` unique index may overlap with the index created for the unique constraint. This is only a possible duplicate to investigate later. **Do not delete indexes during an audit.**
+
+### RLS and GRANT are different
+
+Row Level Security (RLS) is enabled on `bible_books`. The `books_public_read` policy permits `anon` and `authenticated` roles to SELECT rows using `USING (true)`.
+
+The schema dump also lists table-level `GRANT ALL` for `anon`, `authenticated`, and `service_role`. Do not read that line alone as proof that ordinary users can modify rows. Table grants and RLS policies work together; the inspected ordinary-role policy is SELECT-only, and no write policy was identified in this inspection. The privileged Supabase `service_role` normally bypasses RLS.
+
+### Safe learning rule
+
+During a production audit, inspect and explain first. Do not drop an index, change a grant, alter RLS, or execute schema SQL just because a finding looks unusual. Check dependencies and obtain explicit approval before any production change.
+
+**Next practice step:** Inspect the `languages` table using the schema-only export. First read its columns, then inspect its constraints, indexes, policies, RLS setting, and grants.
