@@ -135,18 +135,51 @@ The 2026-11-19 read-only advisor review reported:
 **No changes made:** No database schema/data changes, no migration history repair, no migration push/pull, and no schema export file was produced.
 
 **Next exact step:**
-1. Owner starts Docker Desktop from the Windows Start menu and waits for it to report that the engine is running.
-2. In PowerShell, run `docker info`. Confirm that both Client and Server sections display normally and there is no daemon connection error.
-3. Only after that, retry the schema-only export command (without `--dry-run`):
+1. Docker Desktop was started successfully and `docker info` now shows a healthy Linux Server section.
+2. The schema-only export completed successfully and was verified at 93,729 bytes. See the 2026-11-19 session entry below for the object counts and migration-directory comparison.
+3. Continue with read-only schema inventory and comparison; do not repeat the export unless the file is lost or a fresh snapshot is deliberately requested.
    ```powershell
    npx --yes supabase@latest db dump --remote --schema public --file "$HOME\\Desktop\\bible-arena-schema-audit\\public-schema.sql"
    ```
-4. Verify file existence and size:
+4. Keep the dump outside Git and do not execute it against production. Do not paste credentials or the full dump into chat; share only sanitized metadata and selected non-sensitive declarations.
+
+
+
+### 2026-11-19 — Docker recovery, schema-only export, and first inventory
+
+**Goal:** Complete the safe production schema snapshot after Docker became available, verify the export, inspect its object inventory, and compare the repository's tracked migration directory.
+
+**Completed and verified:**
+1. Owner opened Docker Desktop. `docker info` displayed a healthy Client and Server section (Docker Engine 29.9.2, Docker Desktop on Linux/WSL2); the earlier missing `dockerDesktopLinuxEngine` pipe error was resolved.
+2. Created the external audit folder `C:\\Users\\DELL\\Desktop\\bible-arena-schema-audit`.
+3. Successfully ran the read-only schema-only export:
    ```powershell
-   Test-Path "$HOME\\Desktop\\bible-arena-schema-audit\\public-schema.sql"
-   (Get-Item "$HOME\\Desktop\\bible-arena-schema-audit\\public-schema.sql").Length
+   npx --yes supabase@latest db dump --remote --schema public --file "$HOME\\Desktop\\bible-arena-schema-audit\\public-schema.sql"
    ```
-5. Do not paste credentials or raw output containing secrets into chat. Share only the success/failure message and sanitized file existence/size. Then inspect the schema file and compare it with tracked migration SQL.
+4. PowerShell verified the file exists (`Test-Path` returned `True`) and its size is **93,729 bytes**.
+5. Inspected the dump header and counted declarations: **34 tables**, **64 RLS policies**, **15 functions**, and **65 indexes**. The initial exact search for `^CREATE FUNCTION` returned zero because this dump uses `CREATE OR REPLACE FUNCTION`; the corrected search found 15. This was a search-pattern correction, not missing database functions.
+6. Inspected GitHub `supabase/migrations`: it contains `README.md` and one tracked SQL file, `20261025223416_maintenance_users.sql`. That SQL file's comments refer to a preceding production migration version `20261025223408`; that earlier SQL file is not present in the current directory listing.
+7. Confirmed the export is stored outside the repository. It has not been committed. No production schema/data changes, migration repairs, pushes, pulls, resets, or local migration-history edits were performed.
+
+**Challenges and lessons:**
+- Docker CLI being installed did not mean the Docker Engine was running. Starting Docker Desktop made the Linux Server endpoint available.
+- The first function-count pattern was too narrow. PostgreSQL's `CREATE OR REPLACE FUNCTION` declaration needed to be included.
+- A schema dump is a snapshot of the current schema; it is not the original 38-step migration history and does not recreate missing historical migration SQL.
+- The GitHub migration folder has one SQL file plus its README, not the complete historical set. Do not fabricate the missing 37 migration files or infer their contents from the final schema.
+- The 93,729-byte dump remains a local audit artifact outside Git. Do not commit it or paste its full contents into chat.
+
+**Decisions:** Keep the export outside the repository; continue read-only comparison and inventory. Do not run `db pull`, `db push`, `migration repair`, reset, or any schema-changing command as part of this recovery.
+
+**Database/deployment impact:** Read-only production schema export only. No production writes and no deployment changes.
+
+**Remaining work:**
+- [ ] Build a complete, verified inventory of exported tables, functions, policies, indexes, triggers, views, types, grants, and dependencies.
+- [ ] Compare the current schema snapshot with the single tracked SQL migration and identify what can and cannot be explained by that file.
+- [ ] Capture the exact 38 live migration version identifiers from the read-only migration-history source (if not already recorded in a durable, safe audit note).
+- [ ] Review repository status and ignore rules before any local source-control operation; keep `supabase/.temp/` and the external dump out of commits.
+- [ ] Agree on a forward-only migration/baseline plan before changing migration files or database state.
+
+**Next exact step:** Continue read-only inspection of the schema dump and compare its `maintenance_users` definition with the tracked `20261025223416_maintenance_users.sql`. Do not execute the dump or migration SQL.
 
 ### Earlier verified implementation work (before 2026-11-19)
 
@@ -160,10 +193,11 @@ The 2026-11-19 read-only advisor review reported:
 ## 7. Open challenges and backlog
 
 ### P0 — Preserve production schema safely
-- [ ] Start Docker Desktop and confirm Docker engine is healthy.
-- [ ] Export the live `public` schema to the external audit folder.
-- [ ] Verify the export file exists and record its byte size.
-- [ ] Inspect the dump for schema objects and compare with SQL actually tracked in GitHub.
+- [x] Start Docker Desktop and confirm Docker engine is healthy.
+- [x] Export the live `public` schema to the external audit folder (schema-only; read-only).
+- [x] Verify the export file exists and record its byte size (93,729 bytes).
+- [x] Inspect the first object counts: 34 tables, 64 policies, 15 functions, 65 indexes.
+- [ ] Complete the detailed dump-to-tracked-SQL comparison and dependency inventory.
 - [ ] Document all 38 live migration version identifiers using verified output; do not invent missing migration SQL.
 - [ ] Agree on a safe forward migration/baseline strategy before any migration command changes production or local migration history.
 
