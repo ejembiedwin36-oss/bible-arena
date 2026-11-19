@@ -473,3 +473,20 @@ The repository's `supabase/migrations` directory was previously inspected and sh
 ### Next safe step
 
 Compare these 38 returned version/name pairs against the migration filenames actually tracked in GitHub, and inspect the migration README. Only after that evidence is collected should we discuss a safe baseline or forward-only plan. Any production migration-history changes require a separate explanation and explicit approval.
+
+
+## 22. November 19, 2026 — Why 38 production migrations do not mean 38 SQL files are present
+
+We checked the actual GitHub directory `supabase/migrations` on the `main` branch. It contains exactly:
+1. `README.md`
+2. `20261025223416_maintenance_users.sql`
+
+We also read the README. It explains that the live Supabase migration history is the source of truth for migrations already applied to production, and that future database changes should be represented as SQL files and applied through a controlled workflow.
+
+We compared the one SQL filename with the 38 version/name records returned by production. Only version `20261025223416` has a matching SQL file in this directory. The other 37 records do not have matching SQL files there.
+
+**Important beginner lesson:** A migration history record is not the same thing as the original SQL file. The database remembers that a version was applied, but the repository may no longer contain the SQL that originally produced it.
+
+We must not recreate those missing files by guessing from their names or by copying the final schema dump into 37 invented migrations. A final schema tells us what exists now, not the exact sequence of changes that created it.
+
+**Safe next step:** Continue a read-only comparison of production database objects with tracked schema/migration artifacts. Do not repair or reset migration history, run `db pull` / `db push`, or execute schema-changing SQL until a reviewed plan is approved.
