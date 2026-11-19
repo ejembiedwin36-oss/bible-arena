@@ -382,3 +382,29 @@ The live production migration history was previously inspected as containing 38 
 ### Safe next step
 
 Continue by comparing the exported `maintenance_users` definition and related grants/RLS with the tracked SQL file, then build a broader object/dependency inventory. Keep the dump local and read-only. Do not run it, `db pull`, `db push`, migration repair, reset, or schema-changing SQL during this recovery investigation.
+
+
+## 20. November 19, 2026 — Comparing a tracked migration with production
+
+We compared the checked-in migration `supabase/migrations/20261025223416_maintenance_users.sql` with the matching object in the schema-only production dump.
+
+### What matched
+
+The production table has:
+- `user_id` as a UUID and the primary key.
+- `created_at` as a timestamp with time zone, required and defaulting to `now()`.
+- A foreign key from `user_id` to `auth.users(id)`, with `ON DELETE CASCADE`.
+- Row Level Security (RLS) enabled.
+- A `SELECT` grant for `service_role`, with no grants shown for `anon` or `authenticated`.
+
+These findings match the resulting table structure and access configuration described by the tracked migration. The SQL dump represents the final permissions as a grant to `service_role`; it does not have to repeat the migration's original `REVOKE` statements word for word to show the resulting permissions.
+
+### What this proves — and what it does not
+
+This verifies one tracked migration against one production table. It does **not** reconstruct or reconcile all 38 production migration-history entries, and it does not prove every other table, function, policy, trigger, or dependency matches the repository.
+
+The inspection was read-only. No production schema, data, or migration history was changed. Keep the dump outside Git.
+
+### Next safe step
+
+Continue collecting the exact 38 production migration version identifiers from verified history output and perform a wider read-only object/dependency comparison. Do not run migration repair, reset, `db pull`, `db push`, or schema-changing SQL as part of this audit.
