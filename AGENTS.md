@@ -130,4 +130,4 @@ If documentation cannot be updated in the same change, state why and make it the
 - No production schema/data changes or migration-history changes were made during this recovery work. The dump is an external audit artifact and must not be committed.
 - The local `supabase/.temp/` directory is untracked and must not be committed.
 
-When resuming, continue from the exact next step in `docs/PROJECT_LOG.md`: compare the documented 38 production migration records with the filenames actually tracked in GitHub and inspect the migration README. Docker, schema export, and migration-history retrieval are already verified; do not repeat them unnecessarily.
+When resuming, continue from the exact next step in `docs/PROJECT_LOG.md`: perform the read-only comparison of production tables, constraints, indexes, policies, functions, triggers, views, and grants with tracked repository artifacts. Docker, schema export, the 38-record migration history, and the one-file GitHub migration directory are already verified.
