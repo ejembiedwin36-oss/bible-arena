@@ -251,3 +251,26 @@ Copy this section for every future work session:
 ## 9. Completion rule
 
 This log remains active until the owner and project team agree that Bible Arena has met its release requirements. At completion, add a final release report with verified functionality, test results, security review, content/licensing status, deployment URL, commit/tag, known limitations, and post-launch maintenance plan.
+
+
+### 2026-11-19 — Verified tracked maintenance_users migration against production schema
+
+**Goal:** Finish the first exact comparison between the checked-in `maintenance_users` migration and the read-only production schema snapshot.
+
+**Files/services inspected:** External schema snapshot `C:\\Users\\DELL\\Desktop\\bible-arena-schema-audit\\public-schema.sql`; GitHub file `supabase/migrations/20261025223416_maintenance_users.sql`.
+
+**Verification evidence from PowerShell output:**
+- Production table has `user_id uuid NOT NULL` and `created_at timestamptz DEFAULT now() NOT NULL`.
+- Production primary key is `maintenance_users_pkey` on `user_id`.
+- Production foreign key references `auth.users(id)` with `ON DELETE CASCADE`.
+- Production has `ENABLE ROW LEVEL SECURITY` for this table.
+- The dump shows a `SELECT` grant to `service_role`; it shows no grants to `anon` or `authenticated`. This is consistent with the tracked migration's revoke-and-grant intent.
+- The tracked migration defines the same columns, primary key, foreign key, RLS enablement, and service-role-only direct table access.
+
+**Result:** The tracked `20261025223416_maintenance_users.sql` migration matches the inspected production table structure and security state. This conclusion is limited to this one table/migration; it does not reconcile the full 38-entry production migration history.
+
+**Actions / production impact:** Read-only inspection only. No SQL was executed against production, no migration history was changed, and no database schema or data was modified. The schema dump remains outside Git and must not be committed.
+
+**Challenges / decisions:** The dump formats the table's final permissions as a grant to `service_role`; it does not need to reproduce the migration's original `REVOKE` statements verbatim to represent the same resulting access state.
+
+**Next exact step:** Continue the read-only inventory by recording the exact 38 production migration version identifiers from verified migration-history output, then assess the broader schema/object/dependency differences. Do not run `db pull`, `db push`, migration repair, reset, or schema-changing SQL until a safe forward-only plan is reviewed and explicitly approved.
