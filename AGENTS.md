@@ -10,7 +10,7 @@ Bible Arena is a multilingual Bible reading, study, devotion, learning/challenge
 2. `docs/PRODUCT_REQUIREMENTS.md`
 3. `docs/IMPLEMENTATION_ROADMAP.md`
 4. `docs/PROJECT_LOG.md`
-5. `docs/BIBLE_ARENA_BEGINNER_PROJECT_GUIDE.md`)
+5. `docs/BIBLE_ARENA_BEGINNER_PROJECT_GUIDE.md`
 
 The product must distinguish verified Scripture from commentary, study notes, and AI-generated text. Never invent Scripture text, translation coverage, licensing permissions, or language capabilities.
 
