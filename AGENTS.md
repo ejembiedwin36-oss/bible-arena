@@ -123,8 +123,9 @@ If documentation cannot be updated in the same change, state why and make it the
 - The read-only schema-only `public` export succeeded to `C:\\Users\\DELL\\Desktop\\bible-arena-schema-audit\\public-schema.sql`; PowerShell verified it exists and is 93,729 bytes. The dump remains outside Git.
 - First dump inventory: 34 tables, 64 RLS policies, 15 functions, 65 indexes. Count functions using both `CREATE FUNCTION` and `CREATE OR REPLACE FUNCTION`.
 - GitHub `supabase/migrations` currently lists its README and one SQL file, `20261025223416_maintenance_users.sql`; that file comments on a preceding version `20261025223408` whose SQL is not present in the current listing. Live production migration history was previously observed to contain 38 records.
-- Next step: continue read-only comparison of the exported schema with tracked migration SQL and inventory dependencies. Do not execute the dump or run `db pull`, `db push`, migration repair, reset, or schema-changing SQL.
+- Verified `supabase/migrations/20261025223416_maintenance_users.sql` against the production dump: columns/default, primary key, auth.users foreign key with cascade, RLS enabled, and service_role SELECT-only grant match. This verifies only that table, not all production migration history.
+- Next step: record the exact 38 production migration version identifiers from verified history output, then continue read-only object/dependency comparison. Do not execute the dump or run `db pull`, `db push`, migration repair, reset, or schema-changing SQL.
 - No production schema/data changes or migration-history changes were made during this recovery work. The dump is an external audit artifact and must not be committed.
 - The local `supabase/.temp/` directory is untracked and must not be committed.
 
-When resuming, first ask for or inspect the latest sanitized Docker status. Continue from the exact next step in `docs/PROJECT_LOG.md`; do not restart completed audits unnecessarily.
+When resuming, continue from the exact next step in `docs/PROJECT_LOG.md`: obtain/record the exact 38 production migration version identifiers from verified history output, then continue the read-only inventory. Docker and the schema export are already verified; do not restart those steps unnecessarily.
