@@ -347,3 +347,30 @@ Read `supabase/migrations/README.md`. It says the live Supabase migration histor
 **Decision:** Do not fabricate the missing 37 migration SQL files from names, comments, or the final schema dump. Preserve the verified production history and schema snapshot as separate evidence. Any baseline or forward-only recovery plan must be reviewed before changing migration history or production.
 
 **Next exact step:** Continue read-only schema inventory: compare production objects (tables, columns, constraints, indexes, policies, functions, triggers, views, grants) with the repository's tracked schema/migration artifacts and identify dependencies. No migration repair, reset, `db pull`, `db push`, or schema-changing SQL.
+
+
+### 2026-11-19 — Read-only audit of bible_books and its chapter relationship
+
+**Goal:** Continue the production schema audit by documenting the verified structure, constraints, indexes, RLS policy, and grants for the Bible book catalogue.
+
+**Source and scope:** Read-only inspection of the schema-only export at `C:\\Users\\DELL\\Desktop\\bible-arena-schema-audit\\public-schema.sql`. No SQL was executed against production and no database objects or data were changed.
+
+**Verified findings:**
+- `bible_books` has columns `id`, `canonical_key`, `name`, `abbreviation`, `testament`, `category`, `chapter_count`, `traditional_author`, `authorship_status`, `historical_context`, `intended_audience`, `purpose`, `summary`, `created_at`, and `book_order`.
+- Check constraints require `chapter_count > 0` and `testament` to be either `old` or `new`.
+- Primary key: `bible_books_pkey` on `id`.
+- Unique constraints: `bible_books_abbreviation_key` on `abbreviation`; `bible_books_canonical_key_key` on `canonical_key`.
+- Additional unique indexes observed: `bible_books_book_order_uq` on `book_order`; `bible_books_canonical_key_uidx` on `canonical_key`.
+- The separate unique index on `canonical_key` may duplicate the index backing the unique constraint. This is a review finding only; do not drop or alter either index without checking index definitions, dependencies, and query impact.
+- `bible_chapters` has `id`, `book_id`, and `chapter_number`; it has a primary key on `id`, a unique constraint on `(book_id, chapter_number)`, and a check requiring `chapter_number > 0`.
+- Verified foreign key: `bible_chapters.book_id` references `bible_books.id` with `ON DELETE CASCADE`. Thus a book deletion cascades to its chapter rows.
+- RLS is enabled on `bible_books`.
+- Policy `books_public_read` grants SELECT visibility to `anon` and `authenticated` using `USING (true)`.
+- Table-level grants in the dump show `ALL` to `anon`, `authenticated`, and `service_role`. These grants must be interpreted together with RLS: the only inspected policy for ordinary roles is SELECT, and no INSERT/UPDATE/DELETE policy was identified in this inspection. Do not infer that anon/authenticated can modify rows from GRANT ALL alone. The privileged service_role normally bypasses RLS.
+- The schema dump also contains `chapters_public_read` on `bible_chapters`; a complete chapter-table policy/grant review remains separate work.
+
+**Beginner lesson:** A primary key identifies a row; a unique constraint prevents duplicate values/combinations; a foreign key connects related tables; an index supports efficient lookup/order; a GRANT provides table privileges while RLS policies further restrict which rows/actions are allowed.
+
+**Decisions:** Keep the audit read-only. Flag the possible canonical-key duplicate index for later evidence-based review, but do not make a database change. Do not treat table-level GRANT ALL as proof that ordinary users can write rows when RLS is enabled.
+
+**Next exact step:** Inspect the `languages` table columns, then its constraints/indexes, policies, RLS setting, and grants using the same read-only schema-export workflow. Continue verifying relationships from explicit foreign-key declarations rather than assumptions.
