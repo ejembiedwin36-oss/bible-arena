@@ -134,14 +134,7 @@ The 2026-11-19 read-only advisor review reported:
 
 **No changes made:** No database schema/data changes, no migration history repair, no migration push/pull, and no schema export file was produced.
 
-**Next exact step:**
-1. Docker Desktop was started successfully and `docker info` now shows a healthy Linux Server section.
-2. The schema-only export completed successfully and was verified at 93,729 bytes. See the 2026-11-19 session entry below for the object counts and migration-directory comparison.
-3. Continue with read-only schema inventory and comparison; do not repeat the export unless the file is lost or a fresh snapshot is deliberately requested.
-   ```powershell
-   npx --yes supabase@latest db dump --remote --schema public --file "$HOME\\Desktop\\bible-arena-schema-audit\\public-schema.sql"
-   ```
-4. Keep the dump outside Git and do not execute it against production. Do not paste credentials or the full dump into chat; share only sanitized metadata and selected non-sensitive declarations.
+**Handover update:** This original preparation entry is superseded by the later `2026-11-19 — Docker recovery, schema-only export, and first inventory` entry below. Docker is running and the schema export is complete; continue from that later entry's read-only inspection step. Do not repeat the export or execute the dump unless a new snapshot is deliberately required.
 
 
 
