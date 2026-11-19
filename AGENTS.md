@@ -131,3 +131,13 @@ If documentation cannot be updated in the same change, state why and make it the
 - The local `supabase/.temp/` directory is untracked and must not be committed.
 
 When resuming, continue from the exact next step in `docs/PROJECT_LOG.md`: perform the read-only comparison of production tables, constraints, indexes, policies, functions, triggers, views, and grants with tracked repository artifacts. Docker, schema export, the 38-record migration history, and the one-file GitHub migration directory are already verified.
+
+
+## Latest read-only schema audit progress — 2026-11-19
+
+- Inspected `bible_books` columns, check constraints, primary/unique constraints, indexes, public-read policy, RLS setting, and table grants from the external schema-only export.
+- Verified `bible_chapters.book_id` references `bible_books.id` with `ON DELETE CASCADE`; `(book_id, chapter_number)` is unique.
+- `bible_books` has RLS enabled and `books_public_read` for SELECT by `anon` and `authenticated`. The dump shows table-level GRANT ALL to anon/authenticated/service_role; interpret grants together with RLS and do not infer ordinary-user write access from the GRANT alone.
+- Flag only for later investigation: unique index `bible_books_canonical_key_uidx` may overlap with the unique constraint on `canonical_key`. Do not remove or change it during this audit.
+- No production writes or schema changes were made.
+- **Next exact step:** Continue the same read-only inspection with the `languages` table, beginning with its CREATE TABLE definition.
