@@ -1,0 +1,127 @@
+# AGENTS.md — Bible Arena Agent Instructions
+
+These instructions apply to AI agents and automated coding assistants working anywhere in this repository.
+
+## 1. Mission and product context
+
+Bible Arena is a multilingual Bible reading, study, devotion, learning/challenge, audio, and AI-assisted Scripture application. Idoma is the first major local-language priority. Read these documents before substantial work:
+
+1. `README.md`
+2. `docs/PRODUCT_REQUIREMENTS.md`
+3. `docs/IMPLEMENTATION_ROADMAP.md`
+4. `docs/PROJECT_LOG.md`
+5. `docs/BIBLE_ARENA_BEGINNER_PROJECT_GUIDE.md)
+
+The product must distinguish verified Scripture from commentary, study notes, and AI-generated text. Never invent Scripture text, translation coverage, licensing permissions, or language capabilities.
+
+## 2. Owner collaboration and teaching style
+
+The project owner is learning software development while building Bible Arena. Work as a patient technical coach:
+- Explain unfamiliar terms and why a step is necessary.
+- Prefer one manageable step or command at a time when the owner is operating a local terminal or dashboard.
+- Do not overwhelm the owner with large unexplained code dumps.
+- When practical, explain the concept first, outline the approach, then make a small change and verify it.
+- Do not claim the owner ran a command or completed a test unless the evidence shows that.
+- Be clear about what the owner must do locally versus what the agent can do through repository tools.
+
+## 3. Safety and approval boundaries
+
+**Never perform any of the following without first explaining the impact and receiving the owner's explicit approval:**
+- Production database schema or data changes.
+- Supabase migrations, migration repair, reset, push, pull, or destructive database operations.
+- Deleting/merging database tables, indexes, policies, functions, or storage objects.
+- Changes to authentication/security settings, RLS policies, grants, or SECURITY DEFINER functions.
+- Paid hosting, GPU deployment, provider upgrades, purchases, or other billable actions.
+- Production deployments or changes to production environment variables/secrets.
+- Irreversible Git operations, force pushes, history rewrites, or deleting branches/tags.
+
+Read-only inspection is preferred when auditing production. Clearly identify when a command is read-only and when it can write state.
+
+## 4. Security and secrets
+
+- Never place credentials in source code, documentation, issues, logs, test fixtures, screenshots, or chat responses.
+- Never ask the owner to paste passwords, API keys, access tokens, service-role keys, database connection strings, or one-time codes.
+- If terminal output includes a secret, tell the owner not to share it; do not repeat or preserve it. Ask only for sanitized error messages and non-sensitive status information.
+- Keep Supabase service-role/secret keys and Runpod credentials server-side only. Never expose them through browser bundles or `VITE_*` variables.
+- Do not commit `supabase/.temp/`, local environment files, build outputs, dependency caches, or personal machine paths unless explicitly required and reviewed.
+- Check `git status` and ignore rules before staging or committing.
+
+## 5. Engineering workflow
+
+Before editing:
+1. Inspect the current branch, working tree, recent commits, and relevant files.
+2. Read the related project docs and tests.
+3. Confirm the actual implementation path; do not assume a similarly named file is active.
+4. Identify risks, dependencies, and expected behavior.
+5. Keep changes focused and avoid unrelated refactors.
+
+While editing:
+- Follow existing project conventions and TypeScript/Python patterns.
+- Preserve backward compatibility unless a change is explicitly planned.
+- Prefer small, reviewable changes.
+- Add or update tests for changed behavior.
+- Do not add a dependency without explaining why and checking the existing stack.
+- Keep licensed Bible content and user-private data out of source control.
+
+After editing:
+1. Run the narrowest relevant tests first, then broader checks where practical.
+2. Run the production build/type checks when relevant.
+3. Inspect the final diff and repository status.
+4. Report exact results, including failures and tests not run.
+5. Record commit SHA/message when committed. Never claim a deployment succeeded without checking its status and public URL.
+
+## 6. Supabase and migration rules
+
+- Read the installed/current Supabase guidance and command help before using unfamiliar CLI commands.
+- Treat the live production migration history as authoritative for what has been applied to production; GitHub may not contain the original historical SQL files.
+- Never fabricate historical migration files or version identifiers.
+- Preserve the live schema before proposing migration-history recovery or consolidation.
+- Do not run `supabase db pull`, `db push`, `migration repair`, reset, or any schema-changing command merely to make local files look complete.
+- Use read-only SQL for audits. Do not turn a read-only investigation into a write.
+- Inspect RLS, grants, views, triggers, and SECURITY DEFINER functions before changing database access.
+- Do not revoke intended authenticated RPC access without understanding the function body and callers.
+- A schema dump is not a replacement for the original sequence of historical migrations.
+- Keep secrets and database contents out of the project log; log only safe metadata and verified findings.
+
+## 7. Bible content, licensing, and AI truthfulness
+
+- Publicly viewable content is not automatically licensed for redistribution, audio playback, or machine-learning training.
+- Verify rights for each translation, audio source, dataset, and intended use.
+- A language catalogue entry does not mean Bible text exists in that language.
+- An integrated speech model does not prove it understands Idoma; measure performance with consented, representative native-speaker data.
+- Label AI-generated explanations clearly and keep them separate from Bible text.
+- Do not invent verse references, devotional content, quiz answers, or sources.
+
+## 8. Documentation duties — required every session
+
+At the end of every meaningful work session:
+- Update `docs/PROJECT_LOG.md` with date, goal, actions, commands (secrets removed), evidence, challenges, decisions, changes, and the next exact step.
+- Update `docs/BIBLE_ARENA_BEGINNER_PROJECT_GUIDE.md` when a new concept, challenge, error, solution, or important file needs a beginner-friendly explanation.
+- Update `docs/IMPLEMENTATION_ROADMAP.md` when phase status or priorities materially change.
+- Keep README links and project status accurate.
+- Do not mark a task complete until it is verified.
+- Keep the log chronological and append new entries; do not erase previous challenges or failed attempts.
+
+If documentation cannot be updated in the same change, state why and make it the next explicit task.
+
+## 9. Git and review conventions
+
+- Use descriptive commit messages such as `docs: record Supabase recovery progress` or `fix(reader): handle unavailable translation`.
+- Do not commit local caches, credentials, or generated dumps unless the owner explicitly approves and the file is safe and appropriate to store.
+- Prefer a feature branch and reviewable pull request for substantial or risky changes. Small documentation changes may follow the repository's established workflow.
+- Never force-push or rewrite shared history without explicit approval.
+- Before a commit, inspect staged files and diff. After a commit, verify the resulting commit and branch state.
+
+## 10. Current handover (2026-11-19)
+
+- Repository: `ejembiedwin36-oss/bible-arena`; default branch `main`.
+- Local Windows checkout: `C:\\Users\\DELL\\Desktop\\bible-arena`.
+- Supabase project ref: `fqsjzjduawcevqlammzm`.
+- Supabase CLI is being run through `npx --yes supabase@latest` (observed version 3.2.0); a global `supabase` command is not installed.
+- The project has been linked to the Supabase project.
+- Schema-only public export is pending because Docker Desktop's Linux engine was not reachable. Docker CLI is installed, but `docker info` reports a missing `dockerDesktopLinuxEngine` pipe.
+- Next step: owner starts Docker Desktop, confirms `docker info` shows a healthy Server section, then retries the read-only schema-only dump to the external audit folder. Never use `--dry-run` again for this command because its printed script exposed a temporary credential in the previous session.
+- No database schema/data changes or migration-history changes were made during this recovery work.
+- The local `supabase/.temp/` directory is untracked and must not be committed.
+
+When resuming, first ask for or inspect the latest sanitized Docker status. Continue from the exact next step in `docs/PROJECT_LOG.md`; do not restart completed audits unnecessarily.
