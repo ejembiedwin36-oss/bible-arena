@@ -274,3 +274,59 @@ This log remains active until the owner and project team agree that Bible Arena 
 **Challenges / decisions:** The dump formats the table's final permissions as a grant to `service_role`; it does not need to reproduce the migration's original `REVOKE` statements verbatim to represent the same resulting access state.
 
 **Next exact step:** Continue the read-only inventory by recording the exact 38 production migration version identifiers from verified migration-history output, then assess the broader schema/object/dependency differences. Do not run `db pull`, `db push`, migration repair, reset, or schema-changing SQL until a safe forward-only plan is reviewed and explicitly approved.
+
+
+### 2026-11-19 — Captured exact production migration history
+
+**Goal:** Record the complete production migration version list from the live Supabase migration history, using a read-only operation.
+
+**Service / project:** Supabase project `bible-arena` (`fqsjzjduawcevqlammzm`).
+
+**Action:** Listed production migrations using the Supabase migration-history listing operation. No SQL was executed and no migration was applied, repaired, deleted, or reordered.
+
+**Verified result:** Exactly 38 migration records were returned, spanning `20260914130719` through `20261025223416`. The exact version/name pairs are:
+
+- `20260914130719` — `initial_bible_arena_foundation`
+- `20260914130724` — `seed_initial_language_catalog`
+- `20260914130734` — `harden_foundation_functions`
+- `20260914130749` — `revoke_public_function_execute`
+- `20260916075538` — `add_jesus_words_to_bible_verses`
+- `20260920220547` — `add_reading_plan_day_structure`
+- `20260923081412` — `add_bible_import_batches`
+- `20260923222027` — `scale_foreign_key_indexes`
+- `20260929151156` — `scale_user_activity_indexes`
+- `20260929213709` — `add_bible_verses_reader_index`
+- `20260929214156` — `remove_duplicate_bible_verse_index`
+- `20260930135105` — `add_independent_language_preferences`
+- `20260930223901` — `create_voice_audio_uploads`
+- `20260930223910` — `create_voice_audio_storage_policies`
+- `20260930224914` — `optimize_voice_audio_rls_policies`
+- `20261002092854` — `phase1_language_capabilities_and_reader_integrity`
+- `20261002094407` — `harden_bible_reader_integrity`
+- `20261002094456` — `add_bible_book_order`
+- `20261002094528` — `remove_redundant_reader_indexes`
+- `20261002161253` — `add_translation_verse_fk_index`
+- `20261005090448` — `add_voice_language_evaluation_samples`
+- `20261005090456` — `harden_voice_evaluation_trigger_function`
+- `20261005092734` — `fix_voice_review_notes_column`
+- `20261005143538` — `create_voice_reviewer_assignments`
+- `20261005143940` — `secure_voice_language_reviewer_workflow`
+- `20261005144017` — `allow_assigned_voice_upload_review`
+- `20261005145143` — `add_voice_asr_dataset_export_fields`
+- `20261011175727` — `harden_voice_asr_review_permissions`
+- `20261011175736` — `remove_legacy_voice_sample_update_policy`
+- `20261011180347` — `add_voice_speaker_consent_foundation`
+- `20261011180502` — `secure_voice_contribution_rpc`
+- `20261011181113` — `add_voice_consent_withdrawal`
+- `20261011181501` — `add_speaker_dataset_assignments`
+- `20261011182639` — `add_voice_reviewer_assignment_admin_rpc`
+- `20261011182811` — `enforce_speaker_split_on_asr_eligibility`
+- `20261011184036` — `make_speaker_dataset_split_immutable`
+- `20261025223408` — `add_maintenance_users`
+- `20261025223416` — `expose_maintenance_users_to_service_role`
+
+**Interpretation:** The live migration history is now documented from the returned records. The GitHub `supabase/migrations` directory was previously observed to contain only `20261025223416_maintenance_users.sql` and its README. Therefore, the 37 earlier production migration SQL files are not currently represented in that directory listing. Do not fabricate those files from the final schema dump or mark the repository fully reconciled.
+
+**Production impact:** Read-only history listing. No schema, data, or migration-history changes.
+
+**Next exact step:** Perform a read-only comparison of the 38 production version/name pairs against the repository's tracked migration filenames and inspect the existing Supabase migration README. Then decide, with explicit owner review, whether a safe baseline/forward-only migration-history strategy is needed. Do not run migration repair, reset, `db pull`, `db push`, or schema-changing SQL during this audit.
