@@ -330,3 +330,20 @@ This log remains active until the owner and project team agree that Bible Arena 
 **Production impact:** Read-only history listing. No schema, data, or migration-history changes.
 
 **Next exact step:** Perform a read-only comparison of the 38 production version/name pairs against the repository's tracked migration filenames and inspect the existing Supabase migration README. Then decide, with explicit owner review, whether a safe baseline/forward-only migration-history strategy is needed. Do not run migration repair, reset, `db pull`, `db push`, or schema-changing SQL during this audit.
+
+
+### 2026-11-19 — Compared production migration history with tracked migration directory
+
+**Goal:** Check whether the 38 live migration records have matching SQL files in the repository, and read the migration directory guidance.
+
+**GitHub evidence:** Fetched `supabase/migrations` directory on `main`. It contains exactly two files:
+- `README.md`
+- `20261025223416_maintenance_users.sql`
+
+Read `supabase/migrations/README.md`. It says the live Supabase migration history remains the source of truth for migrations already applied to production, and new database changes should be represented as SQL migration files and applied through the controlled workflow. It also summarizes recent voice/Idoma ASR database work.
+
+**Comparison result:** The only tracked SQL migration filename corresponds to production version `20261025223416`. The other 37 production history records do not have matching SQL files in this directory. The README is guidance, not a substitute for those historical SQL files.
+
+**Decision:** Do not fabricate the missing 37 migration SQL files from names, comments, or the final schema dump. Preserve the verified production history and schema snapshot as separate evidence. Any baseline or forward-only recovery plan must be reviewed before changing migration history or production.
+
+**Next exact step:** Continue read-only schema inventory: compare production objects (tables, columns, constraints, indexes, policies, functions, triggers, views, grants) with the repository's tracked schema/migration artifacts and identify dependencies. No migration repair, reset, `db pull`, `db push`, or schema-changing SQL.
