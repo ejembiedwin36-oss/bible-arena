@@ -217,6 +217,9 @@ The 2026-11-19 read-only advisor review reported:
 
 **Next exact step:** Secure the official ASV and BSB archives through a reliable download route, inspect the embedded copyright files and USFM book/chapter markers, then write and test a source-specific normalizer. Keep TPT/AMP/GNT permission-gated. Do not use mirrors or create version records as a shortcut.
 
+
+**Publisher package pinning:** Inspected the official `BSB-publishing/bsb2usfm` repository. Its `LICENSING_INFO.md` explicitly separates public-domain BSB/MSB text from MIT-licensed conversion software; its README identifies BSB as a full 66-book edition. The latest release inspected was `v5.24`, with standard `BSB_usfm.zip` asset size 1,647,915 bytes. The importer documentation now pins this release and the eBible ASV USFM/USFX package links. The release archive itself could not be downloaded in this execution environment, so no BSB/ASV corpus has been staged or imported.
+
 ## 7. Open challenges and backlog
 
 ### P0 — Preserve production schema safely
