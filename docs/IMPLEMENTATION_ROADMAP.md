@@ -85,6 +85,13 @@ Potential future work includes offline experiences, community/sharing, multiplay
 
 ## Current priority
 
-The immediate technical priority is completing the Idoma voice path without blocking the rest of Bible Arena. Runpod deployment is currently paused by inability to reach `console.runpod.io` from the project owner's present network. No endpoint has been deployed and no Runpod charge has been intentionally incurred.
+**Owner-directed priority (2026-11-22): English Bible edition expansion comes before further Idoma language work.**
 
-While that external connection is unavailable, repository documentation, proxy architecture, tests, and other application work can continue.
+1. Preserve the working KJV and WEB Reader experience.
+2. Obtain and validate the official public-domain ASV 1901 and Berean Standard Bible source packages.
+3. Normalize both editions into the reusable import format and verify the complete reference sets against the canonical 66-book / 1,189-chapter catalogue, accounting for edition-specific verse differences.
+4. Prepare a production import plan that writes each edition under its own `bible_versions.id` in `bible_verses`, matching the active Reader path.
+5. Pursue written app-distribution permissions for TPT, Amplified, and Good News Translation. Do not import their full texts until those rights are secured.
+6. Add further English editions only after source, edition, canon, and redistribution rights are verified.
+
+Idoma Bible text/interface expansion is deliberately paused during this English-version phase, as requested by the owner. Existing Idoma voice code remains in the repository; no paid GPU endpoint should be deployed without explicit approval.
