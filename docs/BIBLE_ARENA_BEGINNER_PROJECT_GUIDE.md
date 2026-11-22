@@ -526,3 +526,33 @@ The schema dump also lists table-level `GRANT ALL` for `anon`, `authenticated`, 
 During a production audit, inspect and explain first. Do not drop an index, change a grant, alter RLS, or execute schema SQL just because a finding looks unusual. Check dependencies and obtain explicit approval before any production change.
 
 **Next practice step:** Inspect the `languages` table using the schema-only export. First read its columns, then inspect its constraints, indexes, policies, RLS setting, and grants.
+
+
+## 2026-11-22 — Live `bible_versions` audit and understanding database privileges
+
+We continued the Bible Arena audit directly through the connected Supabase project; VS Code was not needed for this read-only check.
+
+### What the live database confirmed
+
+- The project is active and healthy, and production still reports 38 migration records.
+- `bible_versions` links each Bible translation to a language using `language_id` → `languages.id`. The foreign key uses `ON DELETE RESTRICT`, so a language referenced by a Bible version cannot simply be deleted.
+- The database prevents duplicate abbreviations within the same language using a unique constraint on `(language_id, abbreviation)`.
+- The public SELECT policy only exposes a version when it is both active and rights-verified.
+- The live metadata currently lists KJV and WEB as English, active, and rights-verified.
+
+### Important security lesson: GRANT and RLS are different
+
+A read-only privilege check found that the `anon` and `authenticated` database roles have broad INSERT, UPDATE, DELETE, and TRUNCATE privileges on 27 public tables. RLS policies can restrict row-level SELECT/INSERT/UPDATE/DELETE operations, but **RLS does not restrict TRUNCATE**.
+
+This is a serious least-privilege review item, not proof that someone has deleted data. The normal Supabase REST interface does not provide a general-purpose SQL endpoint for issuing TRUNCATE, but the database ACL should still be narrowed to the intended access model. Before changing anything, map each table to its app use, policies, RPCs, and admin/service-role workflow.
+
+### Security advisor findings
+
+The read-only Supabase security advisor reported:
+- Two tables with RLS enabled and no policies: `maintenance_users` and `voice_speaker_dataset_assignments`. No-policy RLS is deny-by-default for ordinary roles, but the intended access path should be confirmed.
+- Six authenticated-executable SECURITY DEFINER RPCs. We inspected their definitions: they use an empty search_path and include authentication plus ownership/language-role checks. Review them individually; do not blindly revoke required RPCs.
+- Leaked-password protection is disabled in Supabase Auth. This requires a separate Auth configuration review.
+
+No production data, schema, privileges, migration history, or Auth settings were changed.
+
+**Next step:** Create a least-privilege matrix for the 27 broadly granted tables, then propose changes for owner review. Do not apply grant or policy changes until the intended access paths are confirmed.
