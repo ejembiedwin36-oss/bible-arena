@@ -556,3 +556,16 @@ The read-only Supabase security advisor reported:
 No production data, schema, privileges, migration history, or Auth settings were changed.
 
 **Next step:** Create a least-privilege matrix for the 27 broadly granted tables, then propose changes for owner review. Do not apply grant or policy changes until the intended access paths are confirmed.
+
+
+### Follow-up: table-by-table RLS and TRUNCATE privilege map (2026-11-22)
+
+The live read-only matrix identifies 27 public tables where `anon` and `authenticated` have TRUNCATE privileges despite RLS being enabled. The policy commands show three functional categories:
+
+1. Public content/catalogue tables: SELECT-only policies.
+2. User data: own-row policies for INSERT/SELECT/UPDATE/DELETE as appropriate.
+3. Special/admin paths: `arena_attempts` uses INSERT/SELECT; `bible_import_batches` has an authenticated ALL policy intended for an admin workflow.
+
+RLS does not apply to TRUNCATE. Therefore, a policy-only audit is not enough; table ACLs must also be least-privilege. A blanket revoke is not being applied because it may affect intended app and admin paths.
+
+Safe next steps: preserve ACL snapshot; inspect repository `.from(table)` and RPC usage; map each required operation to table and role; stage explicit revokes/grants and test normal plus unauthorized access; then obtain approval before production rollout. No production changes were made.
