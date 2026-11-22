@@ -51,7 +51,7 @@ These helpers are not the active `src/App.tsx` Reader loading path inspected in 
 
 ## Current boundary
 
-No production catalogue rows, verse data, permissions, schema, grants, migrations, or deployment settings were changed during this review. The next technical step is to obtain the official ASV/BSB archives through a working download route, inspect their internal book files and metadata, implement/test a source-specific parser, and run the reusable validator against a read-only canonical chapter map. Do not create placeholder selectable versions or activate incomplete datasets.
+No production catalogue rows, verse data, schema, migrations, or deployment settings were changed during this review. Production table grants were hardened as documented in the section below. The next content step is to obtain the official ASV/BSB archives through a working download route, inspect their internal book files and metadata, implement/test a source-specific parser, and run the reusable validator against a read-only canonical chapter map. Do not create placeholder selectable versions or activate incomplete datasets.
 
 
 ## Production read-permission hardening (2026-11-22)
