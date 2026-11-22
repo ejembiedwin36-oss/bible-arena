@@ -474,3 +474,31 @@ This is an initial source-reference map, not yet a complete audit of all files o
 **New data-quality finding:** A key comparison of KJV and WEB chapter/verse identifiers found seven KJV keys absent from WEB: Luke 17:36; Acts 8:37, 15:34, 24:7; Romans 16:25–27. It also found three WEB keys absent from KJV: Romans 14:24–26. This explains the net difference of four rows, but it does not establish whether each difference is an intentional translation/versification difference or an import-data issue. Do not auto-fill or delete these verses. Next inspect the source datasets and translation-specific versification, then document an expected-key exception list and add a validator/test if the differences are intentional.
 
 **Safety:** All production queries in this entry were SELECT-only. No data, schema, grants, migrations, Edge Functions, or Auth settings were changed.
+
+
+### 2026-11-22 — Rechecked English import sources and active Reader data path (read-only)
+
+**Goal:** Continue English edition expansion and remove ambiguity about how new Bible text must connect to the live Reader.
+
+**Verified active Reader implementation on GitHub `main`:**
+- `src/App.tsx` contains the active `loadReaderOptions()` path. It reads active `languages` and `bible_versions` rows.
+- The active chapter reader calls `cachedChapterVerses(chapterId, versionId)`, which reads `bible_verses` using `chapter_id` and the selected `bible_versions.id`.
+- The active Reader path does not call the separate `src/services/bibleCatalogue.ts` and `src/services/bibleReader.ts` helpers. Those helpers contain translation-matching and legacy fallback behavior, but they must not be mistaken for the current Reader's actual loading path.
+- Therefore a new edition must have a complete validated corpus in `bible_verses` keyed by its own `bible_versions.id`. A `bible_translations` catalogue record or legacy `bible_translation_verses` rows alone will not populate the active Reader.
+
+**Live production recheck (SELECT only):**
+- KJV: active, rights-verified, 31,102 rows in `bible_verses`.
+- WEB: active, rights-verified, 31,098 rows in `bible_verses`.
+- These remain the only two English `bible_versions` records returned by the live query.
+- No production rows or schema were changed.
+
+**Official source verification:**
+- eBible.org's current ASV 1901 listing identifies the edition as public domain and lists USFM/USFX packages. Its directory index lists `eng-asv_usfm.zip` at 2,875,616 bytes (timestamp 2026-10-30). The direct archive download attempt from this environment failed; no substitute or scraped text was used.
+- The official BSB publisher GitHub release API confirms `v5.24`, published 2026-11-19, with the standard `BSB_usfm.zip` asset (1,647,915 bytes; SHA-256 `be31ef23eb38492de9e6e17983b7d46a1a4abe010bd1ff2ad3e338795d21233d`). The publisher terms dedicate the BSB text to the public domain. The archive download attempt from this environment failed; no BSB corpus was staged.
+- The BSB release also provides MSB, which is New Testament-only; it is not a complete 66-book Bible edition.
+
+**Verification and deployment:** The prior main-branch commit `47cf264743835e9f499dc2fe1a0724c267363fbd` has successful `build-and-test` and `verify` GitHub checks, and its Vercel status is `success` (deployment completed). This confirms the code/documentation build, not the availability of any new translation.
+
+**Decisions:** Corrected the implementation notes to describe the active `src/App.tsx` Reader path. Keep TPT, Amplified, and GNT permission-gated. Do not add catalogue rows or write Bible text until a complete permitted source has been obtained, parsed, validated, and reviewed.
+
+**Next exact step:** Obtain the official ASV and BSB archives through a working download route; inspect their internal USFM structure, attribution and checksums; implement source-specific normalization; validate against the canonical chapter map; then prepare (but do not execute without approval) the production import plan.
