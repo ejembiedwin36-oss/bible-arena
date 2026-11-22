@@ -30,8 +30,8 @@
 | Contemporary English Version | CEV | Not imported |
 | New English Translation | NET | Not imported |
 | The Living Bible | TLB | Not imported |
-| Berean Standard Bible | BSB | Not imported; public-domain claim/source package still needs local verification |
-| American Standard Version (1901) | ASV | Not imported; public-domain source package still needs local verification |
+| Berean Standard Bible | BSB | Not imported; public-domain status confirmed; source package still needs staging |
+| American Standard Version (1901) | ASV | Not imported; public-domain status confirmed; source package still needs staging |
 | Darby Bible | DBY | Not imported; verify source and public-domain status for the exact edition |
 | Young's Literal Translation | YLT | Not imported; verify source and public-domain status for the exact edition |
 
@@ -57,3 +57,11 @@
 8. Only then mark the edition active and rights-verified.
 
 No copyrighted full-text edition may be bulk-imported based only on limited quotation allowances or public website visibility.
+
+
+## Public-domain candidates — source-rights confirmation (2026-11-22)
+
+- **ASV 1901:** eBible.org identifies the edition as public domain and explicitly says it may be copied freely. Its official edition page offers USFM and USFX source packages: https://www.ebible.org/find/details.php?id=eng-asv and https://www.ebible.org/eng-asv/copyright.htm. Rights status is confirmed for the source edition; the corpus has not yet been downloaded, inspected, normalized, or imported.
+- **BSB:** eBible.org identifies the Berean Standard Bible as public domain and provides USFM/USFX source packages: https://www.ebible.org/find/details.php?id=engbsb. Berean Bible's publisher download page also offers the current USFM package: https://berean.bible/downloads.htm. Rights status is confirmed for the text; the corpus has not yet been downloaded, inspected, normalized, or imported.
+
+These confirmations remove the need to seek a conventional copyright licence for these public-domain texts, but they do not waive source provenance, integrity, versification, or import validation.
