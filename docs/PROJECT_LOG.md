@@ -400,3 +400,16 @@ Read `supabase/migrations/README.md`. It says the live Supabase migration histor
 **Decision / production impact:** No database writes, schema changes, grant changes, Auth changes, migration repairs, or deployment actions were performed. The production audit remains read-only.
 
 **Next exact step:** Build a table-by-table least-privilege matrix for the 27 public tables with broad anon/authenticated privileges, correlate each table's RLS policies and actual frontend/RPC usage, then prepare a safe, reviewable remediation proposal. Do not apply grants/policies or change Auth settings without owner approval.
+
+
+### 2026-11-22 — TRUNCATE/RLS table-by-table mapping (read-only)
+
+A direct read-only query of live PostgreSQL privilege metadata and `pg_policies` enumerated 27 public tables for which both `anon` and `authenticated` have TRUNCATE. Each has RLS enabled. The current policy command sets are:
+
+- SELECT-only catalogue/content: `arena_question_options`, `arena_questions`, `bible_books`, `bible_chapters`, `bible_translation_verses`, `bible_translations`, `bible_verses`, `bible_versions`, `devotion_scriptures`, `devotions`, `languages`, `reading_plan_days`, `reading_plan_readings`, `reading_plans`, `topic_scriptures`, `topics`.
+- User-scoped data policies: `bookmarks`, `devotion_completions`, `highlights`, `prayer_entries`, `profiles`, `reading_history`, `user_notes`, `user_reading_plan_days`, `user_reading_plans`.
+- Mixed/special policy: `arena_attempts` has INSERT and SELECT policies; `bible_import_batches` has an authenticated ALL policy (admin-oriented). 
+
+**Remediation planning order (not applied):** (1) preserve a fresh schema/ACL snapshot; (2) identify all app REST table calls and RPC paths; (3) separate public read-only content, user-owned CRUD, and admin/service-role operations; (4) prepare explicit least-privilege GRANT statements and any required policy adjustments in a reviewed migration; (5) test in staging, including app flows and negative access tests; (6) apply only after approval and verify production effective privileges. First priority for review is removal of TRUNCATE from client roles, but no ACL change is safe until inherited grants and operational workflows are accounted for.
+
+No production changes made.
