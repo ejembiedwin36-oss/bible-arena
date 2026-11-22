@@ -12,6 +12,9 @@ Bible Arena is a multilingual Bible reading, study, devotional, learning, audio,
 - [Implementation Roadmap](docs/IMPLEMENTATION_ROADMAP.md) — phased development plan and current priorities.
 - [Beginner Project Guide](docs/BIBLE_ARENA_BEGINNER_PROJECT_GUIDE.md) — build story, challenges, lessons, important files, errors/fixes, and beginner-friendly explanations.
 - [Project Activity Log](docs/PROJECT_LOG.md) — chronological record of implementation, decisions, challenges, tests, and handovers.
+- [Reusable English Version Import Guide](docs/REUSABLE_ENGLISH_VERSION_IMPORT.md) — offline preparation and validation workflow for new English editions.
+- [English Version Integration Notes](docs/ENGLISH_VERSION_IMPORT_IMPLEMENTATION_NOTES.md) — verified Reader data path and import requirements.
+- [English Version Rights Review](docs/ENGLISH_BIBLE_VERSION_RIGHTS_REVIEW.md) — source and redistribution-rights review for planned editions.
 - [Agent Instructions](AGENTS.md) — required workflow, safety rules, and documentation duties for AI coding agents.
 
 ## Core goals
