@@ -154,3 +154,13 @@ A read-only effective privilege audit found broad INSERT/UPDATE/DELETE/TRUNCATE 
 Supabase security advisor findings: no-policy RLS on `maintenance_users` and `voice_speaker_dataset_assignments`; six authenticated-executable SECURITY DEFINER RPCs (their definitions were inspected and contain empty search_path plus auth/ownership or language-role checks); leaked-password protection disabled. No production changes were made.
 
 **Next exact step:** Build a table-by-table least-privilege matrix for those 27 tables and correlate each privilege with RLS policy and app/RPC use. Then prepare a reviewed remediation proposal; no grant, policy, migration, or Auth configuration changes without owner approval.
+
+
+## 2026-11-22 — Expanded privilege review checkpoint
+
+Live read-only PostgreSQL metadata mapped 27 public tables with TRUNCATE granted to both `anon` and `authenticated`, all with RLS enabled. Policy groups:
+- SELECT-only public content/catalogue: `arena_question_options`, `arena_questions`, `bible_books`, `bible_chapters`, `bible_translation_verses`, `bible_translations`, `bible_verses`, `bible_versions`, `devotion_scriptures`, `devotions`, `languages`, `reading_plan_days`, `reading_plan_readings`, `reading_plans`, `topic_scriptures`, `topics`.
+- Own-row user data: `bookmarks`, `devotion_completions`, `highlights`, `prayer_entries`, `profiles`, `reading_history`, `user_notes`, `user_reading_plan_days`, `user_reading_plans`.
+- Special: `arena_attempts` has INSERT/SELECT policies; `bible_import_batches` has an authenticated ALL policy.
+
+Next: snapshot ACLs, map frontend table and RPC usage, design least-privilege role grants (including removing client TRUNCATE), test in staging with positive/negative tests, and only then seek approval for production changes. Do not perform blanket revokes. Production remains read-only.
