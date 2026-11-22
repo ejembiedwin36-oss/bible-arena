@@ -52,3 +52,20 @@ These helpers are not the active `src/App.tsx` Reader loading path inspected in 
 ## Current boundary
 
 No production catalogue rows, verse data, permissions, schema, grants, migrations, or deployment settings were changed during this review. The next technical step is to obtain the official ASV/BSB archives through a working download route, inspect their internal book files and metadata, implement/test a source-specific parser, and run the reusable validator against a read-only canonical chapter map. Do not create placeholder selectable versions or activate incomplete datasets.
+
+
+## Production read-permission hardening (2026-11-22)
+
+A live audit found that the five read-only Bible catalogue/content tables — `languages`, `bible_versions`, `bible_books`, `bible_chapters`, and `bible_verses` — had RLS enabled and SELECT-only policies, but the `anon` and `authenticated` roles also held unnecessary INSERT, UPDATE, DELETE, TRUNCATE, and other table privileges.
+
+The production grants were corrected:
+
+- Revoked all table privileges from `anon` and `authenticated` on those five tables.
+- Re-granted only `SELECT` to both roles.
+- Re-queried effective privileges after the change.
+
+**Verification:** all five tables now return `SELECT=true` and `INSERT/UPDATE/DELETE/TRUNCATE=false` for both roles. The existing public-read RLS policies remain in place. This keeps the active Reader's required reads available while removing client-side mutation and table-truncation privileges. Service-role/owner maintenance remains separate from public client access.
+
+The eight active language catalogue rows were rechecked and left unchanged: English (`en`), Idoma (`id`), Igbo (`ig`), Yoruba (`yo`), Hausa (`ha`), Tiv (`tiv`), Igala (`igl`), and Efik / Calabar (`efi`). These are language entries, not proof that a Bible edition in each language has been imported.
+
+See [English Edition Master Register](ENGLISH_VERSION_MASTER_REGISTER.md) for the single-source, duplicate-free English edition list and release gate.
