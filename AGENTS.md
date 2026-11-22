@@ -141,3 +141,16 @@ When resuming, continue from the exact next step in `docs/PROJECT_LOG.md`: perfo
 - Flag only for later investigation: unique index `bible_books_canonical_key_uidx` may overlap with the unique constraint on `canonical_key`. Do not remove or change it during this audit.
 - No production writes or schema changes were made.
 - **Next exact step:** Continue the same read-only inspection with the `languages` table, beginning with its CREATE TABLE definition.
+
+
+## Current audit checkpoint — 2026-11-22 (read-only)
+
+Connected GitHub and Supabase access were used to resume without requiring the owner to open VS Code. Supabase project `fqsjzjduawcevqlammzm` is `ACTIVE_HEALTHY`; production lists 38 migration records.
+
+The live `bible_versions` table was inspected: PK `id`; unique `(language_id, abbreviation)`; FK `language_id` → `languages.id` ON DELETE RESTRICT; indexes on PK, language/abbreviation, and language; RLS enabled; SELECT policy requires `is_active = true` AND `rights_verified = true`. KJV and WEB are currently listed as English, active, and rights-verified.
+
+A read-only effective privilege audit found broad INSERT/UPDATE/DELETE/TRUNCATE privileges for `anon` and `authenticated` on 27 public tables. RLS does not protect TRUNCATE. Treat this as a priority least-privilege review item; do not revoke grants until table policies, application calls, RPCs, and admin/service-role paths are mapped.
+
+Supabase security advisor findings: no-policy RLS on `maintenance_users` and `voice_speaker_dataset_assignments`; six authenticated-executable SECURITY DEFINER RPCs (their definitions were inspected and contain empty search_path plus auth/ownership or language-role checks); leaked-password protection disabled. No production changes were made.
+
+**Next exact step:** Build a table-by-table least-privilege matrix for those 27 tables and correlate each privilege with RLS policy and app/RPC use. Then prepare a reviewed remediation proposal; no grant, policy, migration, or Auth configuration changes without owner approval.
