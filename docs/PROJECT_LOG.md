@@ -413,3 +413,27 @@ A direct read-only query of live PostgreSQL privilege metadata and `pg_policies`
 **Remediation planning order (not applied):** (1) preserve a fresh schema/ACL snapshot; (2) identify all app REST table calls and RPC paths; (3) separate public read-only content, user-owned CRUD, and admin/service-role operations; (4) prepare explicit least-privilege GRANT statements and any required policy adjustments in a reviewed migration; (5) test in staging, including app flows and negative access tests; (6) apply only after approval and verify production effective privileges. First priority for review is removal of TRUNCATE from client roles, but no ACL change is safe until inherited grants and operational workflows are accounted for.
 
 No production changes made.
+
+
+### 2026-11-22 — Reader table usage and live KJV/WEB completeness comparison (read-only)
+
+**Frontend access map from current main branch source:**
+- Reader chapter data: `src/services/bibleReader.ts` reads `bible_verses` and `bible_translation_verses`.
+- Version/language/book catalogue: `src/services/bibleCatalogue.ts` reads `languages`, `bible_versions`, `bible_translations`, and `bible_books`.
+- Daily devotion: `src/features/DailyDevotion.tsx` reads `devotions` and `devotion_completions`.
+- Topic search: `src/features/TopicSearch.tsx` reads `topics`, `bible_verses`, and `topic_scriptures`.
+- Verse study: `src/features/VerseStudy.tsx` reads `bible_verses`, `bookmarks`, `user_notes`, and `topic_scriptures`.
+- User profile: `src/lib/userData.ts` selects/creates/updates only the signed-in user's `profiles` row.
+- KJV import client: `src/lib/maintenance.ts` invokes the `kjv-bulk-import` Edge Function after checking that a session exists; the function itself verifies the caller and maintenance membership before using the service-role client.
+
+This is an initial source-reference map, not yet a complete audit of all files or policies. It provides concrete separation between public catalogue/reader reads, user-owned records, and privileged import workflows. The KJV bulk import Edge Function has an authenticated maintenance-user check before privileged writes; do not grant client-side table write access merely to support this workflow.
+
+**Live scripture row counts (read-only, 2026-11-22):**
+- KJV in `bible_verses`: 31,102 rows across all 1,189 chapters.
+- WEB in `bible_verses`: 31,098 rows across all 1,189 chapters.
+- `bible_translation_verses`: 31,102 rows.
+- Total `bible_verses`: 62,200 rows; 66 books and 1,189 chapters.
+
+**New data-quality finding:** A key comparison of KJV and WEB chapter/verse identifiers found seven KJV keys absent from WEB: Luke 17:36; Acts 8:37, 15:34, 24:7; Romans 16:25–27. It also found three WEB keys absent from KJV: Romans 14:24–26. This explains the net difference of four rows, but it does not establish whether each difference is an intentional translation/versification difference or an import-data issue. Do not auto-fill or delete these verses. Next inspect the source datasets and translation-specific versification, then document an expected-key exception list and add a validator/test if the differences are intentional.
+
+**Safety:** All production queries in this entry were SELECT-only. No data, schema, grants, migrations, Edge Functions, or Auth settings were changed.
