@@ -26,10 +26,10 @@ The expected counts are mandatory and edition-specific. Do not blindly assume ev
 
 | Edition | Abbreviation | Current source evidence |
 |---|---|---|
-| American Standard Version (1901) | ASV | eBible.org lists it as public domain and provides USFM/VPL downloads. |
-| Berean Standard Bible | BSB | eBible.org lists it as public domain and provides USFM/VPL downloads. |
+| American Standard Version (1901) | ASV | eBible.org labels the 1901 edition public domain and provides USFM, USFX, and VPL downloads. See [edition details](https://ebible.org/find/details.php?id=eng-asv) and [copyright notice](https://ebible.org/eng-asv/copyright.htm). |
+| Berean Standard Bible (current 3rd printing) | BSB | The publisher dedicates the Berean Bible texts to the public domain and provides USFM, USJ, and USX downloads. See [publisher terms](https://berean.bible/terms.htm) and [downloads](https://berean.bible/downloads.htm); eBible.org also lists the BSB as public domain. See [eBible edition details](https://ebible.org/details.php?id=engbsb). |
 
-These are candidates, not yet imported or approved for production. Download the official source, preserve its stated attribution, confirm its precise edition/canon, normalize it, and validate it before any database operation.
+These two editions have a credible public-domain basis in the cited source statements and are the first candidates to prepare. This is not a legal opinion about every jurisdiction or every third-party package. Prefer the publisher/eBible source package, record its date and checksum, preserve the edition attribution, confirm the 66-book canon and exact printing, normalize it, and validate it before any database operation. Do not treat an aggregator's repackaged file as automatically equivalent to the publisher's source.
 
 ## Existing KJV workflow
 
