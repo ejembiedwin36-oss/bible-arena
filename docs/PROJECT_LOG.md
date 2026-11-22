@@ -206,6 +206,17 @@ The 2026-11-19 read-only advisor review reported:
 - KJV and WEB were verified in the live database. Do not claim other translations are imported without new evidence.
 - Idoma ASR integration code and secure server-side proxy exist, but no live paid GPU endpoint is deployed and real Idoma accuracy has not been measured. No Runpod charge was incurred in the earlier deployment attempt.
 
+
+**Additional English-source review (2026-11-22):**
+- Expanded the candidate register with YLT and Darby, both listed by eBible.org as public domain with structured download formats.
+- Added BBE as a candidate pending exact edition/package review.
+- Added Douay-Rheims 1899 and Revised Version 1895 as conditional candidates; their canon/package content requires an explicit decision because they include books outside the 66-book Protestant canon.
+- Source archives for ASV and BSB were identified from their official download pages, but automated archive downloads were unsuccessful in this environment. No third-party mirror was substituted.
+- Updated the CLI entry-point detection to use a resolved file URL, avoiding platform-specific path comparison; removed an unused import.
+- GitHub Actions CI and Reader verification both completed successfully for commit `69366283f1625bb197b5499b98baeee48cdf3e45`. The CI job's dependency install, API type-check, web/API tests, and production build steps all reported success. Subsequent documentation and one-line CLI cleanup commits are newer; their own latest workflow status must still be checked before claiming the tip of `main` is green.
+
+**Next exact step:** Secure the official ASV and BSB archives through a reliable download route, inspect the embedded copyright files and USFM book/chapter markers, then write and test a source-specific normalizer. Keep TPT/AMP/GNT permission-gated. Do not use mirrors or create version records as a shortcut.
+
 ## 7. Open challenges and backlog
 
 ### P0 — Preserve production schema safely
