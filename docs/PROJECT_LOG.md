@@ -111,6 +111,29 @@ The 2026-11-19 read-only advisor review reported:
 - The safe recovery approach is to preserve a reviewed schema-only dump, compare it with the SQL files actually present in GitHub, document the live migration inventory, and agree on a clean forward-looking baseline. Do not run `db pull`, `db push`, `migration repair`, or reset as a shortcut.
 
 ## 6. Session history
+### 2026-11-22 — Reusable English version preparation and source-rights review
+
+**Goal:** Move English Bible version expansion forward without touching production data or beginning Idoma work.
+
+**Implemented in GitHub `main`:**
+- Added `scripts/prepare-bible-version-import.mjs`, a reusable offline preparation module/CLI. It validates expected book/chapter/verse counts, rejects malformed and duplicate chapter/verse keys, requires every verse to map to a supplied existing chapter ID, rejects empty text, and preserves red-letter booleans only when explicitly supplied by the source.
+- Added `scripts/prepare-bible-version-import.test.ts` with tests for successful mapping, duplicate rejection, missing chapter mappings, count mismatch, and explicit red-letter metadata.
+- Added `docs/REUSABLE_ENGLISH_VERSION_IMPORT.md` documenting the command, input shape, safeguards, and source candidates.
+- Existing KJV-specific preparation/import scripts were left unchanged. The new utility does not contain Supabase credentials, network calls, database writes, or catalogue activation logic.
+
+**Source/rights review:**
+- eBible.org's ASV 1901 edition page identifies the translation as public domain and offers USFM/USFX/VPL formats.
+- Berean Bible's publisher terms state that the Berean Bible and Majority Bible texts were dedicated to the public domain on 2023-04-30, and the publisher download page offers USFM/USJ/USX. eBible.org also lists the BSB as public domain.
+- ASV and BSB are the first practical English source packages to prepare, subject to verifying the downloaded file's origin, edition, canon, checksum, and normalized corpus. This does not imply that they have already been imported.
+- TPT, Amplified, and GNT remain blocked for full-text app distribution until the appropriate written permissions are obtained.
+
+**Verification state:**
+- The new files were fetched back from GitHub after creation.
+- The initial script commit's Vercel status was reported `success`; later commits for tests/docs were still `pending` at the last status check. This is not a confirmed all-green CI result.
+- No local `npm test` or build was run from the connected GitHub operation.
+- No production database rows, schema, grants, Auth settings, migrations, or deployment settings were changed.
+
+**Next exact step:** Obtain the publisher/eBible ASV and BSB source archives, inspect their license/copyright files and archive contents, calculate checksums, normalize a staging corpus, and run the reusable validator against the live canonical book/chapter map exported read-only. Do not insert or activate either edition in production until all validation and Reader mapping checks pass.
 
 ### 2026-11-19 — Supabase recovery and schema-export preparation
 
