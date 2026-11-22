@@ -4,7 +4,7 @@ Bible Arena is a multilingual Bible reading, study, devotional, learning, audio,
 
 **Idoma is the first major local-language priority.** Written local-language Scripture and voice/audio are core product requirements rather than optional extras.
 
-> **Current status:** Bible Arena is under active development. English KJV is the Scripture translation currently loaded. Several local languages are configured in the catalogue, but that does not mean their Bible texts have been imported. In particular, the complete licensed Idoma Bible text has not yet been imported. The Idoma speech-recognition integration is implemented through a secure server-side proxy and covered by automated tests, but paid GPU hosting has deliberately been postponed while a suitable hosting path is considered. The active application now connects Bible Reader, Verse Study, Topic Study, bookmarks, verse-linked personal notes, Daily Devotion, and the starter Bible Arena Challenge. The integrated `main` build has been successfully deployed through Vercel.
+> **Current status:** Bible Arena is under active development. English KJV and World English Bible (WEB) are the two active English Scripture editions currently loaded. The live read-only catalogue check on 2026-11-22 confirmed 31,102 KJV verses and 31,098 WEB verses across all 1,189 chapters. Several local languages are configured in the catalogue, but that does not mean their Bible texts have been imported. In particular, the complete licensed Idoma Bible text has not yet been imported. The Idoma speech-recognition integration is implemented through a secure server-side proxy and covered by automated tests, but paid GPU hosting has deliberately been postponed while a suitable hosting path is considered. The active application now connects Bible Reader, Verse Study, Topic Study, bookmarks, verse-linked personal notes, Daily Devotion, and the starter Bible Arena Challenge. The integrated `main` build has been successfully deployed through Vercel.
 
 ## Documentation
 
@@ -183,7 +183,7 @@ Automated checks protect basic challenge-data integrity, including ensuring that
 
 Bible Arena does not treat publicly viewable Bible text/audio as automatically reusable content. Translation/API access, redistribution rights, audio rights, and machine-learning training rights may differ.
 
-**Current Scripture content:** English KJV is the actual Bible translation currently loaded. Language catalogue entries are not proof that a corresponding translation has been imported.
+**Current Scripture content:** KJV and WEB are the two active English editions in the live catalogue. A read-only check on 2026-11-22 found 31,102 KJV verse rows and 31,098 WEB verse rows in `bible_verses`. Both cover all 1,189 chapters, although their chapter/verse key sets differ and still require source-level reconciliation. No other English edition has been imported and verified yet. Language catalogue entries are not proof that a corresponding translation has been imported.
 
 The Idoma Common Language Bible (`Ubáyíbu kú Idɔma / IFBCL`) has been identified as a target written resource, but the complete authorized text has not yet been loaded into Bible Arena. Do not add scraped copyrighted verses as placeholders.
 
