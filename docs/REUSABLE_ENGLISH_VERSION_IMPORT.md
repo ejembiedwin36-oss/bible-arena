@@ -36,6 +36,11 @@ The expected counts are mandatory and edition-specific. Do not blindly assume ev
 
 ASV and BSB are the first candidates to prepare; YLT and DBY are the next low-friction candidates. BBE remains pending exact source/edition review. DRV and RV require explicit canon decisions because their source traditions/packages include books beyond the 66-book Protestant canon. This is not a legal opinion about every jurisdiction or every third-party package. Prefer the publisher/eBible source package, record its date and checksum, preserve the edition attribution, confirm the precise edition and canon, normalize it, and validate it before any database operation. Do not treat an aggregator's repackaged file as automatically equivalent to the publisher's source.
 
+## Exact source packages identified
+
+- **BSB:** The publisher's GitHub repository, [BSB-publishing/bsb2usfm](https://github.com/BSB-publishing/bsb2usfm), separates public-domain Bible text from MIT-licensed conversion tools. Its README states that BSB is a complete 66-book edition. Latest release inspected: [v5.24](https://github.com/BSB-publishing/bsb2usfm/releases/tag/v5.24); standard asset: `BSB_usfm.zip` (1,647,915 bytes). The repository's `LICENSING_INFO.md` and `UNLICENSE` are the relevant text-rights records. Prefer the standard USFM package, not interlinear/Strong's variants, for a plain Reader import.
+- **ASV:** eBible.org's edition page links the `eng-asv_usfm.zip` and `eng-asv_usfx.zip` packages. Record the archive's own source date and checksum after download.
+- **Download status:** The official archive URLs have been identified, but archive downloads from this execution environment failed. No mirror or scraped online text has been substituted, and no Scripture corpus has been imported.
 ## Existing KJV workflow
 
 The existing KJV-specific scripts remain in place and unchanged. This new script is additive, so the known KJV import procedure is not silently altered.
