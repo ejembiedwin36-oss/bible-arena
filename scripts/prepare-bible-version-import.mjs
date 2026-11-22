@@ -1,4 +1,6 @@
 import fs from 'node:fs';
+import path from 'node:path';
+import { fileURLToPath, pathToFileURL } from 'node:url';
 
 function chapterKey(book, chapter) { return `${book}\u0000${chapter}`; }
 
@@ -53,7 +55,8 @@ export function prepareBibleVersionImport(corpus, chapterMapRows, expected) {
   return { rows: prepared, counts: actual };
 }
 
-if (import.meta.url === `file://${process.argv[1]}`) {
+const invokedPath = process.argv[1] ? pathToFileURL(path.resolve(process.argv[1])).href : null;
+if (invokedPath && import.meta.url === invokedPath) {
   const [corpusPath, mapPath, outputPath, booksArg, chaptersArg, versesArg] = process.argv.slice(2);
   if (!corpusPath || !mapPath || !outputPath || !booksArg || !chaptersArg || !versesArg) {
     console.error('Usage: node scripts/prepare-bible-version-import.mjs <corpus.json> <chapter-map.json> <output.json> <books> <chapters> <verses>');
