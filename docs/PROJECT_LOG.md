@@ -374,3 +374,29 @@ Read `supabase/migrations/README.md`. It says the live Supabase migration histor
 **Decisions:** Keep the audit read-only. Flag the possible canonical-key duplicate index for later evidence-based review, but do not make a database change. Do not treat table-level GRANT ALL as proof that ordinary users can write rows when RLS is enabled.
 
 **Next exact step:** Inspect the `languages` table columns, then its constraints/indexes, policies, RLS setting, and grants using the same read-only schema-export workflow. Continue verifying relationships from explicit foreign-key declarations rather than assumptions.
+
+
+### 2026-11-22 — Direct read-only production check: bible_versions and security advisors
+
+**Goal:** Resume the schema/security audit without requiring the owner to open VS Code, using connected GitHub and Supabase access. This entry records verified live-production findings; it does not replace the external schema dump.
+
+**Project status:** Supabase project `fqsjzjduawcevqlammzm` (`bible-arena`, `eu-west-1`) returned `ACTIVE_HEALTHY`, PostgreSQL 17.6.1.166. Read-only migration listing returned 38 records, consistent with the documented production history.
+
+**Verified live `public.bible_versions` structure:**
+- Columns: `id` UUID PK; `language_id` UUID NOT NULL; `name` and `abbreviation` text NOT NULL; optional `publisher`, `license_name`, `license_url`; `rights_verified` and `is_active` booleans default false; `created_at` timestamptz default now().
+- Unique constraint on `(language_id, abbreviation)`; FK `language_id` → `languages.id` with `ON DELETE RESTRICT`.
+- B-tree indexes: primary key, unique language/abbreviation index, and `idx_bible_versions_language` on `language_id`.
+- RLS enabled; policy `versions_public_read` is SELECT-only for PUBLIC and requires both `is_active = true` and `rights_verified = true`.
+- Live metadata query returned KJV and WEB, both English (`en`), active and rights-verified. KJV is marked Public Domain; WEB is marked Public domain with the project license URL recorded.
+
+**Security finding — broad table privileges:** Read-only effective-privilege checks confirmed that `anon` and `authenticated` have INSERT, UPDATE, DELETE, and TRUNCATE privileges on 27 public tables, including `languages`, `bible_books`, and `bible_versions`. RLS does not protect TRUNCATE. This is a significant least-privilege review item; it does not by itself prove an ordinary REST request can invoke TRUNCATE, since PostgREST does not expose a general SQL execution endpoint. Do not revoke grants yet; map intended app/admin/service-role workflows and review the API exposure before proposing a change.
+
+**Supabase security advisor (read-only) findings:**
+- INFO: RLS enabled with no policies on `maintenance_users` and `voice_speaker_dataset_assignments`. This is deny-by-default for ordinary roles; confirm intended access path.
+- WARN: six SECURITY DEFINER RPCs are executable by authenticated users: `assign_voice_speaker_dataset_split`, `create_voice_contribution`, `has_voice_language_role`, `mark_voice_sample_asr_eligible`, `review_voice_language_sample`, and `withdraw_voice_consent`.
+- Read-only inspection of all six function definitions found `search_path = ''` and authentication/ownership or language-role checks in the function bodies. The advisor warning should therefore be reviewed against intended RPC access, not blindly fixed by revoking every function.
+- WARN: Supabase Auth leaked-password protection is disabled. This is an Auth configuration item; no setting was changed.
+
+**Decision / production impact:** No database writes, schema changes, grant changes, Auth changes, migration repairs, or deployment actions were performed. The production audit remains read-only.
+
+**Next exact step:** Build a table-by-table least-privilege matrix for the 27 public tables with broad anon/authenticated privileges, correlate each table's RLS policies and actual frontend/RPC usage, then prepare a safe, reviewable remediation proposal. Do not apply grants/policies or change Auth settings without owner approval.
