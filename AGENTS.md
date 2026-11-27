@@ -233,3 +233,12 @@ The Reader now offers the red-letter control for KJV, WEB, ASV, BSB, and YLT. AS
 - `redLetterCorpus.ts` now has explicit version-to-loader routing for KJV, WEB, ASV, BSB, and YLT. Unknown versions do not silently fall back to KJV offsets.
 - BSB has no reviewed span corpus yet; it therefore displays ordinary Scripture text and a clear “annotations not yet available” status rather than potentially colouring unreviewed text.
 - Current annotation coverage remains partial. Expand John version-by-version using exact production verse text and reviewed speaker boundaries. Do not call the project complete until all intended books and versions have passed coverage and alignment checks.
+
+
+## John chapter 1 annotation checkpoint — 2026-11-27
+
+- Added translation-specific exact-text John 1:38–39, 42–43, and 47–51 speech spans for ASV, WEB, YLT, and BSB. Existing KJV John 1 annotations were retained.
+- Created `src/data/bsbRedLetters/John.json` and registered the BSB John loader. The BSB whole-verse database flag remains unused by the Reader.
+- Span boundaries in mixed-dialogue verses are limited to Jesus' own quoted words; surrounding narrator text and replies from other speakers remain uncoloured.
+- Added Vitest coverage for the John 1:38 mixed-dialogue boundary, BSB John 1:51, and unannotated verses.
+- This is a chapter-one checkpoint, not completion of the Gospel of John. Continue with John chapter 2 across all five versions and then audit every remaining chapter.
