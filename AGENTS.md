@@ -179,3 +179,12 @@ Next: snapshot ACLs, map frontend table and RPC usage, design least-privilege ro
 - This verifies the parser's automated test cases, not parsing of the full ASV/BSB corpus.
 - Official BSB v5.24 standard USFM release metadata is verified; archive bytes remain unavailable in this execution environment.
 - Next remains: obtain and validate the actual source archive, then prepare a dry-run import only.
+
+## Public-domain English import state — 2026-11-27
+
+- Official ASV 1901 and BSB v5.24 archives have been acquired in CI, checksum-verified, parsed, and mapped to live canonical chapter IDs.
+- Both prepared corpora: 66 books, 1,189 chapters, 31,086 verse rows; unique keys and non-empty text verified.
+- ASV source has 16 empty verse markers recorded separately; BSB whole-verse red-letter flags are preserved where explicit.
+- Import script and approval-gated workflow are in the repo. Marker approved=false; production has not been changed.
+- Prepared artifact run 45931638883 expires 2026-12-04.
+- Next: wait for explicit owner approval to set marker approved=true; then run the guarded workflow and verify version rows, verse counts, active state, and Reader smoke tests.
