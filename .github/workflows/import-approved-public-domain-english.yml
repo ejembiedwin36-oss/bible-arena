@@ -26,10 +26,18 @@ jobs:
           const marker = JSON.parse(fs.readFileSync('scripts/import-stage/approved-import.json', 'utf8'));
           const approved = marker.approved === true;
           const runId = String(marker.prepared_run_id || '');
+          const editions = Array.isArray(marker.editions) ? marker.editions : [];
           if (!/^\d+$/.test(runId)) throw new Error('Approval marker must include a numeric prepared_run_id.');
+          for (const edition of editions) {
+            if (!['ASV', 'BSB', 'YLT'].includes(edition)) throw new Error('Unsupported approved edition: ' + edition);
+          }
           fs.appendFileSync(process.env.GITHUB_OUTPUT, 'approved=' + approved + '\n');
           fs.appendFileSync(process.env.GITHUB_OUTPUT, 'prepared_run_id=' + runId + '\n');
+          for (const edition of ['ASV', 'BSB', 'YLT']) {
+            fs.appendFileSync(process.env.GITHUB_OUTPUT, 'import_' + edition.toLowerCase() + '=' + (approved && editions.includes(edition)) + '\n');
+          }
           console.log('Production import approved: ' + approved);
+          console.log('Approved editions: ' + editions.join(', '));
           console.log('Prepared artifact run: ' + runId);
           if (!approved) console.log('No production writes will occur. Set approved=true only after owner approval.');
           NODE
@@ -51,24 +59,32 @@ jobs:
           SUPABASE_SERVICE_ROLE_KEY: ${{ secrets.SUPABASE_SERVICE_ROLE_KEY }}
         run: |
           set -euo pipefail
-          test -s /tmp/english-import/asv-prepared.json
-          test -s /tmp/english-import/bsb-prepared.json
+          if [ "${{ steps.approval.outputs.import_asv }}" = "true" ]; then test -s /tmp/english-import/asv-prepared.json; fi
+          if [ "${{ steps.approval.outputs.import_bsb }}" = "true" ]; then test -s /tmp/english-import/bsb-prepared.json; fi
+          if [ "${{ steps.approval.outputs.import_ylt }}" = "true" ]; then test -s /tmp/english-import/ylt-prepared.json; fi
           if [ -z "$SUPABASE_URL" ] || [ -z "$SUPABASE_SERVICE_ROLE_KEY" ]; then
             echo "Required Supabase secrets are missing. No database requests were sent."
             exit 1
           fi
-          echo "Both prepared corpora are present and Supabase secrets are configured."
+          echo "Approved prepared corpora are present and Supabase secrets are configured."
 
       - name: Import ASV 1901 and activate only after count verification
-        if: steps.approval.outputs.approved == 'true'
+        if: steps.approval.outputs.import_asv == 'true'
         env:
           SUPABASE_URL: ${{ secrets.SUPABASE_URL }}
           SUPABASE_SERVICE_ROLE_KEY: ${{ secrets.SUPABASE_SERVICE_ROLE_KEY }}
         run: node scripts/import-public-domain-english.mjs --apply /tmp/english-import/asv-prepared.json
 
       - name: Import BSB and activate only after count verification
-        if: steps.approval.outputs.approved == 'true'
+        if: steps.approval.outputs.import_bsb == 'true'
         env:
           SUPABASE_URL: ${{ secrets.SUPABASE_URL }}
           SUPABASE_SERVICE_ROLE_KEY: ${{ secrets.SUPABASE_SERVICE_ROLE_KEY }}
         run: node scripts/import-public-domain-english.mjs --apply /tmp/english-import/bsb-prepared.json
+
+      - name: Import YLT 1898 and activate only after count verification
+        if: steps.approval.outputs.import_ylt == 'true'
+        env:
+          SUPABASE_URL: ${{ secrets.SUPABASE_URL }}
+          SUPABASE_SERVICE_ROLE_KEY: ${{ secrets.SUPABASE_SERVICE_ROLE_KEY }}
+        run: node scripts/import-public-domain-english.mjs --apply /tmp/english-import/ylt-prepared.json
