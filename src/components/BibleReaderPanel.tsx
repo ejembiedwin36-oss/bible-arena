@@ -84,9 +84,13 @@ export function BibleReaderPanel({ initialLanguageId }: BibleReaderPanelProps) {
   const selectedVersion = useMemo(() => versions.find((version) => version.id === versionId), [versions, versionId]);
   const selectedBook = useMemo(() => books.find((book) => book.id === bookId), [books, bookId]);
   const redLetterVersion = selectedVersion?.abbreviation?.toUpperCase() ?? '';
-  const supportsRedLetters = ['KJV', 'WEB', 'YLT'].includes(redLetterVersion);
-  const redLetterBook = useRedLetterBook(selectedBook?.name, redLettersEnabled && supportsRedLetters, redLetterVersion);
-  const redVerseCount = chapter?.verses.filter((verse) => redLetterVerse(redLetterBook.data, chapterNumber, verse.verseNumber, verse.text).some((segment) => segment.red)).length ?? 0;
+  const supportsRedLetters = ['KJV', 'WEB', 'ASV', 'BSB', 'YLT'].includes(redLetterVersion);
+  // BSB already carries a reviewed verse-level is_jesus_words marker in the database.
+  // Other translations use their own exact-wording span annotations.
+  const redLetterBook = useRedLetterBook(selectedBook?.name, redLettersEnabled && supportsRedLetters && redLetterVersion !== 'BSB', redLetterVersion);
+  const redVerseCount = chapter?.verses.filter((verse) => redLetterVersion === 'BSB'
+    ? verse.isJesusWords
+    : redLetterVerse(redLetterBook.data, chapterNumber, verse.verseNumber, verse.text).some((segment) => segment.red)).length ?? 0;
   const isIdoma = selectedLanguage?.code?.toLowerCase() === 'id' || selectedLanguage?.code?.toLowerCase() === 'idu';
   const canGoPrevious = chapterNumber > 1 && !loading;
   const canGoNext = Boolean(selectedBook && chapterNumber < selectedBook.chapterCount && !loading);
@@ -112,10 +116,10 @@ export function BibleReaderPanel({ initialLanguageId }: BibleReaderPanelProps) {
 
       {supportsRedLetters && <label className="red-letter-toggle"><input type="checkbox" checked={redLettersEnabled} onChange={(event) => setRedLettersEnabled(event.target.checked)} /> Show Jesus’ words in red ({selectedVersion?.abbreviation})</label>}
 
-      {redLettersEnabled && supportsRedLetters && redLetterBook.loading && <p role="status">Loading red-letter annotations…</p>}
-      {redLettersEnabled && supportsRedLetters && redLetterBook.error && <p role="alert">Red-letter annotations could not load. Scripture remains readable in normal text.</p>}
+      {redLettersEnabled && supportsRedLetters && redLetterVersion !== 'BSB' && redLetterBook.loading && <p role="status">Loading red-letter annotations…</p>}
+      {redLettersEnabled && supportsRedLetters && redLetterVersion !== 'BSB' && redLetterBook.error && <p role="alert">Red-letter annotations could not load. Scripture remains readable in normal text.</p>}
 
-      {redLettersEnabled && supportsRedLetters && redLetterBook.data && chapter && <p role="status" className="red-letter-status">Red-letter verses highlighted in this chapter: {redVerseCount} of {chapter.verses.length}.{redVerseCount === 0 ? ' No matching red-letter passages were found. Check the selected chapter or report a missing annotation.' : ''}</p>}
+      {redLettersEnabled && supportsRedLetters && (redLetterVersion === 'BSB' || redLetterBook.data) && chapter && <p role="status" className="red-letter-status">Red-letter verses highlighted in this chapter: {redVerseCount} of {chapter.verses.length}.{redVerseCount === 0 ? ' No matching red-letter passages were found. Check the selected chapter or report a missing annotation.' : ''}</p>}
 
       {isIdoma && <IdomaVoiceInput />}
 
@@ -132,7 +136,7 @@ export function BibleReaderPanel({ initialLanguageId }: BibleReaderPanelProps) {
               title="Study this verse"
               onClick={() => navigate(`/explore/verse/${verse.id}`)}
             >
-              <sup>{verse.verseNumber}</sup>{' '}{redLettersEnabled && supportsRedLetters ? redLetterVerse(redLetterBook.data, chapterNumber, verse.verseNumber, verse.text).map((segment, index) => segment.red ? <span key={index} className="jesus-red-letter">{segment.text}</span> : <span key={index}>{segment.text}</span>) : verse.text}
+              <sup>{verse.verseNumber}</sup>{' '}{redLettersEnabled && supportsRedLetters ? (redLetterVersion === 'BSB' && verse.isJesusWords ? <span className="jesus-red-letter">{verse.text}</span> : redLetterVerse(redLetterBook.data, chapterNumber, verse.verseNumber, verse.text).map((segment, index) => segment.red ? <span key={index} className="jesus-red-letter">{segment.text}</span> : <span key={index}>{segment.text}</span>)) : verse.text}
             </button>
           </p>
         ))}
