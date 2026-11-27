@@ -92,7 +92,10 @@ jobs:
           retention-days: 7
           if-no-files-found: warn
           path: |
+            /tmp/english-bible-sources/asv.zip
+            /tmp/english-bible-sources/bsb.zip
             /tmp/english-bible-sources/asv-normalized.json
+            /tmp/english-bible-sources/asv-normalized.json.omitted.json
             /tmp/english-bible-sources/bsb-normalized.json
 
       - name: Fail if any source corpus needs parser/versification work
