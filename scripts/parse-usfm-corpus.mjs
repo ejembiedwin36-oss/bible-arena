@@ -37,12 +37,12 @@ export function parseUsfmBook(source, bookNameByCode, onOmittedVerse) {
       const textStart = verseMatches[verseIndex].index + verseMatches[verseIndex][0].length;
       const textEnd = verseIndex + 1 < verseMatches.length ? verseMatches[verseIndex + 1].index : chapterText.length;
       const rawVerseText = chapterText.slice(textStart, textEnd);
-      const wjSegments = rawVerseText.match(/\\wj\\b[\\s\\S]*?\\wj\\*/g) || [];
+      const wjSegments = rawVerseText.match(/\\wj\b[\s\S]*?\\wj\*/g) || [];
       const outsideWj = rawVerseText
-        .replace(/\\wj\\b[\\s\\S]*?\\wj\\*/g, ' ')
-        .replace(/\\[a-zA-Z]+[0-9]*\\*?/g, ' ')
-        .replace(/\\\\\\*/g, ' ')
-        .replace(/\\s+/g, ' ')
+        .replace(/\\wj\b[\s\S]*?\\wj\*/g, ' ')
+        .replace(/\\[a-zA-Z]+[0-9]*\*?/g, ' ')
+        .replace(/\\\*/g, ' ')
+        .replace(/\s+/g, ' ')
         .trim();
       const isJesusWords = wjSegments.length > 0 && !/[A-Za-z0-9]/.test(outsideWj);
       let verseText = rawVerseText;
