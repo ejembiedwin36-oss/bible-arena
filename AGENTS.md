@@ -188,3 +188,20 @@ Next: snapshot ACLs, map frontend table and RPC usage, design least-privilege ro
 - Import script and approval-gated workflow are in the repo. Marker approved=false; production has not been changed.
 - Prepared artifact run 45931638883 expires 2026-12-04.
 - Next: wait for explicit owner approval to set marker approved=true; then run the guarded workflow and verify version rows, verse counts, active state, and Reader smoke tests.
+
+
+## Current production English Bible state — 2026-11-27
+
+The live Supabase English catalogue now has five active, rights-verified versions:
+
+- KJV — 31,102 verses
+- WEB — 31,098 verses
+- ASV — 31,086 verses
+- BSB — 31,086 verses
+- YLT (Young's Literal Translation, revised 1898) — 31,102 verses
+
+YLT was imported only after explicit owner approval. Production workflow run 45943207768 completed successfully. Its exact verse count was verified before activation. Genesis 1:1 and John 3:16 were read back from production and checked.
+
+The YLT corpus is stored directly in `bible_verses` against its `bible_versions.id`; it has no matching `bible_translations` row. The Reader service must therefore query `bible_verses.version_id` using the selected version ID first, then fall back to `bible_translation_verses.translation_id` for legacy translation-backed versions. A regression test for this path was added in commit 6f1a8ccf35222108c980e0444ffba0c54c5d26de. Verify CI and the production Reader smoke test before considering this integration complete.
+
+The earlier dated audit checkpoints in this file describe the state at the time they were written; this section is the current production snapshot. Keep all existing Bible versions unchanged when adding future editions. Copyrighted editions (TPT, AMP/AMPC, GNT, MSG, NLT, NIV) still require the appropriate written permissions or authorized provider agreements before full-text distribution.
