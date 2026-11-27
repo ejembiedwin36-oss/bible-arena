@@ -63,12 +63,13 @@ The owner requested TPT, Good News, AMP, MSG, NLT (the owner confirmed this is t
 
 ### Young's Literal Translation (YLT, revised 1898) — source and rights review
 
-- eBible.org identifies the exact `ENGYLT` edition as Young's Literal Translation and labels it **public domain**. It provides downloadable plain-text, USFX, USFM, and other formats: https://ebible.org/Scriptures/details.php?id=engylt
-- CrossWire's SWORD module identifies the text as Young's Literal Translation (1898) and explicitly lists its distribution licence as **Public Domain**: https://www.crosswire.org/sword/modules/ModInfo.jsp?modName=YLT
-- BibleGateway independently identifies its YLT text as the 1898 edition and lists the publisher as Public Domain: https://classic.biblegateway.com/versions/Youngs-Literal-Translation-YLT-Bible/
+- eBible.org identifies the exact `ENGYLT` edition as Young's Literal Translation and labels it **public domain**. Its official edition page provides a USFM archive: https://ebible.org/Bible/details.php?id=engylt
+- eBible.org's source catalogue also lists Young's Literal Translation (1862, 1898), Robert Young, as public domain: https://ebible.org/Scriptures/copyright.php
+- CrossWire's SWORD module identifies the text as Young's Literal Translation (1898) and lists its distribution licence as **Public Domain**: https://www.crosswire.org/sword/modules/ModInfo.jsp?modName=YLT
 - The edition is based on Robert Young's translation, first published in 1862 and revised in 1898. Use the 1898 revised edition and retain source attribution; do not silently mix other YLT editions or third-party edits.
-- **Rights assessment:** Strong, convergent evidence supports treating the 1898 YLT text as public domain for distribution. This is a source-level assessment, not a jurisdiction-specific legal opinion. Preserve the source licence/metadata with the downloaded archive and confirm the exact file's terms before production use.
-- **Decision:** YLT is approved as the next candidate for technical source acquisition and offline validation only. It is **not yet approved for production import or activation**. First inspect the official eBible archive, checksum it, parse all 66 books, map chapters to the canonical database, review omissions/versification exceptions, and verify the exact verse count and text integrity.
+- **Rights assessment:** Strong, convergent source evidence supports treating the 1898 YLT text as public domain for distribution. This is a source-level assessment, not a jurisdiction-specific legal opinion. Preserve the source licence/metadata and attribution with the archive.
+- **Technical validation completed (2026-11-27):** Downloaded the official eBible.org USFM archive `https://ebible.org/Scriptures/engylt_usfm.zip`; archive size 1,386,206 bytes; SHA-256 `c526b4e362fef13916a14765a7e331267f6a1227db58549fc61d3288a930a12b`. ZIP integrity passed. The parser produced 31,102 verse rows across 66 books and 1,189 chapters. Canonical chapter preparation also passed with 31,102 rows. Independent artifact inspection confirmed 31,102 unique (chapter_id, verse_number) keys and no duplicate keys. Sample text checked: Genesis 1:1 and John 3:16.
+- **Decision:** YLT is approved as a technically validated public-domain source candidate. It has **not** been imported into production or activated. Before any production import, inspect the existing importer safeguards, ensure YLT-specific attribution is stored/displayed, run importer tests and a dry-run, and obtain the owner's explicit approval for the production write.
 
 Other candidates discussed include Darby Bible (DBY), English Revised Version (ERV), Webster's Bible (WBS), and Douay-Rheims (DRA). They remain unreviewed.
 
@@ -86,7 +87,11 @@ Other candidates discussed include Darby Bible (DBY), English Revised Version (E
 
 ## Immediate next actions
 
-- [x] Completed source/rights review for the 1898 YLT edition: eBible.org and CrossWire both identify it as public domain. Technical archive inspection and corpus validation remain outstanding.
+- [x] Completed source/rights review for the 1898 YLT edition: eBible.org and CrossWire both identify it as public domain.
+- [x] Downloaded official YLT USFM archive; verified ZIP integrity and recorded SHA-256.
+- [x] Parsed all 66 books / 1,189 chapters / 31,102 verse rows.
+- [x] Prepared canonical chapter mappings and verified 31,102 unique chapter/verse keys with no duplicates.
+- [ ] Review YLT attribution in app metadata and importer safeguards; run YLT dry-run and tests. Production import requires separate explicit owner approval.
 - [ ] Prepare permission requests for TPT, AMP (confirm AMP 2015 versus AMPC), GNT, MSG, NLT, and NIV.
 - [ ] Ask rights holders to specify display, storage, caching, offline, audio/TTS, commercial/non-commercial, geographic, and attribution terms.
 - [x] Confirmed: "NTL" meant NLT (New Living Translation).
