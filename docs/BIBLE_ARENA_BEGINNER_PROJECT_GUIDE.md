@@ -569,3 +569,21 @@ The live read-only matrix identifies 27 public tables where `anon` and `authenti
 RLS does not apply to TRUNCATE. Therefore, a policy-only audit is not enough; table ACLs must also be least-privilege. A blanket revoke is not being applied because it may affect intended app and admin paths.
 
 Safe next steps: preserve ACL snapshot; inspect repository `.from(table)` and RPC usage; map each required operation to table and role; stage explicit revokes/grants and test normal plus unauthorized access; then obtain approval before production rollout. No production changes were made.
+
+## 2026-11-27 — USFM source preparation (beginner checkpoint)
+
+### What USFM is
+USFM (Unified Standard Format Markers) is a text format used to store Bible books with markers such as \id (book), \c (chapter), and \v (verse). The text is not plain prose: it may include paragraph, poetry, footnote, cross-reference, and formatting markers.
+
+### What we added
+- scripts/parse-usfm-corpus.mjs: reads basic USFM book files and outputs normalized verse rows for the existing offline import validator.
+- scripts/usfm-book-code-map.json: maps the standard 66-book USFM codes (such as GEN, EXO, MAT, REV) to the canonical book names already used in Bible Arena.
+- scripts/parse-usfm-corpus.test.ts: tests marker parsing and important safety cases.
+
+### Why the parser refuses some verse labels
+The current verse table stores verse numbers as integers. Some editions use a verse bridge (for example 1-2) or a suffix (such as 1a). The parser refuses those rows instead of guessing. We must make a documented, edition-specific decision before representing those references in the database.
+
+### Current limitation
+The official ASV and BSB source ZIP files could not be downloaded by the connected execution environment, so no real Bible text has yet been parsed or imported. The parser's basic marker pattern was smoke-checked, but the complete Vitest suite still needs to run in the project environment. KJV and WEB remain unchanged.
+
+**Next:** obtain the official source ZIPs, extract them outside the Git repository, run the parser, validate exact counts and chapter mappings, and only then plan a staging import.
