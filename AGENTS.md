@@ -172,3 +172,10 @@ Next: snapshot ACLs, map frontend table and RPC usage, design least-privilege ro
 - Direct official ASV/BSB archive downloads failed in the connected execution environment. No Bible text has been staged or imported; no new production version rows were created.
 - Read-only production recheck: only KJV and WEB are active/rights-verified English versions; public roles retain SELECT and lack INSERT/UPDATE/DELETE/TRUNCATE on the five reviewed Bible read tables.
 - Next step: obtain official archives locally, run parser and validator with a read-only canonical chapter map, review exact counts/exceptions, run full tests, and prepare a dry-run import. Do not write production data or activate a new edition without explicit owner approval.
+
+## CI result update — 2026-11-27
+
+- GitHub Actions run 45930762789 for commit a7c72d598333bee820dff375e549978bf11a0190 completed successfully: API type-check, web/API tests (including USFM parser tests), and app build passed.
+- This verifies the parser's automated test cases, not parsing of the full ASV/BSB corpus.
+- Official BSB v5.24 standard USFM release metadata is verified; archive bytes remain unavailable in this execution environment.
+- Next remains: obtain and validate the actual source archive, then prepare a dry-run import only.
