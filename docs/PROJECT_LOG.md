@@ -564,3 +564,16 @@ No production version rows or verse data were added.
 - Re-checked production after the failed run: only KJV (31,102 rows) and WEB (31,098 rows) remain active. The approval marker was returned to `approved=false` so a later rerun cannot unexpectedly import content until the required secrets are configured and approval is re-enabled.
 - Next step: configure those two secrets in GitHub repository Settings → Secrets and variables → Actions, then re-enable the existing guarded workflow and verify ASV/BSB counts and Reader switching.
 
+
+
+## 2026-11-27 — English Bible expansion resumed
+
+**Read-only production verification:** Queried the English version catalogue and verse counts. Four versions are active and rights-verified: ASV (31,086 verses), BSB (31,086), KJV (31,102), and WEB (31,098). This supersedes older project-log statements that ASV and BSB were still pending or that only KJV and WEB were active. The owner has also tested all four Reader versions successfully.
+
+**Repository inspection:** Confirmed that `AGENTS.md`, `docs/ENGLISH_BIBLE_VERSION_RIGHTS_REVIEW.md`, `docs/BIBLE_IMPORT.md`, and `scripts/import-public-domain-english.mjs` exist. The current public-domain importer is specifically configured for ASV and BSB; it is not yet a generic drop-in importer for arbitrary editions.
+
+**Documentation correction:** Updated `docs/ENGLISH_BIBLE_VERSION_RIGHTS_REVIEW.md` to show the verified four-version production catalogue and record the additional requested versions: TPT, Good News/GNT, AMP, MSG, NLT (confirm the earlier "NTL" spelling), and NIV. The document now distinguishes limited quotation allowances from permission for full-text app distribution and marks YLT, DBY, ERV, WBS, and DRA as candidates requiring source/rights verification—not approved imports.
+
+**Safety and scope:** No production data, schema, licence flags, or app code were changed. No additional translation was imported or activated.
+
+**Next exact step:** Verify one candidate public-domain English edition from an authoritative source (including exact edition, source archive, redistribution terms, and text integrity). Only after that review should we extend the importer and prepare a dry-run corpus. In parallel, prepare publisher permission requests for the copyrighted translations. Keep KJV, WEB, ASV, and BSB unchanged.
