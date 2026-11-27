@@ -1,0 +1,100 @@
+name: Prepare public-domain English Bible corpora
+
+on:
+  push:
+    branches: [main]
+    paths:
+      - '.github/workflows/prepare-public-domain-english.yml'
+      - 'scripts/parse-usfm-corpus.mjs'
+      - 'scripts/usfm-book-code-map.json'
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  prepare:
+    runs-on: ubuntu-24.04
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 24
+
+      - name: Download official source archives
+        id: source
+        shell: bash
+        run: |
+          set -euo pipefail
+          mkdir -p /tmp/english-bible-sources/asv /tmp/english-bible-sources/bsb
+          curl --fail --location --retry 3 --retry-delay 2 \
+            https://ebible.org/Scriptures/eng-asv_usfm.zip \
+            --output /tmp/english-bible-sources/asv.zip
+          ASV_SIZE=$(stat -c '%s' /tmp/english-bible-sources/asv.zip)
+          ASV_SHA=$(sha256sum /tmp/english-bible-sources/asv.zip | cut -d ' ' -f 1)
+          echo "ASV archive bytes: $ASV_SIZE"
+          echo "ASV archive sha256: $ASV_SHA"
+          echo "asv_sha=$ASV_SHA" >> "$GITHUB_OUTPUT"
+          unzip -tq /tmp/english-bible-sources/asv.zip
+          curl --fail --location --retry 3 --retry-delay 2 \
+            https://github.com/BSB-publishing/bsb2usfm/releases/download/v5.24/BSB_usfm.zip \
+            --output /tmp/english-bible-sources/bsb.zip
+          echo "BSB archive sha256: $(sha256sum /tmp/english-bible-sources/bsb.zip | cut -d ' ' -f 1)"
+          echo "BSB archive bytes: $(stat -c '%s' /tmp/english-bible-sources/bsb.zip)"
+          echo "bsb_sha=$(sha256sum /tmp/english-bible-sources/bsb.zip | cut -d ' ' -f 1)" >> "$GITHUB_OUTPUT"
+          echo "be31ef23eb38492de9e6e17983b7d46a1a4abe010bd1ff2ad3e338795d21233d  /tmp/english-bible-sources/bsb.zip" | sha256sum --check
+          unzip -tq /tmp/english-bible-sources/bsb.zip
+
+      - name: Extract source book files
+        shell: bash
+        run: |
+          set -euo pipefail
+          mkdir -p /tmp/english-bible-sources/asv-books /tmp/english-bible-sources/bsb-books
+          unzip -q /tmp/english-bible-sources/asv.zip -d /tmp/english-bible-sources/asv
+          unzip -q /tmp/english-bible-sources/bsb.zip -d /tmp/english-bible-sources/bsb
+          find /tmp/english-bible-sources/asv -type f \( -iname '*.usfm' -o -iname '*.sfm' \) -exec cp {} /tmp/english-bible-sources/asv-books/ \;
+          find /tmp/english-bible-sources/bsb -type f \( -iname '*.usfm' -o -iname '*.sfm' \) -exec cp {} /tmp/english-bible-sources/bsb-books/ \;
+          echo "ASV book files: $(find /tmp/english-bible-sources/asv-books -type f | wc -l)"
+          echo "BSB book files: $(find /tmp/english-bible-sources/bsb-books -type f | wc -l)"
+          test "$(find /tmp/english-bible-sources/asv-books -type f | wc -l)" -eq 66
+          test "$(find /tmp/english-bible-sources/bsb-books -type f | wc -l)" -eq 66
+
+      - name: Parse and report source corpora
+        id: parse
+        shell: bash
+        continue-on-error: true
+        run: |
+          set -u
+          rc=0
+          node scripts/parse-usfm-corpus.mjs /tmp/english-bible-sources/asv-books scripts/usfm-book-code-map.json /tmp/english-bible-sources/asv-normalized.json || rc=1
+          node scripts/parse-usfm-corpus.mjs /tmp/english-bible-sources/bsb-books scripts/usfm-book-code-map.json /tmp/english-bible-sources/bsb-normalized.json || rc=1
+          node - <<'NODE'
+          const fs = require('node:fs');
+          for (const edition of ['asv','bsb']) {
+            const file = '/tmp/english-bible-sources/' + edition + '-normalized.json';
+            if (!fs.existsSync(file)) continue;
+            const rows = JSON.parse(fs.readFileSync(file, 'utf8'));
+            const books = new Set(rows.map(x => x.book));
+            const chapters = new Set(rows.map(x => x.book + ':' + x.chapter));
+            const summary = edition.toUpperCase() + ': ' + books.size + ' books, ' + chapters.size + ' chapters, ' + rows.length + ' verse rows';
+            console.log(summary);
+            fs.appendFileSync(process.env.GITHUB_STEP_SUMMARY, summary + '\n');
+          }
+          NODE
+          echo "parse_rc=$rc" >> "$GITHUB_OUTPUT"
+          exit "$rc"
+
+      - name: Save normalized corpus artifacts for review
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: public-domain-english-normalized-corpora
+          retention-days: 7
+          if-no-files-found: warn
+          path: |
+            /tmp/english-bible-sources/asv-normalized.json
+            /tmp/english-bible-sources/bsb-normalized.json
+
+      - name: Fail if any source corpus needs parser/versification work
+        if: steps.parse.outcome == 'failure'
+        run: exit 1
