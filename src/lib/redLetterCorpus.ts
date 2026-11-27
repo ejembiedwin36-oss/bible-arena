@@ -23,10 +23,14 @@ const webLoaders: Record<string, () => Promise<{ default: CorpusBook }>> = {
   matthew: () => import('../data/webRedLetters/Matthew.json'),
   john: () => import('../data/webRedLetters/John.json'),
 };
+const yltLoaders: Record<string, () => Promise<{ default: CorpusBook }>> = {
+  john: () => import('../data/yltRedLetters/John.json'),
+};
 const cache = new Map<string, Promise<CorpusBook | null>>();
 async function loadBook(book: string, version: string): Promise<CorpusBook | null> {
   const key = book.toLowerCase();
-  const loader = (version === 'WEB' ? webLoaders : loaders)[key];
+  const versionLoaders = version === 'WEB' ? webLoaders : version === 'YLT' ? yltLoaders : loaders;
+  const loader = versionLoaders[key];
   if (!loader) return null;
   const cacheKey = `${version}:${key}`;
   if (!cache.has(cacheKey)) cache.set(cacheKey, loader().then((module) => module.default).catch(() => null));
@@ -37,7 +41,8 @@ export function useRedLetterBook(book: string | undefined, enabled: boolean, ver
   const [state, setState] = useState<RedLetterLoadState>({ data: null, loading: false, error: false });
   useEffect(() => {
     let active = true;
-    const supported = Boolean(book && (version === 'WEB' ? webLoaders : loaders)[book.toLowerCase()]);
+    const versionLoaders = version === 'WEB' ? webLoaders : version === 'YLT' ? yltLoaders : loaders;
+    const supported = Boolean(book && versionLoaders[book.toLowerCase()]);
     setState({ data: null, loading: enabled && supported, error: false });
     if (enabled && book && supported) void loadBook(book, version).then((data) => {
       if (active) setState({ data, loading: false, error: !data });
