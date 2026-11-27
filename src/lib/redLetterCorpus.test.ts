@@ -87,3 +87,18 @@ describe('YLT red-letter annotations', () => {
     ]);
   });
 });
+
+
+import asvJohn from '../data/asvRedLetters/John.json';
+
+describe('ASV red-letter annotations', () => {
+  it('highlights the exact ASV wording of John 3:16', () => {
+    const verse = asvJohn['3']['16'];
+    expect(redLetterVerse(asvJohn, 3, 16, verse.text)).toEqual([{ text: verse.text, red: true }]);
+  });
+  it('does not colour ASV text when the displayed wording differs', () => {
+    expect(redLetterVerse(asvJohn, 3, 16, 'Different wording')).toEqual([
+      { text: 'Different wording', red: false },
+    ]);
+  });
+});
