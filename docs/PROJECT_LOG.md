@@ -645,3 +645,45 @@ The YLT source-preparation workflow run `45942618006` completed successfully.
 **Safety:** No Supabase or production writes were included. No version catalogue row was created and YLT has not been activated. KJV, WEB, ASV, and BSB are unchanged.
 
 **Next exact step:** Verify run `45942656037`. If canonical mapping succeeds, inspect the mapped artifact, compare verse keys and omissions, and add YLT-specific tests/import configuration only after review. If it fails, investigate the exact chapter/verse mapping differences rather than changing expected counts to force a pass.
+
+
+### 2026-11-27 — YLT corpus fully mapped; importer support added (no production write)
+
+**Source and rights**
+- Official eBible.org edition page identifies Young's Literal Translation (ENGYLT) as public domain and provides the USFM download: https://ebible.org/Bible/details.php?id=engylt
+- eBible.org's catalogue also lists the 1862/1898 YLT edition as public domain: https://ebible.org/Scriptures/copyright.php
+- Exact source archive: `https://ebible.org/Scriptures/engylt_usfm.zip`
+- Archive size: 1,386,206 bytes.
+- SHA-256: `c526b4e362fef13916a14765a7e331267f6a1227db58549fc61d3288a930a12b`.
+- ZIP integrity passed.
+
+**Corpus and mapping validation**
+- Workflow run `45942656037` passed: https://github.com/ejembiedwin36-oss/bible-arena/actions/runs/45942656037
+- Parser output: 66 books, 1,189 chapters, 31,102 verse rows.
+- Canonical chapter preparation output: 66 books, 1,189 chapters, 31,102 verses.
+- Downloaded and inspected the workflow artifact `15173417784` locally in the tool environment.
+- Independent check of prepared rows found 31,102 unique `(chapter_id, verse_number)` keys and zero duplicate keys. The YLT artifact did not include an omitted-verse report, consistent with no omitted empty markers.
+- Spot checks: Genesis 1:1 and John 3:16. The John 3:16 text matches the eBible.org edition page sample.
+- The canonical map check validates chapter IDs and row keys; it does not replace a full textual collation against a printed 1898 source.
+
+**Repository changes**
+- `scripts/import-public-domain-english.mjs`: added YLT edition metadata (1898, source URL, public-domain source URL, checksum, 66/1,189/31,102 expected counts) and filename recognition for YLT.
+- `scripts/import-public-domain-english.test.ts`: added a YLT dry-run test.
+- Rights review updated with source evidence and validation results.
+- Importer support is code-only. The production import workflow was intentionally NOT changed to include YLT, and no Supabase request/write was made.
+- Commits:
+  - `da5c807eaa1238d255daa94540dc31ca3a711781` — `docs: record YLT rights and corpus validation`
+  - `850473ea3757856a73e3d55ed2878ece7606b223` — `feat(import): support validated YLT corpus`
+  - `6a008f67a903b5be1d9c2352ec3597e11f088bd5` — `test(import): cover YLT dry-run support`
+- CI run `45942807830` was queued/in progress when this entry was written; test outcome must be checked before marking importer support verified.
+
+**Safety and decision**
+- YLT is a strong public-domain candidate and has passed archive, parser, canonical mapping, and duplicate-key validation.
+- It is not in production, is not active, and no production catalogue rights flags were changed.
+- KJV, WEB, ASV, and BSB remain untouched.
+- Production import remains a separate action requiring explicit owner approval.
+
+**Next exact step**
+1. Check CI run `45942807830` and confirm the YLT test passes.
+2. If CI passes, add a YLT-only dry-run invocation to the preparation workflow or a separate non-writing verification workflow, then review the complete import safeguards and app attribution/display behavior.
+3. Only after the owner explicitly approves a production database write should the import workflow be extended to include YLT. Do not set the production approval marker or run `--apply` before that approval.
