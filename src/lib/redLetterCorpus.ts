@@ -23,13 +23,16 @@ const webLoaders: Record<string, () => Promise<{ default: CorpusBook }>> = {
   matthew: () => import('../data/webRedLetters/Matthew.json'),
   john: () => import('../data/webRedLetters/John.json'),
 };
+const asvLoaders: Record<string, () => Promise<{ default: CorpusBook }>> = {
+  john: () => import('../data/asvRedLetters/John.json'),
+};
 const yltLoaders: Record<string, () => Promise<{ default: CorpusBook }>> = {
   john: () => import('../data/yltRedLetters/John.json'),
 };
 const cache = new Map<string, Promise<CorpusBook | null>>();
 async function loadBook(book: string, version: string): Promise<CorpusBook | null> {
   const key = book.toLowerCase();
-  const versionLoaders = version === 'WEB' ? webLoaders : version === 'YLT' ? yltLoaders : loaders;
+  const versionLoaders = version === 'WEB' ? webLoaders : version === 'ASV' ? asvLoaders : version === 'YLT' ? yltLoaders : loaders;
   const loader = versionLoaders[key];
   if (!loader) return null;
   const cacheKey = `${version}:${key}`;
