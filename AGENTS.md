@@ -205,3 +205,12 @@ YLT was imported only after explicit owner approval. Production workflow run 459
 The YLT corpus is stored directly in `bible_verses` against its `bible_versions.id`; it has no matching `bible_translations` row. The Reader service must therefore query `bible_verses.version_id` using the selected version ID first, then fall back to `bible_translation_verses.translation_id` for legacy translation-backed versions. A regression test for this path was added in commit 6f1a8ccf35222108c980e0444ffba0c54c5d26de. Verify CI and the production Reader smoke test before considering this integration complete.
 
 The earlier dated audit checkpoints in this file describe the state at the time they were written; this section is the current production snapshot. Keep all existing Bible versions unchanged when adding future editions. Copyrighted editions (TPT, AMP/AMPC, GNT, MSG, NLT, NIV) still require the appropriate written permissions or authorized provider agreements before full-text distribution.
+
+
+## YLT Reader integration verification — 2026-11-27
+
+- Reader fix commits: `b23726de4fabb1b2b1ae87fa816d6c55ea402342`, `2ccb19aed4d66c2297955a7b9f393786a8adf38c`, and `6f1a8ccf35222108c980e0444ffba0c54c5d26de`.
+- Reader verification run 45943448033 passed; main CI run 45943447994 passed.
+- Vercel status for code commit 6f1a8ccf35222108c980e0444ffba0c54c5d26de is success (deployment completed).
+- Reader uses the selected version row ID for direct `bible_verses.version_id` reads, and keeps the optional legacy `bible_translations.id` as fallback for translation-backed corpora.
+- Final manual browser smoke test remains: open the live Reader, refresh, select English → YLT, and verify Genesis 1:1 and John 3:16. Do not mark the user-facing smoke test complete until confirmed.
