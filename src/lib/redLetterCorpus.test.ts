@@ -102,3 +102,39 @@ describe('ASV red-letter annotations', () => {
     ]);
   });
 });
+
+
+import asvJohn from '../data/asvRedLetters/John.json';
+import bsbJohn from '../data/bsbRedLetters/John.json';
+import yltJohn from '../data/yltRedLetters/John.json';
+
+describe('John chapter 1 translation-specific red-letter spans', () => {
+  const cases = [
+    { version: 'ASV', corpus: asvJohn, verse: 38, spoken: 'What seek ye?' },
+    { version: 'WEB', corpus: webJohn, verse: 38, spoken: '“What are you looking for?”' },
+    { version: 'YLT', corpus: yltJohn, verse: 38, spoken: "'What seek ye?'" },
+    { version: 'BSB', corpus: bsbJohn, verse: 38, spoken: '“What do you want?”' },
+  ];
+
+  it.each(cases)('$version highlights Jesus words without colouring the surrounding dialogue', ({ corpus, verse, spoken }) => {
+    const annotated = corpus['1'][String(verse)];
+    const parts = redLetterVerse(corpus, 1, verse, annotated.text);
+    expect(parts.map((part) => part.text).join('')).toBe(annotated.text);
+    expect(parts.filter((part) => part.red).map((part) => part.text).join('')).toBe(spoken);
+    expect(parts.some((part) => !part.red)).toBe(true);
+  });
+
+  it('highlights the exact BSB wording in John 1:51', () => {
+    const annotated = bsbJohn['1']['51'];
+    const parts = redLetterVerse(bsbJohn, 1, 51, annotated.text);
+    expect(parts.filter((part) => part.red).map((part) => part.text).join('')).toBe(
+      '“Truly, truly, I tell you, you will all see heaven open and the angels of God ascending and descending on the Son of Man.”',
+    );
+  });
+
+  it('does not colour a John 1 verse that has not been annotated', () => {
+    expect(redLetterVerse(bsbJohn, 1, 1, 'In the beginning was the Word.')).toEqual([
+      { text: 'In the beginning was the Word.', red: false },
+    ]);
+  });
+});
