@@ -98,7 +98,8 @@ async function patchBatch(fetchImpl, base, key, batchId, values) {
 export async function importPublicDomainEdition(rows, editionCode, options = {}) {
   const config = PUBLIC_DOMAIN_ENGLISH_EDITIONS[editionCode];
   if (!config) throw new Error('Unknown public-domain edition code: ' + editionCode);
-  const counts = validatePreparedRows(rows, config.expected);
+  const expected = options.expected || config.expected;
+  const counts = validatePreparedRows(rows, expected);
   const apply = options.apply === true;
   if (!apply) return { edition: editionCode, counts, applied: false, message: 'Dry run only; no database requests were made.' };
 
@@ -153,13 +154,13 @@ export async function importPublicDomainEdition(rows, editionCode, options = {})
   }
 
   const initialCount = await getExactCount(fetchImpl, base, key, version.id);
-  if (initialCount > config.expected.verses) {
-    throw new Error('Existing ' + editionCode + ' version has ' + initialCount + ' rows, more than the expected ' + config.expected.verses + '; no rows were changed.');
+  if (initialCount > expected.verses) {
+    throw new Error('Existing ' + editionCode + ' version has ' + initialCount + ' rows, more than the expected ' + expected.verses + '; no rows were changed.');
   }
-  if (version.is_active && initialCount !== config.expected.verses) {
+  if (version.is_active && initialCount !== expected.verses) {
     throw new Error('Existing ' + editionCode + ' version is active but incomplete; manual review required before import.');
   }
-  if (version.is_active && initialCount === config.expected.verses) {
+  if (version.is_active && initialCount === expected.verses) {
     return { edition: editionCode, versionId: version.id, counts, applied: true, alreadyComplete: true };
   }
 
@@ -174,7 +175,7 @@ export async function importPublicDomainEdition(rows, editionCode, options = {})
       license_url: config.license_url,
       rights_verified: true,
       import_status: 'importing',
-      expected_verse_count: config.expected.verses,
+      expected_verse_count: expected.verses,
       imported_verse_count: initialCount,
     }),
   });
@@ -210,8 +211,8 @@ export async function importPublicDomainEdition(rows, editionCode, options = {})
     }
 
     const finalCount = await getExactCount(fetchImpl, base, key, version.id);
-    if (finalCount !== config.expected.verses) {
-      throw new Error('Post-import count mismatch for ' + editionCode + ': expected ' + config.expected.verses + ', received ' + finalCount + '. Version remains inactive.');
+    if (finalCount !== expected.verses) {
+      throw new Error('Post-import count mismatch for ' + editionCode + ': expected ' + expected.verses + ', received ' + finalCount + '. Version remains inactive.');
     }
 
     await requestJson(fetchImpl, restUrl(base, 'bible_versions', { id: 'eq.' + version.id }), key, {
