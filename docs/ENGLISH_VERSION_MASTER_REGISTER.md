@@ -65,3 +65,10 @@ No copyrighted full-text edition may be bulk-imported based only on limited quot
 - **BSB:** eBible.org identifies the Berean Standard Bible as public domain and provides USFM/USFX source packages: https://www.ebible.org/find/details.php?id=engbsb. Berean Bible's publisher download page also offers the current USFM package: https://berean.bible/downloads.htm. Rights status is confirmed for the text; the corpus has not yet been downloaded, inspected, normalized, or imported.
 
 These confirmations remove the need to seek a conventional copyright licence for these public-domain texts, but they do not waive source provenance, integrity, versification, or import validation.
+
+## Preparation status update (2026-11-27)
+
+- ASV 1901 and BSB source archives have now been downloaded by the successful official-source preparation workflow, checksum-verified, parsed, and mapped to the canonical chapter IDs. Both prepared corpora contain 66 books, 1,189 chapters, and 31,086 rows.
+- They are **prepared but not yet imported or active**. Production import was blocked because the GitHub Actions Supabase URL and service-role secrets are missing. The approval marker has been reset to false to keep the production import guarded until credentials are configured.
+- Current production remains KJV and WEB only. Do not mark ASV or BSB as active until the import workflow completes and the live database verifies the expected counts.
+
