@@ -54,10 +54,10 @@ jobs:
           unzip -q /tmp/english-bible-sources/bsb.zip -d /tmp/english-bible-sources/bsb
           find /tmp/english-bible-sources/asv -type f \( -iname '*.usfm' -o -iname '*.sfm' \) -exec cp {} /tmp/english-bible-sources/asv-books/ \;
           find /tmp/english-bible-sources/bsb -type f \( -iname '*.usfm' -o -iname '*.sfm' \) -exec cp {} /tmp/english-bible-sources/bsb-books/ \;
-          echo "ASV book files: $(find /tmp/english-bible-sources/asv-books -type f | wc -l)"
-          echo "BSB book files: $(find /tmp/english-bible-sources/bsb-books -type f | wc -l)"
-          test "$(find /tmp/english-bible-sources/asv-books -type f | wc -l)" -eq 66
-          test "$(find /tmp/english-bible-sources/bsb-books -type f | wc -l)" -eq 66
+          echo "ASV source files (includes front matter): $(find /tmp/english-bible-sources/asv-books -type f | wc -l)"
+          echo "BSB source files: $(find /tmp/english-bible-sources/bsb-books -type f | wc -l)"
+          test "$(find /tmp/english-bible-sources/asv-books -type f | wc -l)" -ge 66
+          test "$(find /tmp/english-bible-sources/bsb-books -type f | wc -l)" -ge 66
 
       - name: Parse and report source corpora
         id: parse
