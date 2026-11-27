@@ -27,6 +27,14 @@ describe('parseUsfmBook', () => {
     expect(() => parseUsfmBook(source, {})).toThrow('No canonical book-name mapping for USFM code GEN.');
   });
 
+  it('reports empty omitted verse markers when a report callback is supplied', () => {
+    const source = ['\\\\id GEN - Genesis', '\\\\c 1', '\\\\v 1 Text', '\\\\v 21 \\\\f + \\\\ft Some witnesses omit this verse.\\\\f*'].join('\\n');
+    const omitted = [];
+    const rows = parseUsfmBook(source, names, row => omitted.push(row));
+    expect(rows).toEqual([{ book: 'Genesis', chapter: 1, verse: 1, text: 'Text' }]);
+    expect(omitted).toEqual([{ book: 'Genesis', chapter: 1, verse: 21 }]);
+  });
+
   it('rejects verse bridges and suffix labels for manual review', () => {
     const source = ['\\id GEN - Genesis', '\\c 1', '\\v 1-2 Combined'].join('\n');
     expect(() => parseUsfmBook(source, names)).toThrow('Unsupported verse label "1-2"');
