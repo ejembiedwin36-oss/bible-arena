@@ -1,12 +1,13 @@
 import fs from 'node:fs';
 import path from 'node:path';
+import { pathToFileURL } from 'node:url';
 
 export const PUBLIC_DOMAIN_ENGLISH_EDITIONS = {
   ASV: {
     name: 'American Standard Version (1901)',
     abbreviation: 'ASV',
     publisher: 'eBible.org',
-    source_name: 'eBible.org ASV 1901 USFM',
+    source_name: 'eBible.org ASV 1901 USFM sha256=00b7b6c76cb1eb67b22ca51bd5ac13c2df526c13e1c38e78b862a7a2367f7071',
     source_url: 'https://ebible.org/find/show.php?id=eng-asv',
     license_name: 'Public Domain',
     license_url: 'https://ebible.org/asv/copyright.htm',
@@ -16,7 +17,7 @@ export const PUBLIC_DOMAIN_ENGLISH_EDITIONS = {
     name: 'Berean Standard Bible',
     abbreviation: 'BSB',
     publisher: 'BSB Publishing, LLC',
-    source_name: 'Berean Standard Bible USFM release v5.24',
+    source_name: 'Berean Standard Bible USFM v5.24 sha256=be31ef23eb38492de9e6e17983b7d46a1a4abe010bd1ff2ad3e338795d21233d',
     source_url: 'https://github.com/BSB-publishing/bsb2usfm/releases/download/v5.24/BSB_usfm.zip',
     license_name: 'Public Domain',
     license_url: 'https://berean.bible/terms.htm',
@@ -138,7 +139,7 @@ export async function importPublicDomainEdition(rows, editionCode, options = {})
     });
     if (!Array.isArray(created) || created.length !== 1) throw new Error('Version creation did not return one version row.');
     version = created[0];
-  } else if (!version.rights_verified) {
+  } else {
     await requestJson(fetchImpl, restUrl(base, 'bible_versions', { id: 'eq.' + version.id }), key, {
       method: 'PATCH',
       prefer: 'return=minimal',
@@ -259,7 +260,7 @@ async function main() {
   }
 }
 
-if (process.argv[1] && import.meta.url === new URL('file://' + path.resolve(process.argv[1])).href) {
+if (process.argv[1] && import.meta.url === pathToFileURL(path.resolve(process.argv[1])).href) {
   main().catch(function (error) {
     console.error(error.message || String(error));
     process.exit(1);
