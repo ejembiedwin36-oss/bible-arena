@@ -68,3 +68,11 @@ node scripts/prepare-bible-version-import.mjs <normalized-corpus.json> <chapter-
 The parser currently handles the basic \id, \c, and \v structure and strips common formatting/footnote markers. It intentionally rejects verse bridges and suffix labels that the current integer verse schema cannot represent safely. This is an initial parser, not a certification of every USFM 3.0 feature; inspect source files and run the tests before using it on a full corpus. No database writes are performed by either command.
 
 The official archive download attempt from the connected execution environment failed. Do not substitute scraped text or an unverified mirror; obtain the source archive from eBible.org/publisher, record the exact source URL, release/printing, and checksum, then validate the complete corpus.
+
+## Validated public-domain corpora and guarded production import
+
+The official source-preparation workflow now downloads and validates ASV 1901 and BSB v5.24. It uses the standard USFM book map and the live canonical chapter-map snapshot in scripts/import-stage/chapter-map.json. The normalized prepared rows are emitted as a short-lived GitHub Actions artifact; do not commit full Scripture corpora into the repository.
+
+Current prepared totals: ASV 31,086 rows and BSB 31,086 rows, each spanning 66 books and 1,189 chapters. ASV's 16 empty verse markers are listed in an omission report, not filled with text.
+
+Production import is handled by scripts/import-public-domain-english.mjs and .github/workflows/import-approved-public-domain-english.yml. The workflow reads scripts/import-stage/approved-import.json. It must remain approved=false until the owner explicitly approves the production data change. When approved, the script is idempotent, records an import batch, verifies exact counts, and activates each version only after its count matches.
