@@ -720,3 +720,13 @@ The YLT source-preparation workflow run `45942618006` completed successfully.
 2. Confirm the latest main commit deploys to https://bible-arena-gamma.vercel.app/.
 3. Open the Bible Reader, refresh the catalogue, select English → Young's Literal Translation (YLT), and check Genesis 1:1 and John 3:16. If the deployment is not yet ready, do not ask the owner to test until it is.
 4. Then continue with the publisher permission requests for TPT, AMP/AMPC, GNT, MSG, NLT, and NIV, while keeping rights-gated editions inactive until authorization is received.
+
+
+### 2026-11-27 — YLT Reader fix passed CI and deployed
+
+- Reader verification run **45943448033** completed successfully: tests, API type-check, TypeScript check, and build all passed.
+- Main CI run **45943447994** completed successfully: Python syntax check, API type-check, web/API tests, and application build passed.
+- Vercel reported success for code commit `6f1a8ccf35222108c980e0444ffba0c54c5d26de`; deployment completed.
+- The fix makes the Reader query direct corpora (including YLT) by the selected `bible_versions.id`, while preserving the legacy translation-ID fallback. The regression test for direct version-backed reading passed.
+- The live Supabase catalogue and verse rows were verified earlier in this session: YLT is active, rights-verified, and has exactly 31,102 verses. Genesis 1:1 and John 3:16 returned YLT text.
+- **Still pending:** owner-side browser smoke test on https://bible-arena-gamma.vercel.app/ after a hard refresh. Select English → YLT and verify Genesis 1:1 and John 3:16. Do not claim the UI smoke test is complete until the owner confirms it.
