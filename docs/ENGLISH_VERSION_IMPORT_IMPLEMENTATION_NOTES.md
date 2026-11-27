@@ -82,3 +82,15 @@ Both normalized corpora passed the current offline validator and were mapped to 
 The guarded importer is scripts/import-public-domain-english.mjs. It requires --apply and server-side Supabase credentials; it creates/uses one version row per language+abbreviation, writes in idempotent batches, records bible_import_batches provenance, verifies exact count, and only then activates the edition. The approval marker is currently false, so no production rows have been inserted. The import workflow was verified as a no-op while approval was false.
 
 Prepared artifact workflow run: 45931638883 (expires 2026-12-04).
+
+## Actual source preparation run (2026-11-27)
+
+GitHub Actions preparation run **45931638883** completed successfully. It downloaded the official eBible.org ASV 1901 USFM package and the BSB Publishing v5.24 standard USFM package, validated ZIP integrity, parsed the source, mapped to the canonical chapter map, and produced a review artifact.
+
+- ASV: 66 books, 1,189 chapters, 31,086 prepared verse rows. The parser reported 16 empty ASV verse markers in an omission report; no text was fabricated.
+- BSB: 66 books, 1,189 chapters, 31,086 prepared verse rows.
+- Artifact digest: SHA-256 `2496288c5885a9d25efcfa901422a3a09406e454993fe6b684b7e50cb7a898a5`.
+- The archive SHA-256 values matched the source metadata in `scripts/import-public-domain-english.mjs`.
+
+The owner approved the production import, but the guarded import run **45931986946** stopped at the required-secret check: GitHub Actions does not currently have `SUPABASE_URL` and `SUPABASE_SERVICE_ROLE_KEY` configured. The ASV and BSB import steps were skipped, and the post-run production query still showed only KJV and WEB. The approval marker is now disabled pending secret configuration and re-enable. No new production version or verse rows were created.
+
