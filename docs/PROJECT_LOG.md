@@ -730,3 +730,12 @@ The YLT source-preparation workflow run `45942618006` completed successfully.
 - The fix makes the Reader query direct corpora (including YLT) by the selected `bible_versions.id`, while preserving the legacy translation-ID fallback. The regression test for direct version-backed reading passed.
 - The live Supabase catalogue and verse rows were verified earlier in this session: YLT is active, rights-verified, and has exactly 31,102 verses. Genesis 1:1 and John 3:16 returned YLT text.
 - **Still pending:** owner-side browser smoke test on https://bible-arena-gamma.vercel.app/ after a hard refresh. Select English → YLT and verify Genesis 1:1 and John 3:16. Do not claim the UI smoke test is complete until the owner confirms it.
+
+
+### 2026-11-27 — Initial YLT red-letter support
+
+- Added a YLT-specific annotation corpus for John 3:16, with the exact public-domain YLT verse text and a reviewed speech span.
+- Wired YLT to its own annotation loader and enabled the Reader red-letter toggle for YLT alongside KJV and WEB.
+- Kept strict exact-text alignment: if displayed YLT wording differs from the curated annotation, the verse stays uncoloured. Unannotated verses also remain normal text.
+- Added tests for the exact John 3:16 highlight, wording mismatch fallback, and unannotated verses.
+- **Coverage limit:** this is an initial YLT annotation for John 3:16, not full-book or full-Bible YLT red-letter coverage. Expand only with translation-specific reviewed annotations.
