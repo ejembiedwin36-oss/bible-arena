@@ -587,3 +587,9 @@ The current verse table stores verse numbers as integers. Some editions use a ve
 The official ASV and BSB source ZIP files could not be downloaded by the connected execution environment, so no real Bible text has yet been parsed or imported. The parser's basic marker pattern was smoke-checked, but the complete Vitest suite still needs to run in the project environment. KJV and WEB remain unchanged.
 
 **Next:** obtain the official source ZIPs, extract them outside the Git repository, run the parser, validate exact counts and chapter mappings, and only then plan a staging import.
+
+### Verification update — 2026-11-27
+
+The new USFM parser tests have now run successfully in GitHub Actions. The complete CI job also passed API type-checking and the application build for commit a7c72d598333bee820dff375e549978bf11a0190. This confirms the parser code compiles and its test cases pass; it does not confirm that a full ASV/BSB source archive has been parsed.
+
+The official BSB release metadata currently identifies v5.24 (published 2026-11-19), and the standard BSB USFM archive is listed as 1,647,915 bytes with SHA-256 be31ef23eb38492de9e6e17983b7d46a1a4abe010bd1ff2ad3e338795d21233d. The archive download remains blocked in the connected execution environment.
