@@ -553,3 +553,14 @@ No production version rows or verse data were added.
 - The prepared artifact is from workflow run 45931638883 and expires 2026-12-04. The approval marker references that run.
 
 **Current state:** ASV and BSB are fully prepared and mapped but are not yet in the production Reader. The remaining action is explicit owner approval to change the marker to approved=true and run the guarded importer. KJV and WEB remain untouched.
+
+## 2026-11-27 — ASV 1901 and BSB source preparation completed; production import paused
+
+- GitHub Actions preparation run **45931638883** completed successfully using the official eBible.org ASV 1901 USFM archive and BSB Publishing v5.24 USFM archive.
+- Verified archive sizes and SHA-256 values against the import script metadata: ASV 2,875,616 bytes, SHA-256 `00b7b6c76cb1eb67b22ca51bd5ac13c2df526c13e1c38e78b862a7a2367f7071`; BSB 1,647,915 bytes, SHA-256 `be31ef23eb38492de9e6e17983b7d46a1a4abe010bd1ff2ad3e338795d21233d`.
+- Prepared both editions offline: each contains 66 books, 1,189 chapters, and 31,086 unique mapped verse rows. ASV has 16 blank source verse markers recorded in its omission report; they were not filled with invented text.
+- Downloaded the short-lived GitHub Actions artifact for local inspection and confirmed both prepared JSON files contain 31,086 rows and no duplicate prepared verse keys. Artifact SHA-256: `2496288c5885a9d25efcfa901422a3a09406e454993fe6b684b7e50cb7a898a5`.
+- The owner approved adding/activating ASV and BSB. The production workflow was started, but its secret-check step failed because GitHub Actions repository secrets `SUPABASE_URL` and `SUPABASE_SERVICE_ROLE_KEY` are absent. Both import steps were skipped; no database requests were sent.
+- Re-checked production after the failed run: only KJV (31,102 rows) and WEB (31,098 rows) remain active. The approval marker was returned to `approved=false` so a later rerun cannot unexpectedly import content until the required secrets are configured and approval is re-enabled.
+- Next step: configure those two secrets in GitHub repository Settings → Secrets and variables → Actions, then re-enable the existing guarded workflow and verify ASV/BSB counts and Reader switching.
+
