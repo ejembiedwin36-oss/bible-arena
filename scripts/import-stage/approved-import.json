@@ -6,5 +6,5 @@
     "BSB"
   ],
   "expected_verse_rows_per_edition": 31086,
-  "approval_note": "Owner approved production import on 2026-11-27. Required GitHub Actions Supabase secrets have been added by the owner. Import is authorized; workflow must verify exact verse counts before activation."
+  "approval_note": "Owner approved production import on 2026-11-27. Required GitHub Actions Supabase secrets are configured. Import rerun authorized after fixing consistent is_jesus_words payload keys; verify exact verse counts before activation."
 }
