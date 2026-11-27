@@ -1,0 +1,76 @@
+{
+  "1": {
+    "38": {
+      "text": "Jesus turned and saw them following. “What do you want?” He asked. They said to Him, “Rabbi” (which means Teacher), “where are You staying?”",
+      "spans": [
+        {
+          "start": 37,
+          "end": 56
+        }
+      ]
+    },
+    "39": {
+      "text": "“Come and see,” He replied. So they went and saw where He was staying, and spent that day with Him. It was about the tenth hour.",
+      "spans": [
+        {
+          "start": 0,
+          "end": 15
+        }
+      ]
+    },
+    "42": {
+      "text": "Andrew brought him to Jesus, who looked at him and said, “You are Simon son of John. You will be called Cephas” (which is translated as Peter). Jesus Calls Philip and Nathanael",
+      "spans": [
+        {
+          "start": 57,
+          "end": 111
+        }
+      ]
+    },
+    "43": {
+      "text": "The next day Jesus decided to set out for Galilee. Finding Philip, He told him, “Follow Me.”",
+      "spans": [
+        {
+          "start": 80,
+          "end": 92
+        }
+      ]
+    },
+    "47": {
+      "text": "When Jesus saw Nathanael approaching, He said of him, “Here is a true Israelite, in whom there is no deceit.”",
+      "spans": [
+        {
+          "start": 54,
+          "end": 109
+        }
+      ]
+    },
+    "48": {
+      "text": "“How do You know me?” Nathanael asked. Jesus replied, “Before Philip called you, I saw you under the fig tree.”",
+      "spans": [
+        {
+          "start": 54,
+          "end": 111
+        }
+      ]
+    },
+    "50": {
+      "text": "Jesus said to him, “Do you believe just because I told you I saw you under the fig tree? You will see greater things than these.”",
+      "spans": [
+        {
+          "start": 19,
+          "end": 129
+        }
+      ]
+    },
+    "51": {
+      "text": "Then He declared, “Truly, truly, I tell you, you will all see heaven open and the angels of God ascending and descending on the Son of Man.”",
+      "spans": [
+        {
+          "start": 18,
+          "end": 140
+        }
+      ]
+    }
+  }
+}
