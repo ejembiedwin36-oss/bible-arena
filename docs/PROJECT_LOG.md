@@ -687,3 +687,36 @@ The YLT source-preparation workflow run `45942618006` completed successfully.
 1. Check CI run `45942807830` and confirm the YLT test passes.
 2. If CI passes, add a YLT-only dry-run invocation to the preparation workflow or a separate non-writing verification workflow, then review the complete import safeguards and app attribution/display behavior.
 3. Only after the owner explicitly approves a production database write should the import workflow be extended to include YLT. Do not set the production approval marker or run `--apply` before that approval.
+
+
+### 2026-11-27 — YLT 1898 imported and activated; Reader integration corrected
+
+**Owner approval and production import**
+- The owner explicitly approved importing and activating Young's Literal Translation (1898).
+- Updated the approval-gated workflow to import only editions explicitly listed in the approval marker. For this run, only YLT was approved; ASV and BSB steps were skipped.
+- Production import workflow run **45943207768** completed successfully: https://github.com/ejembiedwin36-oss/bible-arena/actions/runs/45943207768
+- The workflow downloaded the validated preparation artifact from run **45942946335**, verified the prepared YLT file and required GitHub Actions secrets, then ran the YLT importer with `--apply`.
+- Supabase read-back confirms the English YLT version is active and rights-verified, with exactly **31,102** verse rows. The importer activated the version only after its exact-count check.
+- Production spot checks returned YLT Genesis 1:1 and John 3:16 from `bible_verses`.
+- KJV, WEB, ASV, and BSB were not changed by this YLT-only import.
+
+**Reader integration issue found and fixed**
+- Post-import code inspection found that `BibleReaderPanel` required a matching `bible_translations` row and passed that translation ID to the reader service. YLT is a direct `bible_versions` / `bible_verses` corpus and intentionally has no legacy `bible_translations` row, so the version would not have loaded in the Reader even though it was active in the catalogue.
+- Updated `src/services/bibleReader.ts` to query direct verses by the selected `bible_versions.id` first, then use the legacy translation ID as a fallback for older translation-backed editions.
+- Updated `src/components/BibleReaderPanel.tsx` to pass the selected version ID and optional legacy translation ID separately.
+- Added a regression test proving a direct version-backed corpus such as YLT loads by `bible_versions.id`.
+- Commits: `b23726de4fabb1b2b1ae87fa816d6c55ea402342`, `2ccb19aed4d66c2297955a7b9f393786a8adf38c`, and `6f1a8ccf35222108c980e0444ffba0c54c5d26de`.
+
+**Verification at time of this entry**
+- Production import workflow: passed.
+- YLT database count and active/rights flags: passed.
+- Genesis 1:1 and John 3:16 production read-back: passed.
+- Reader verification run **45943448033**: unit tests and API type-check completed successfully; TypeScript check/build still running at time of entry.
+- Main CI run **45943447994**: still running at time of entry.
+- Do not call the Reader integration deployed until CI and the Vercel deployment are confirmed and the production Reader smoke test succeeds.
+
+**Next exact step**
+1. Verify CI runs `45943448033` and `45943447994` complete successfully.
+2. Confirm the latest main commit deploys to https://bible-arena-gamma.vercel.app/.
+3. Open the Bible Reader, refresh the catalogue, select English → Young's Literal Translation (YLT), and check Genesis 1:1 and John 3:16. If the deployment is not yet ready, do not ask the owner to test until it is.
+4. Then continue with the publisher permission requests for TPT, AMP/AMPC, GNT, MSG, NLT, and NIV, while keeping rights-gated editions inactive until authorization is received.
