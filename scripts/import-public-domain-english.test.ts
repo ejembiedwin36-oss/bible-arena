@@ -26,7 +26,7 @@ describe('validatePreparedRows', () => {
   });
 
   it('dry-run import validates without making network calls', async () => {
-    const result = await importPublicDomainEdition(rows, 'ASV', { apply: false });
+    const result = await importPublicDomainEdition(rows, 'ASV', { apply: false, expected });
     expect(result.applied).toBe(false);
     expect(result.counts).toEqual({ books: 2, chapters: 2, verses: 3 });
   });
