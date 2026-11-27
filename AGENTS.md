@@ -214,3 +214,8 @@ The earlier dated audit checkpoints in this file describe the state at the time 
 - Vercel status for code commit 6f1a8ccf35222108c980e0444ffba0c54c5d26de is success (deployment completed).
 - Reader uses the selected version row ID for direct `bible_verses.version_id` reads, and keeps the optional legacy `bible_translations.id` as fallback for translation-backed corpora.
 - Final manual browser smoke test remains: open the live Reader, refresh, select English → YLT, and verify Genesis 1:1 and John 3:16. Do not mark the user-facing smoke test complete until confirmed.
+
+
+## Red-letter Reader support — 2026-11-27
+
+The Reader now exposes the red-letter toggle for KJV, WEB, and YLT. YLT annotations are stored separately from KJV and WEB so offsets are never reused across translations. The first curated YLT annotation is John 3:16 only; unannotated YLT verses remain normal text. The alignment function also refuses to colour a verse if its displayed wording differs from the curated YLT wording. Do not describe YLT red-letter coverage as complete: additional chapters require translation-specific review and annotation.
