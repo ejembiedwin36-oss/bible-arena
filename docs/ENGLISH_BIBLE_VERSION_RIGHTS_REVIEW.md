@@ -61,9 +61,18 @@ The owner requested TPT, Good News, AMP, MSG, NLT (the owner confirmed this is t
 
 ## Additional public-domain candidates
 
-Potential candidates discussed for evaluation include Young's Literal Translation (YLT), Darby Bible (DBY), English Revised Version (ERV), Webster's Bible (WBS), and Douay-Rheims (DRA).
+### Young's Literal Translation (YLT, revised 1898) — source and rights review
 
-**None of these candidates is approved for import by this document.** Before selecting one, verify the exact edition, jurisdiction/territory, authoritative source, redistribution terms, text integrity, and any source-specific attribution requirements. Public availability alone is not sufficient evidence of public-domain status.
+- eBible.org identifies the exact `ENGYLT` edition as Young's Literal Translation and labels it **public domain**. It provides downloadable plain-text, USFX, USFM, and other formats: https://ebible.org/Scriptures/details.php?id=engylt
+- CrossWire's SWORD module identifies the text as Young's Literal Translation (1898) and explicitly lists its distribution licence as **Public Domain**: https://www.crosswire.org/sword/modules/ModInfo.jsp?modName=YLT
+- BibleGateway independently identifies its YLT text as the 1898 edition and lists the publisher as Public Domain: https://classic.biblegateway.com/versions/Youngs-Literal-Translation-YLT-Bible/
+- The edition is based on Robert Young's translation, first published in 1862 and revised in 1898. Use the 1898 revised edition and retain source attribution; do not silently mix other YLT editions or third-party edits.
+- **Rights assessment:** Strong, convergent evidence supports treating the 1898 YLT text as public domain for distribution. This is a source-level assessment, not a jurisdiction-specific legal opinion. Preserve the source licence/metadata with the downloaded archive and confirm the exact file's terms before production use.
+- **Decision:** YLT is approved as the next candidate for technical source acquisition and offline validation only. It is **not yet approved for production import or activation**. First inspect the official eBible archive, checksum it, parse all 66 books, map chapters to the canonical database, review omissions/versification exceptions, and verify the exact verse count and text integrity.
+
+Other candidates discussed include Darby Bible (DBY), English Revised Version (ERV), Webster's Bible (WBS), and Douay-Rheims (DRA). They remain unreviewed.
+
+**Public-domain status does not remove the need for source integrity checks.** Before any production import, verify the exact edition, jurisdiction/territory, authoritative source, redistribution terms, text integrity, and source-specific attribution requirements. Public availability alone is not sufficient evidence of public-domain status.
 
 ## Safe technical approach
 
@@ -77,7 +86,7 @@ Potential candidates discussed for evaluation include Young's Literal Translatio
 
 ## Immediate next actions
 
-- [ ] Verify one additional public-domain candidate from an authoritative source, beginning with YLT or Darby only after its exact source and terms are confirmed.
+- [x] Completed source/rights review for the 1898 YLT edition: eBible.org and CrossWire both identify it as public domain. Technical archive inspection and corpus validation remain outstanding.
 - [ ] Prepare permission requests for TPT, AMP (confirm AMP 2015 versus AMPC), GNT, MSG, NLT, and NIV.
 - [ ] Ask rights holders to specify display, storage, caching, offline, audio/TTS, commercial/non-commercial, geographic, and attribution terms.
 - [x] Confirmed: "NTL" meant NLT (New Living Translation).
