@@ -1,10 +1,10 @@
 {
-  "approved": false,
+  "approved": true,
   "prepared_run_id": 45931638883,
   "editions": [
     "ASV",
     "BSB"
   ],
   "expected_verse_rows_per_edition": 31086,
-  "approval_note": "Owner approved production import on 2026-11-27, but the GitHub Actions Supabase URL and service-role secrets are not configured. Keep disabled until those secrets are added, then re-enable explicitly."
+  "approval_note": "Owner approved production import on 2026-11-27. Required GitHub Actions Supabase secrets have been added by the owner. Import is authorized; workflow must verify exact verse counts before activation."
 }
