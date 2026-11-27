@@ -31,7 +31,9 @@ const yltLoaders: Record<string, () => Promise<{ default: CorpusBook }>> = {
 };
 // BSB annotations are intentionally unavailable until exact speech spans are reviewed.
 // Never fall back to KJV offsets or the database's whole-verse marker for another translation.
-const bsbLoaders: Record<string, () => Promise<{ default: CorpusBook }>> = {};
+const bsbLoaders: Record<string, () => Promise<{ default: CorpusBook }>> = {
+  john: () => import('../data/bsbRedLetters/John.json'),
+};
 const loadersByVersion: Record<string, Record<string, () => Promise<{ default: CorpusBook }>>> = {
   KJV: loaders,
   WEB: webLoaders,
