@@ -502,3 +502,27 @@ This is an initial source-reference map, not yet a complete audit of all files o
 **Decisions:** Corrected the implementation notes to describe the active `src/App.tsx` Reader path. Keep TPT, Amplified, and GNT permission-gated. Do not add catalogue rows or write Bible text until a complete permitted source has been obtained, parsed, validated, and reviewed.
 
 **Next exact step:** Obtain the official ASV and BSB archives through a working download route; inspect their internal USFM structure, attribution and checksums; implement source-specific normalization; validate against the canonical chapter map; then prepare (but do not execute without approval) the production import plan.
+
+### 2026-11-27 — USFM import preparation and live version recheck
+
+**Goal:** Continue English public-domain edition preparation without relying on the owner's local VS Code and without modifying production Scripture data.
+
+**Live Supabase verification (read-only):**
+- Rechecked effective privileges on languages, bible_versions, bible_books, bible_chapters, and bible_verses: anon and authenticated retain SELECT, while INSERT/UPDATE/DELETE/TRUNCATE are false on the checked tables.
+- Rechecked English catalogue rows: only KJV and WEB are active and rights-verified; KJV has 31,102 verse rows and WEB 31,098. No ASV or BSB version row exists yet.
+- No production data or schema changes were made in this session.
+
+**Repository work on GitHub main:**
+- Added scripts/parse-usfm-corpus.mjs to convert basic USFM book/chapter/verse markers into normalized {book, chapter, verse, text} rows for the existing offline validator.
+- Added scripts/parse-usfm-corpus.test.ts for normal chapter/verse parsing, formatting-marker cleanup, missing book-code mapping, and rejection of verse bridges/suffixes that need manual versification review.
+- Added scripts/usfm-book-code-map.json with the standard 66 Protestant-canon USFM book IDs mapped to existing canonical English book names.
+- The parser deliberately rejects verse labels such as 1-2 and 1a; these must be resolved with an edition-specific mapping rather than silently flattened into the integer verse schema.
+- A local regex smoke check verified that the USFM \id, \c, and \v marker patterns match and that a basic \add marker is stripped. The full Vitest suite has not been run from this connected GitHub-only environment.
+
+**Source download limitation:**
+- Official eBible ASV and BSB USFM archives were identified, and the browser link resolves to the official eBible archive, but the execution environment's direct binary download failed. No alternate scraped text or unverified mirror was substituted. No corpus has been staged or imported.
+- Current eBible pages identify ASV 1901 and BSB as public domain and provide USFM source packages. Sources: [ASV edition](https://www.ebible.org/find/show.php?id=eng-asv), [ASV copyright](https://ebible.org/asv/copyright.htm), [BSB edition](https://www.ebible.org/find/show.php?id=engbsb), [publisher downloads](https://berean.bible/downloads.htm).
+
+**Current status:** Parser and mapping files are committed to GitHub, but the source archives, full test run, canonical chapter-map export, normalized corpus, staging import, and Reader smoke test remain outstanding. KJV and WEB remain untouched.
+
+**Next exact step:** Obtain the official eng-asv_usfm.zip and engbsb_usfm.zip files through a working download route; extract to a local non-repository staging folder; run the new parser and existing validator; inspect count/versification exceptions; then prepare a dry-run import plan. Do not add/activate production version rows until the owner reviews and approves the import.
