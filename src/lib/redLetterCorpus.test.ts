@@ -64,3 +64,26 @@ describe('WEB red-letter annotations', () => {
     expect(redLetterVerse(webMatthew, 5, 8, 'Changed wording')).toEqual([{ text: 'Changed wording', red: false }]);
   });
 });
+
+
+import yltJohn from '../data/yltRedLetters/John.json';
+
+describe('YLT red-letter annotations', () => {
+  it('highlights the exact YLT wording of John 3:16', () => {
+    const verse = yltJohn['3']['16'];
+    const parts = redLetterVerse(yltJohn, 3, 16, verse.text);
+    expect(parts).toEqual([{ text: verse.text, red: true }]);
+    expect(parts.map((part) => part.text).join('')).toBe(verse.text);
+  });
+
+  it('does not apply YLT red letters when the displayed wording differs', () => {
+    const parts = redLetterVerse(yltJohn, 3, 16, 'A different translation wording.');
+    expect(parts).toEqual([{ text: 'A different translation wording.', red: false }]);
+  });
+
+  it('leaves unannotated YLT verses in normal text', () => {
+    expect(redLetterVerse(yltJohn, 3, 15, 'Unannotated YLT verse.')).toEqual([
+      { text: 'Unannotated YLT verse.', red: false },
+    ]);
+  });
+});
