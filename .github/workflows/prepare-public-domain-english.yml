@@ -27,7 +27,7 @@ jobs:
         shell: bash
         run: |
           set -euo pipefail
-          mkdir -p /tmp/english-bible-sources/asv /tmp/english-bible-sources/bsb
+          mkdir -p /tmp/english-bible-sources/asv /tmp/english-bible-sources/bsb /tmp/english-bible-sources/ylt
           curl --fail --location --retry 3 --retry-delay 2 \
             https://ebible.org/Scriptures/eng-asv_usfm.zip \
             --output /tmp/english-bible-sources/asv.zip
@@ -45,20 +45,33 @@ jobs:
           echo "bsb_sha=$(sha256sum /tmp/english-bible-sources/bsb.zip | cut -d ' ' -f 1)" >> "$GITHUB_OUTPUT"
           echo "be31ef23eb38492de9e6e17983b7d46a1a4abe010bd1ff2ad3e338795d21233d  /tmp/english-bible-sources/bsb.zip" | sha256sum --check
           unzip -tq /tmp/english-bible-sources/bsb.zip
+          curl --fail --location --retry 3 --retry-delay 2 \
+            https://ebible.org/Scriptures/engylt_usfm.zip \
+            --output /tmp/english-bible-sources/ylt.zip
+          YLT_SIZE=$(stat -c '%s' /tmp/english-bible-sources/ylt.zip)
+          YLT_SHA=$(sha256sum /tmp/english-bible-sources/ylt.zip | cut -d ' ' -f 1)
+          echo "YLT archive bytes: $YLT_SIZE"
+          echo "YLT archive sha256: $YLT_SHA"
+          echo "ylt_sha=$YLT_SHA" >> "$GITHUB_OUTPUT"
+          unzip -tq /tmp/english-bible-sources/ylt.zip
 
       - name: Extract source book files
         shell: bash
         run: |
           set -euo pipefail
-          mkdir -p /tmp/english-bible-sources/asv-books /tmp/english-bible-sources/bsb-books
+          mkdir -p /tmp/english-bible-sources/asv-books /tmp/english-bible-sources/bsb-books /tmp/english-bible-sources/ylt-books
           unzip -q /tmp/english-bible-sources/asv.zip -d /tmp/english-bible-sources/asv
           unzip -q /tmp/english-bible-sources/bsb.zip -d /tmp/english-bible-sources/bsb
+          unzip -q /tmp/english-bible-sources/ylt.zip -d /tmp/english-bible-sources/ylt
           find /tmp/english-bible-sources/asv -type f \( -iname '*.usfm' -o -iname '*.sfm' \) -exec cp {} /tmp/english-bible-sources/asv-books/ \;
           find /tmp/english-bible-sources/bsb -type f \( -iname '*.usfm' -o -iname '*.sfm' \) -exec cp {} /tmp/english-bible-sources/bsb-books/ \;
+          find /tmp/english-bible-sources/ylt -type f \( -iname '*.usfm' -o -iname '*.sfm' \) -exec cp {} /tmp/english-bible-sources/ylt-books/ \;
           echo "ASV source files (includes front matter): $(find /tmp/english-bible-sources/asv-books -type f | wc -l)"
           echo "BSB source files: $(find /tmp/english-bible-sources/bsb-books -type f | wc -l)"
+          echo "YLT source files: $(find /tmp/english-bible-sources/ylt-books -type f | wc -l)"
           test "$(find /tmp/english-bible-sources/asv-books -type f | wc -l)" -ge 66
           test "$(find /tmp/english-bible-sources/bsb-books -type f | wc -l)" -ge 66
+          test "$(find /tmp/english-bible-sources/ylt-books -type f | wc -l)" -ge 66
 
       - name: Parse and report source corpora
         id: parse
@@ -69,9 +82,10 @@ jobs:
           rc=0
           node scripts/parse-usfm-corpus.mjs /tmp/english-bible-sources/asv-books scripts/usfm-book-code-map.json /tmp/english-bible-sources/asv-normalized.json || rc=1
           node scripts/parse-usfm-corpus.mjs /tmp/english-bible-sources/bsb-books scripts/usfm-book-code-map.json /tmp/english-bible-sources/bsb-normalized.json || rc=1
+          node scripts/parse-usfm-corpus.mjs /tmp/english-bible-sources/ylt-books scripts/usfm-book-code-map.json /tmp/english-bible-sources/ylt-normalized.json || rc=1
           node - <<'NODE'
           const fs = require('node:fs');
-          for (const edition of ['asv','bsb']) {
+          for (const edition of ['asv','bsb','ylt']) {
             const file = '/tmp/english-bible-sources/' + edition + '-normalized.json';
             if (!fs.existsSync(file)) continue;
             const rows = JSON.parse(fs.readFileSync(file, 'utf8'));
@@ -103,9 +117,12 @@ jobs:
           path: |
             /tmp/english-bible-sources/asv.zip
             /tmp/english-bible-sources/bsb.zip
+            /tmp/english-bible-sources/ylt.zip
             /tmp/english-bible-sources/asv-normalized.json
             /tmp/english-bible-sources/asv-normalized.json.omitted.json
             /tmp/english-bible-sources/bsb-normalized.json
+            /tmp/english-bible-sources/ylt-normalized.json
+            /tmp/english-bible-sources/ylt-normalized.json.omitted.json
             /tmp/english-bible-sources/asv-prepared.json
             /tmp/english-bible-sources/bsb-prepared.json
 
