@@ -526,3 +526,11 @@ This is an initial source-reference map, not yet a complete audit of all files o
 **Current status:** Parser and mapping files are committed to GitHub, but the source archives, full test run, canonical chapter-map export, normalized corpus, staging import, and Reader smoke test remain outstanding. KJV and WEB remain untouched.
 
 **Next exact step:** Obtain the official eng-asv_usfm.zip and engbsb_usfm.zip files through a working download route; extract to a local non-repository staging folder; run the new parser and existing validator; inspect count/versification exceptions; then prepare a dry-run import plan. Do not add/activate production version rows until the owner reviews and approves the import.
+
+### 2026-11-27 — CI verification follow-up
+
+GitHub Actions CI completed successfully for main commit a7c72d598333bee820dff375e549978bf11a0190 (run 45930762789). The job passed server-side API type-checking, web/API tests (including the new USFM parser tests), and the application build. This is the first full automated verification of the parser files; the earlier note that tests were not yet run is superseded by this result.
+
+The official BSB-publishing GitHub release API was rechecked: latest release is v5.24 (published 2026-11-19); standard BSB_usfm.zip is 1,647,915 bytes with SHA-256 be31ef23eb38492de9e6e17983b7d46a1a4abe010bd1ff2ad3e338795d21233d. The official archive still could not be downloaded by this execution environment, so the checksum is release metadata only and the file itself has not been locally verified.
+
+No production version rows or verse data were added.
