@@ -749,3 +749,13 @@ The YLT source-preparation workflow run `45942618006` completed successfully.
 - Enabled the red-letter control for all five English versions: KJV, WEB, ASV, BSB, and YLT.
 - Added regression tests for ASV exact-text alignment and BSB marker retrieval.
 - **Coverage remains partial:** ASV currently has John 3:16 annotated; WEB has its existing partial Matthew/John corpus plus John 3:16; YLT has John 3:16; KJV retains its existing partial corpus; BSB uses 1,218 verse flags. Full red-letter coverage across all 66 books and all five versions is still outstanding.
+
+
+### 2026-11-27 — Red-letter precision safeguard
+
+- Audited the Reader's BSB rendering path and found it used the database's whole-verse `is_jesus_words` flag. This cannot represent partial speech spans and may over-highlight a verse containing mixed speech and narration.
+- Removed the BSB whole-verse rendering path. All five supported English versions now go through the same exact-text span alignment function.
+- Added explicit version loader routing. This prevents unknown or not-yet-supported versions from accidentally receiving KJV span offsets.
+- BSB annotations are currently unavailable until a translation-specific corpus has been reviewed; the UI now reports that status and leaves the Scripture text unchanged.
+- The current John corpus is still incomplete in WEB, ASV, BSB, and YLT. KJV already has wider partial coverage. The next annotation work is John chapter-by-chapter for each version, with exact wording and speaker-boundary checks.
+- Commits: `dc067c9c415d70e91009fb734c90d7436eafe6bc` and `70abe295668634b7304c9b4bc6a54f53ad9805ff`.
