@@ -50,3 +50,21 @@ The existing KJV-specific scripts remain in place and unchanged. This new script
 Run `npm test` to execute the Vitest suite, including `scripts/prepare-bible-version-import.test.ts`.
 
 Do not add a version to the active catalogue until source rights, complete corpus validation, storage mapping, and Reader smoke tests have all passed.
+
+## USFM source parsing (offline only)
+
+A cautious parser and standard 66-book map are now in the repository:
+
+- scripts/parse-usfm-corpus.mjs
+- scripts/usfm-book-code-map.json
+- scripts/parse-usfm-corpus.test.ts
+
+After downloading and extracting an official USFM archive into a directory outside the repository, run these commands:
+
+node scripts/parse-usfm-corpus.mjs <usfm-directory> scripts/usfm-book-code-map.json <normalized-corpus.json>
+
+node scripts/prepare-bible-version-import.mjs <normalized-corpus.json> <chapter-map.json> <prepared-rows.json> <book-count> <chapter-count> <verse-count>
+
+The parser currently handles the basic \id, \c, and \v structure and strips common formatting/footnote markers. It intentionally rejects verse bridges and suffix labels that the current integer verse schema cannot represent safely. This is an initial parser, not a certification of every USFM 3.0 feature; inspect source files and run the tests before using it on a full corpus. No database writes are performed by either command.
+
+The official archive download attempt from the connected execution environment failed. Do not substitute scraped text or an unverified mirror; obtain the source archive from eBible.org/publisher, record the exact source URL, release/printing, and checksum, then validate the complete corpus.
