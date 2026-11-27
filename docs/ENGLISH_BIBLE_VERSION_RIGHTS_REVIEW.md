@@ -1,60 +1,80 @@
 # English Bible Version Expansion — Source & Rights Gate
 
-**Reviewed:** 2026-11-22  
-**Scope:** English versions only. Idoma and other language work is intentionally out of scope for this phase.
+**Reviewed:** 2026-11-27  
+**Scope:** English translation catalogue, source verification, and full-text app rights.
 
 ## Current production catalogue
 
-A read-only production query confirmed exactly two active English versions:
+A read-only production query on 2026-11-27 confirmed these four English versions are active, rights-verified, and populated:
 
 | Version | Abbreviation | Active | Rights verified | Direct verse rows |
 |---|---|---:|---:|---:|
+| American Standard Version (1901) | ASV | yes | yes | 31,086 |
+| Berean Standard Bible | BSB | yes | yes | 31,086 |
 | King James Version | KJV | yes | yes | 31,102 |
 | World English Bible | WEB | yes | yes | 31,098 |
 
-No Amplified, Good News Translation, or The Passion Translation version record is currently present in the active English catalogue.
+The Reader has been tested with all four versions. This table supersedes the older two-version inventory recorded in the 2026-11-22 review.
 
-## Requested translations
+## Requested additional English translations
+
+The owner requested TPT, Good News, AMP, MSG, NLT (the earlier message said "NTL"; confirm if a different edition was intended), and NIV.
 
 ### The Passion Translation (TPT)
 
-- Publisher permissions page: https://www.thepassiontranslation.com/permissions/
-- The publisher's published quotation allowance is up to 500 verses, subject to conditions; quotations may not amount to a complete Bible book or exceed 20% of the work in which they appear.
-- Use beyond those limits requires written approval.
-- **Decision:** Do not bulk import or publish the complete TPT text without a written licence covering full digital app display, storage, and distribution.
+- Rights holder permissions page: https://www.thepassiontranslation.com/permissions/
+- Limited quotation allowances do not authorize a complete Bible database or full-version reader.
+- **Decision:** Obtain written permission covering full digital app display, storage, and distribution before importing.
 
 ### Amplified Bible (AMP / AMPC)
 
 - Lockman Foundation permissions: https://www.lockman.org/permission-to-quote-copyright-trademark-information/
-- The published allowance for AMP/AMPC is up to 1,000 verses, subject to conditions; quotations may not make up a complete book, exceed 50% of the work, or exceed 1,000 verses stored in an electronic retrieval system.
-- The same policy says web pages/apps require the full copyright notice and a clickable Lockman link. The allowance is not a licence for a complete Bible database.
-- **Decision:** Obtain written permission for the intended full-text Bible Arena app integration before importing AMP 2015 or AMPC 1987. Keep editions distinct.
+- AMP 2015 and AMPC 1987 are distinct editions and must not be conflated.
+- Published quotation limits are not a licence for a complete Bible database.
+- **Decision:** Request written permission for the exact edition and intended app use before importing. Confirm whether the requested edition is AMP 2015 (not AMPC 1987).
 
 ### Good News Translation (GNT / TEV)
 
 - American Bible Society rights and permissions: https://www.americanbible.org/rights-and-permissions/
-- GNT quotation guidelines allow up to 500 verses subject to conditions, but the policy explicitly requires written permission for electronic use in software applications and similar interactive technology.
-- GNT resource page: https://gnt.bible/resources/
-- **Decision:** Written permission is required for the Bible Arena app integration. Do not scrape or bulk import from public reading websites.
+- The published guidance requires written permission for electronic use in software applications and similar interactive technology.
+- **Decision:** Request written permission for full Bible Arena integration. Do not scrape or bulk-import from public reading websites.
+
+### The Message (MSG) and New Living Translation (NLT)
+
+- Tyndale permissions information: https://www.tyndale.com/permissions
+- Limited quotation guidance is not a full-text app licence. Bible app use should be referred to the publisher's authorized licensing/API process.
+- **Decision:** Request written authorization for the exact edition and intended display, storage, caching, offline, audio/TTS, and distribution features before importing.
+
+### New International Version (NIV)
+
+- Biblica permissions: https://www.biblica.com/permissions/
+- Online/app use is subject to Biblica's terms and permissions process; personal-use access or limited quotation guidance does not establish redistribution rights for Bible Arena.
+- **Decision:** Obtain written permission or an authorized provider agreement covering Bible Arena's intended use before importing.
+
+## Additional public-domain candidates
+
+Potential candidates discussed for evaluation include Young's Literal Translation (YLT), Darby Bible (DBY), English Revised Version (ERV), Webster's Bible (WBS), and Douay-Rheims (DRA).
+
+**None of these candidates is approved for import by this document.** Before selecting one, verify the exact edition, jurisdiction/territory, authoritative source, redistribution terms, text integrity, and any source-specific attribution requirements. Public availability alone is not sufficient evidence of public-domain status.
 
 ## Safe technical approach
 
-1. Record the exact edition, publisher, source, permission document, attribution wording, and permitted distribution modes for each translation.
-2. Keep each edition separate (for example AMP 2015 versus AMPC 1987).
+1. Record the exact edition, publisher/rights holder, authoritative source, licence or permission document, attribution wording, and permitted distribution modes.
+2. Keep editions distinct (for example AMP 2015 versus AMPC 1987).
 3. Only create an active, rights-verified production catalogue record after the appropriate permission is documented and the complete dataset has passed validation.
-4. Prefer a licensed API/provider if its contract permits Bible Arena's intended display, caching, storage, offline access, and user scale. Confirm those rights explicitly; API access alone is not necessarily a redistribution licence.
+4. A licensed API/provider must explicitly permit Bible Arena's intended display, caching, storage, offline access, audio/TTS, user scale, and geographic distribution. API access alone is not necessarily a redistribution licence.
 5. Do not copy text from websites or use a public API to bypass publisher licensing.
-6. Continue improving the generic importer and test it using public-domain datasets first. Import only into a non-production target until review is complete.
+6. Continue testing the import pipeline with independently verified public-domain datasets. Keep new editions inactive until validation is complete.
+7. Preserve the four existing active versions; do not alter their production records as part of expansion work.
 
 ## Immediate next actions
 
-- [ ] Prepare permission requests to BroadStreet Publishing Group / The Passion Translation rights holder for TPT full-text app use.
-- [ ] Prepare a permission request to The Lockman Foundation for AMP 2015 and/or AMPC 1987 full-text app use.
-- [ ] Prepare a permission request to American Bible Society for GNT full-text app use.
-- [ ] Ask each rights holder to specify display, storage, caching, offline, audio/TTS, commercial/non-commercial, geographic, and attribution terms.
-- [ ] Evaluate additional public-domain English translations as separate candidates, verifying each edition and source before import.
-- [ ] Do not mark a version active or rights-verified based only on an internet dataset or an API endpoint.
+- [ ] Verify one additional public-domain candidate from an authoritative source, beginning with YLT or Darby only after its exact source and terms are confirmed.
+- [ ] Prepare permission requests for TPT, AMP (confirm AMP 2015 versus AMPC), GNT, MSG, NLT, and NIV.
+- [ ] Ask rights holders to specify display, storage, caching, offline, audio/TTS, commercial/non-commercial, geographic, and attribution terms.
+- [ ] Confirm whether "NTL" meant NLT.
+- [ ] Do not mark any new version active or rights-verified based only on an internet dataset, public reading website, or API endpoint.
 
 ## Important distinction
 
-A translation may be quotable in a limited number of verses but still not be legally available for a complete Bible reader. Bible Arena's requirement is full-version reading, so limited quotation permissions do not satisfy the product requirement.
+A translation may be quotable in a limited number of verses but still not be legally available for a complete Bible reader. Bible Arena requires full-version reading, so limited quotation permissions do not satisfy the product requirement.
