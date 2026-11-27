@@ -44,7 +44,7 @@ describe('bibleReader', () => {
     const chapter = await loadBibleChapter('ylt-version-id', 'genesis', 1);
 
     expect(chapter.verses).toEqual([
-      { id: 'ylt-verse-1', verseNumber: 1, text: "In the beginning of God's preparing." },
+      { id: 'ylt-verse-1', verseNumber: 1, text: "In the beginning of God's preparing.", isJesusWords: false },
     ]);
     expect(getCachedBibleChapter('ylt-version-id', 'genesis', 1)).toEqual(chapter);
     expect(fromMock).toHaveBeenCalledTimes(1);
@@ -74,8 +74,8 @@ describe('bibleReader', () => {
     const chapter = await loadBibleChapter('idoma-v1', 'genesis', 1);
 
     expect(chapter.verses).toEqual([
-      { id: 'verse-1', verseNumber: 1, text: 'In the beginning.' },
-      { id: 'verse-2', verseNumber: 2, text: 'The earth was formless.' },
+      { id: 'verse-1', verseNumber: 1, text: 'In the beginning.', isJesusWords: false },
+      { id: 'verse-2', verseNumber: 2, text: 'The earth was formless.', isJesusWords: false },
     ]);
     expect(getCachedBibleChapter('idoma-v1', 'genesis', 1)).toEqual(chapter);
     expect(fromMock).toHaveBeenCalledTimes(2);
