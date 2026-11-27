@@ -1,4 +1,78 @@
 {
+  "1": {
+    "38": {
+      "text": "Jesus turned, and beheld them following, and saith unto them, What seek ye? And they said unto him, Rabbi (which is to say, being interpreted, Teacher), where abidest thou?",
+      "spans": [
+        {
+          "start": 62,
+          "end": 75
+        }
+      ]
+    },
+    "39": {
+      "text": "He saith unto them, Come, and ye shall see. They came therefore and saw where he abode; and they abode with him that day: it was about the tenth hour.",
+      "spans": [
+        {
+          "start": 20,
+          "end": 43
+        }
+      ]
+    },
+    "42": {
+      "text": "He brought him unto Jesus. Jesus looked upon him, and said, Thou art Simon the son of John: thou shalt be called Cephas (which is by interpretation, Peter).",
+      "spans": [
+        {
+          "start": 60,
+          "end": 119
+        }
+      ]
+    },
+    "43": {
+      "text": "On the morrow he was minded to go forth into Galilee, and he findeth Philip: and Jesus saith unto him, Follow me.",
+      "spans": [
+        {
+          "start": 103,
+          "end": 113
+        }
+      ]
+    },
+    "47": {
+      "text": "Jesus saw Nathanael coming to him, and saith of him, Behold, an Israelite indeed, in whom is no guile!",
+      "spans": [
+        {
+          "start": 53,
+          "end": 102
+        }
+      ]
+    },
+    "48": {
+      "text": "Nathanael saith unto him, Whence knowest thou me? Jesus answered and said unto him, Before Philip called thee, when thou wast under the fig tree, I saw thee.",
+      "spans": [
+        {
+          "start": 84,
+          "end": 157
+        }
+      ]
+    },
+    "50": {
+      "text": "Jesus answered and said unto him, Because I said unto thee, I saw thee underneath the fig tree, believest thou? thou shalt see greater things than these.",
+      "spans": [
+        {
+          "start": 34,
+          "end": 153
+        }
+      ]
+    },
+    "51": {
+      "text": "And he saith unto him, Verily, verily, I say unto you, Ye shall see the heaven opened, and the angels of God ascending and descending upon the Son of man.",
+      "spans": [
+        {
+          "start": 23,
+          "end": 154
+        }
+      ]
+    }
+  },
   "3": {
     "16": {
       "text": "For God so loved the world, that he gave his only begotten Son, that whosoever believeth on him should not perish, but have eternal life.",
