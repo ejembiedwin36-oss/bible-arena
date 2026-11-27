@@ -9,7 +9,7 @@ import { pathToFileURL } from 'node:url';
  */
 export function parseUsfmBook(source, bookNameByCode) {
   if (typeof source !== 'string' || !source.trim()) throw new Error('USFM source must be non-empty text.');
-  const idMatch = source.match(/^\s*\\id\s+([A-Z0-9]{3})\b/m);
+    const idMatch = source.match(/^\s*\\id\s+([A-Z0-9]{3})\b/m);
   if (!idMatch) throw new Error('USFM book is missing a valid \\id marker.');
   const code = idMatch[1];
   const book = bookNameByCode && bookNameByCode[code];
@@ -63,7 +63,7 @@ export function parseUsfmDirectory(directory, bookNameByCode) {
   const nonBookFiles = new Set(['FRT', 'INT']);
   for (const file of files) {
     const source = fs.readFileSync(path.join(directory, file), 'utf8');
-    const idMatch = source.match(/^\\s*\\\\id\\s+([A-Z0-9]{3})\\b/m);
+    const idMatch = source.match(/^\s*\\id\s+([A-Z0-9]{3})\b/m);
     if (!idMatch) throw new Error('USFM file is missing a valid \\id marker: ' + file);
     const code = idMatch[1];
     if (!bookNameByCode[code] && nonBookFiles.has(code)) continue;
