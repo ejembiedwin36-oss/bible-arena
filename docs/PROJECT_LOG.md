@@ -621,3 +621,27 @@ No production version rows or verse data were added.
 **Safety:** No production data, schema, version rows, rights flags, app deployment, or existing English Bible text were changed. KJV, WEB, ASV, and BSB remain untouched.
 
 **Next exact step:** Check run `45942618006`. If the YLT download and parser succeed, inspect its archive checksum, exact edition metadata, all book/chapter/verse counts, and omission report. If parsing fails, use the parser logs to identify edition-specific USFM/versification exceptions; do not flatten or guess. Only after full offline validation should we extend the importer and prepare a dry-run. Production import still requires a separate explicit approval.
+
+
+### 2026-11-27 — YLT archive downloaded and USFM parser passed
+
+The YLT source-preparation workflow run `45942618006` completed successfully.
+
+**Verified from the GitHub Actions job log:**
+- Downloaded the official eBible.org archive `https://ebible.org/Scriptures/engylt_usfm.zip`.
+- Archive size: 1,386,206 bytes.
+- Archive SHA-256: `c526b4e362fef13916a14765a7e331267f6a1227db58549fc61d3288a930a12b`.
+- ZIP integrity check passed.
+- Extracted 66 USFM source files.
+- Existing USFM parser completed successfully and produced 31,102 verse rows across 66 books and 1,189 chapters.
+- This confirms the archive can be parsed by the current parser. It does not yet confirm that every verse maps to the canonical database chapter IDs.
+
+**Follow-up repository change:**
+- Extended the offline preparation workflow to pass YLT through `prepare-bible-version-import.mjs` using the observed expected counts (66 books, 1,189 chapters, 31,102 verses) and the existing canonical chapter map.
+- Added the mapped YLT output to the short-lived review artifact.
+- Commit: `edad505fc743f3788ce60e89c0f7ac7188e6fc72` — `ci: validate YLT canonical chapter mapping`.
+- Follow-up preparation run `45942656037` was queued at the time of this log update; its mapping result is not yet verified.
+
+**Safety:** No Supabase or production writes were included. No version catalogue row was created and YLT has not been activated. KJV, WEB, ASV, and BSB are unchanged.
+
+**Next exact step:** Verify run `45942656037`. If canonical mapping succeeds, inspect the mapped artifact, compare verse keys and omissions, and add YLT-specific tests/import configuration only after review. If it fails, investigate the exact chapter/verse mapping differences rather than changing expected counts to force a pass.
