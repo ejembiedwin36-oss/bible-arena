@@ -57,7 +57,7 @@ export function parseUsfmBook(source, bookNameByCode) {
 }
 
 export function parseUsfmDirectory(directory, bookNameByCode) {
-  const files = fs.readdirSync(directory).filter(function (name) { return name.toLowerCase().endsWith('.usfm'); }).sort();
+  const files = fs.readdirSync(directory).filter(function (name) { return /\.(usfm|sfm)$/i.test(name); }).sort();
   if (!files.length) throw new Error('No .usfm files found in ' + directory + '.');
   const allRows = [];
   for (const file of files) {
