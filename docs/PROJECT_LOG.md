@@ -577,3 +577,27 @@ No production version rows or verse data were added.
 **Safety and scope:** No production data, schema, licence flags, or app code were changed. No additional translation was imported or activated.
 
 **Next exact step:** Verify one candidate public-domain English edition from an authoritative source (including exact edition, source archive, redistribution terms, and text integrity). Only after that review should we extend the importer and prepare a dry-run corpus. In parallel, prepare publisher permission requests for the copyrighted translations. Keep KJV, WEB, ASV, and BSB unchanged.
+
+
+## 2026-11-27 — YLT source and public-domain review
+
+**Goal:** Select the next English public-domain candidate without changing the live catalogue or importing unverified text.
+
+**Research completed:**
+- Reviewed the exact 1898 revised edition of Young's Literal Translation (YLT).
+- eBible.org identifies the `ENGYLT` edition as public domain and provides downloadable text and USFM/USFX formats: https://ebible.org/Scriptures/details.php?id=engylt
+- CrossWire's SWORD module independently identifies Young's Literal Translation (1898) and states its distribution licence is Public Domain: https://www.crosswire.org/sword/modules/ModInfo.jsp?modName=YLT
+- BibleGateway also labels its 1898 YLT edition Public Domain: https://classic.biblegateway.com/versions/Youngs-Literal-Translation-YLT-Bible/
+- The evidence supports proceeding with the 1898 YLT source for technical validation. It does not establish that a downloaded third-party modified copy is equivalent to the source edition.
+
+**Repository change:**
+- Updated `docs/ENGLISH_BIBLE_VERSION_RIGHTS_REVIEW.md` to record the source references, edition identity, public-domain assessment, attribution expectation, and technical validation gate.
+- Commit: `a0d6533fa60365341bc80c83894c9c3563f4e94f` — `docs: verify public-domain status of 1898 YLT`.
+
+**Not done / safety:**
+- No Bible text archive has yet been downloaded or inspected.
+- No parser run, corpus validation, production database write, catalogue row creation, activation, or deployment was performed.
+- The four existing active English versions remain unchanged.
+- YLT is approved only for the next technical acquisition and offline-validation stage; it is not yet approved for production import.
+
+**Next exact step:** Obtain the official eBible.org 1898 YLT archive, inspect its licence/metadata and file structure, record its SHA-256 checksum, then run the existing USFM parser and canonical chapter-map validator in dry-run mode. Review all parser exceptions and verse counts before considering any importer change.
