@@ -759,3 +759,12 @@ The YLT source-preparation workflow run `45942618006` completed successfully.
 - BSB annotations are currently unavailable until a translation-specific corpus has been reviewed; the UI now reports that status and leaves the Scripture text unchanged.
 - The current John corpus is still incomplete in WEB, ASV, BSB, and YLT. KJV already has wider partial coverage. The next annotation work is John chapter-by-chapter for each version, with exact wording and speaker-boundary checks.
 - Commits: `dc067c9c415d70e91009fb734c90d7436eafe6bc` and `70abe295668634b7304c9b4bc6a54f53ad9805ff`.
+
+
+### 2026-11-27 — John chapter 1 red-letter annotations
+
+- Added translation-specific annotations for Jesus' speech in John 1:38–39, 42–43, and 47–51 for ASV, WEB, YLT, and BSB. KJV's existing John 1 annotations were preserved.
+- Added the BSB John corpus file and connected it to the explicit version loader map.
+- For verses containing more than one speaker, spans cover only Jesus' words. For example, John 1:38 highlights Jesus' question but leaves the other speakers' words and narrative uncoloured.
+- Added automated tests for the four new version corpora, mixed-dialogue boundaries, and unannotated passages.
+- Coverage remains limited to selected verses in John chapter 1 for these four versions; this is not full chapter coverage or full Gospel coverage. Next: John chapter 2 for all five versions.
