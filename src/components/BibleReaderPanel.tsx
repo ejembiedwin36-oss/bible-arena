@@ -64,14 +64,14 @@ export function BibleReaderPanel({ initialLanguageId }: BibleReaderPanelProps) {
       return;
     }
     const selectedVersion = versions.find((version) => version.id === versionId);
-    if (!selectedVersion?.translationId) {
+    if (!selectedVersion) {
       setLoading(false);
-      setError('This Bible version has no connected translation text yet.');
+      setError('Select a Bible version to continue.');
       return;
     }
 
     setLoading(true);
-    void loadBibleChapter(selectedVersion.translationId, bookId, chapterNumber)
+    void loadBibleChapter(selectedVersion.id, bookId, chapterNumber, selectedVersion.translationId ?? undefined)
       .then((loadedChapter) => { if (!cancelled) setChapter(loadedChapter); })
       .catch((cause) => {
         if (!cancelled) setError(cause instanceof Error ? cause.message : 'Unable to load this chapter.');
