@@ -108,16 +108,15 @@ import bsbJohn from '../data/bsbRedLetters/John.json';
 
 describe('John chapter 1 translation-specific red-letter spans', () => {
   const cases = [
-    { version: 'ASV', corpus: asvJohn, verse: 38, spoken: 'What seek ye?' },
-    { version: 'WEB', corpus: webJohn, verse: 38, spoken: '“What are you looking for?”' },
-    { version: 'YLT', corpus: yltJohn, verse: 38, spoken: "'What seek ye?'" },
-    { version: 'BSB', corpus: bsbJohn, verse: 38, spoken: '“What do you want?”' },
+    { version: 'ASV', corpus: asvJohn, annotation: asvJohn['1']['38'], spoken: 'What seek ye?' },
+    { version: 'WEB', corpus: webJohn, annotation: webJohn['1']['38'], spoken: '“What are you looking for?”' },
+    { version: 'YLT', corpus: yltJohn, annotation: yltJohn['1']['38'], spoken: "'What seek ye?'" },
+    { version: 'BSB', corpus: bsbJohn, annotation: bsbJohn['1']['38'], spoken: '“What do you want?”' },
   ];
 
-  it.each(cases)('$version highlights Jesus words without colouring the surrounding dialogue', ({ corpus, verse, spoken }) => {
-    const annotated = corpus['1'][String(verse)];
-    const parts = redLetterVerse(corpus, 1, verse, annotated.text);
-    expect(parts.map((part) => part.text).join('')).toBe(annotated.text);
+  it.each(cases)('$version highlights Jesus words without colouring the surrounding dialogue', ({ corpus, annotation, spoken }) => {
+    const parts = redLetterVerse(corpus, 1, 38, annotation.text);
+    expect(parts.map((part) => part.text).join('')).toBe(annotation.text);
     expect(parts.filter((part) => part.red).map((part) => part.text).join('')).toBe(spoken);
     expect(parts.some((part) => !part.red)).toBe(true);
   });
