@@ -224,3 +224,12 @@ The Reader now exposes the red-letter toggle for KJV, WEB, and YLT. YLT annotati
 ## Red-letter support across English versions — 2026-11-27
 
 The Reader now offers the red-letter control for KJV, WEB, ASV, BSB, and YLT. ASV and WEB have exact-text John 3:16 annotations; YLT has its own exact-text John 3:16 annotation. BSB uses the existing `bible_verses.is_jesus_words` verse-level marker (1,218 BSB verses are currently marked); the Reader now fetches and renders that field. This BSB marker colors a whole marked verse, not partial spans within a mixed narration/speech verse, so review its source semantics before expanding or changing the marker system. KJV/WEB/ASV/YLT remain dependent on translation-specific span annotations. **This is not complete whole-Bible red-letter coverage**: annotations are currently partial and must be expanded book-by-book with exact wording and speaker review. Never infer spans from KJV offsets or colour unverified text.
+
+
+## Red-letter precision correction — 2026-11-27
+
+- The previous note describing BSB's 1,218 whole-verse `is_jesus_words` flags as reviewed is superseded. A spot-check showed that a verse-level boolean cannot distinguish Jesus' speech from narration within the same verse.
+- `BibleReaderPanel` now renders red letters only through exact-text span annotations for every supported version. It no longer renders BSB from `is_jesus_words`.
+- `redLetterCorpus.ts` now has explicit version-to-loader routing for KJV, WEB, ASV, BSB, and YLT. Unknown versions do not silently fall back to KJV offsets.
+- BSB has no reviewed span corpus yet; it therefore displays ordinary Scripture text and a clear “annotations not yet available” status rather than potentially colouring unreviewed text.
+- Current annotation coverage remains partial. Expand John version-by-version using exact production verse text and reviewed speaker boundaries. Do not call the project complete until all intended books and versions have passed coverage and alignment checks.
