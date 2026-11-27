@@ -60,8 +60,15 @@ export function parseUsfmDirectory(directory, bookNameByCode) {
   const files = fs.readdirSync(directory).filter(function (name) { return /\.(usfm|sfm)$/i.test(name); }).sort();
   if (!files.length) throw new Error('No .usfm files found in ' + directory + '.');
   const allRows = [];
+  const nonBookFiles = new Set(['FRT', 'INT']);
   for (const file of files) {
-    allRows.push(...parseUsfmBook(fs.readFileSync(path.join(directory, file), 'utf8'), bookNameByCode));
+    const source = fs.readFileSync(path.join(directory, file), 'utf8');
+    const idMatch = source.match(/^\\s*\\\\id\\s+([A-Z0-9]{3})\\b/m);
+    if (!idMatch) throw new Error('USFM file is missing a valid \\id marker: ' + file);
+    const code = idMatch[1];
+    if (!bookNameByCode[code] && nonBookFiles.has(code)) continue;
+    if (!bookNameByCode[code]) throw new Error('Unmapped USFM book code ' + code + ' in ' + file + '. Review canon/source before parsing.');
+    allRows.push(...parseUsfmBook(source, bookNameByCode));
   }
   const seen = new Set();
   for (const row of allRows) {
