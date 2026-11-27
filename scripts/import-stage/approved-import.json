@@ -1,0 +1,10 @@
+{
+  "approved": false,
+  "prepared_run_id": 45931638883,
+  "editions": [
+    "ASV",
+    "BSB"
+  ],
+  "expected_verse_rows_per_edition": 31086,
+  "approval_note": "Keep false until the project owner explicitly approves adding and activating ASV 1901 and BSB in production."
+}
