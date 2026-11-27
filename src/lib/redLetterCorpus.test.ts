@@ -104,9 +104,7 @@ describe('ASV red-letter annotations', () => {
 });
 
 
-import asvJohn from '../data/asvRedLetters/John.json';
 import bsbJohn from '../data/bsbRedLetters/John.json';
-import yltJohn from '../data/yltRedLetters/John.json';
 
 describe('John chapter 1 translation-specific red-letter spans', () => {
   const cases = [
