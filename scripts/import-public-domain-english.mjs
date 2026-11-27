@@ -23,6 +23,16 @@ export const PUBLIC_DOMAIN_ENGLISH_EDITIONS = {
     license_url: 'https://berean.bible/terms.htm',
     expected: { books: 66, chapters: 1189, verses: 31086 },
   },
+  YLT: {
+    name: "Young's Literal Translation (1898)",
+    abbreviation: 'YLT',
+    publisher: 'Robert Young; digital USFM source: eBible.org',
+    source_name: 'Young\'s Literal Translation 1898 USFM sha256=c526b4e362fef13916a14765a7e331267f6a1227db58549fc61d3288a930a12b',
+    source_url: 'https://ebible.org/Scriptures/engylt_usfm.zip',
+    license_name: 'Public Domain',
+    license_url: 'https://ebible.org/Bible/details.php?id=engylt',
+    expected: { books: 66, chapters: 1189, verses: 31102 },
+  },
 };
 
 export function validatePreparedRows(rows, expected = { books: 66, chapters: 1189, verses: 31086 }) {
@@ -248,11 +258,14 @@ async function main() {
   const apply = args.includes('--apply');
   const files = args.filter(function (arg) { return arg !== '--apply'; });
   if (!files.length) {
-    console.error('Usage: node scripts/import-public-domain-english.mjs [--apply] <ASV-or-BSB-prepared.json> ...');
+    console.error('Usage: node scripts/import-public-domain-english.mjs [--apply] <ASV-, BSB-, or YLT-prepared.json> ...');
     process.exit(1);
   }
   for (const file of files) {
-    const code = path.basename(file).toLowerCase().includes('asv') ? 'ASV' : path.basename(file).toLowerCase().includes('bsb') ? 'BSB' : null;
+    const filename = path.basename(file).toLowerCase();
+    const code = ['ASV', 'BSB', 'YLT'].find(function (edition) {
+      return filename.includes(edition.toLowerCase());
+    }) || null;
     if (!code) throw new Error('Cannot infer edition code from filename: ' + file);
     const rows = JSON.parse(fs.readFileSync(file, 'utf8'));
     const result = await importPublicDomainEdition(rows, code, {
