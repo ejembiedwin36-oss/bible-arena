@@ -190,7 +190,10 @@ export async function importPublicDomainEdition(rows, editionCode, options = {})
         verse_number: row.verse_number,
         text: row.text,
       };
-      if (typeof row.is_jesus_words === 'boolean') result.is_jesus_words = row.is_jesus_words;
+      // PostgREST bulk inserts require every object in a JSON array to have the same keys.
+      // The BSB corpus omits this optional source annotation on some verses; use the
+      // database's documented default (false) so all rows have a consistent shape.
+      result.is_jesus_words = typeof row.is_jesus_words === 'boolean' ? row.is_jesus_words : false;
       return result;
     });
     const chunkSize = 500;
