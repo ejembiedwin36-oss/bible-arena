@@ -164,3 +164,11 @@ Live read-only PostgreSQL metadata mapped 27 public tables with TRUNCATE granted
 - Special: `arena_attempts` has INSERT/SELECT policies; `bible_import_batches` has an authenticated ALL policy.
 
 Next: snapshot ACLs, map frontend table and RPC usage, design least-privilege role grants (including removing client TRUNCATE), test in staging with positive/negative tests, and only then seek approval for production changes. Do not perform blanket revokes. Production remains read-only.
+
+## English USFM import checkpoint — 2026-11-27
+
+- Added an offline USFM parser, tests, and standard 66-book USFM code map on GitHub main: scripts/parse-usfm-corpus.mjs, scripts/parse-usfm-corpus.test.ts, scripts/usfm-book-code-map.json.
+- Parser rejects verse bridges/suffixes rather than guessing; source-specific versification exceptions require explicit review.
+- Direct official ASV/BSB archive downloads failed in the connected execution environment. No Bible text has been staged or imported; no new production version rows were created.
+- Read-only production recheck: only KJV and WEB are active/rights-verified English versions; public roles retain SELECT and lack INSERT/UPDATE/DELETE/TRUNCATE on the five reviewed Bible read tables.
+- Next step: obtain official archives locally, run parser and validator with a read-only canonical chapter map, review exact counts/exceptions, run full tests, and prepare a dry-run import. Do not write production data or activate a new edition without explicit owner approval.
