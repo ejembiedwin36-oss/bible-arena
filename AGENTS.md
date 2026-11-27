@@ -219,3 +219,8 @@ The earlier dated audit checkpoints in this file describe the state at the time 
 ## Red-letter Reader support — 2026-11-27
 
 The Reader now exposes the red-letter toggle for KJV, WEB, and YLT. YLT annotations are stored separately from KJV and WEB so offsets are never reused across translations. The first curated YLT annotation is John 3:16 only; unannotated YLT verses remain normal text. The alignment function also refuses to colour a verse if its displayed wording differs from the curated YLT wording. Do not describe YLT red-letter coverage as complete: additional chapters require translation-specific review and annotation.
+
+
+## Red-letter support across English versions — 2026-11-27
+
+The Reader now offers the red-letter control for KJV, WEB, ASV, BSB, and YLT. ASV and WEB have exact-text John 3:16 annotations; YLT has its own exact-text John 3:16 annotation. BSB uses the existing `bible_verses.is_jesus_words` verse-level marker (1,218 BSB verses are currently marked); the Reader now fetches and renders that field. This BSB marker colors a whole marked verse, not partial spans within a mixed narration/speech verse, so review its source semantics before expanding or changing the marker system. KJV/WEB/ASV/YLT remain dependent on translation-specific span annotations. **This is not complete whole-Bible red-letter coverage**: annotations are currently partial and must be expanded book-by-book with exact wording and speaker review. Never infer spans from KJV offsets or colour unverified text.
