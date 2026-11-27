@@ -145,3 +145,23 @@ describe('bibleReader', () => {
     expect(fromMock).toHaveBeenCalledTimes(1);
   });
 });
+
+
+  it('returns the BSB Jesus-words marker for the reader', async () => {
+    const directQuery = {
+      select: vi.fn().mockReturnThis(),
+      eq: vi.fn().mockReturnThis(),
+      order: vi.fn().mockResolvedValue({
+        data: [{ id: 'bsb-verse-16', verse_number: 16, text: 'For God so loved the world...', is_jesus_words: true }],
+        error: null,
+      }),
+    };
+    fromMock.mockReturnValue(directQuery);
+
+    const chapter = await loadBibleChapter('bsb-version-id', 'john', 3);
+    expect(chapter.verses[0].isJesusWords).toBe(true);
+    expect(directQuery.select).toHaveBeenCalledWith(
+      'id, verse_number, text, is_jesus_words, bible_chapters!inner(chapter_number, book_id)',
+    );
+  });
+});
