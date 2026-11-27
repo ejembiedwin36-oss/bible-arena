@@ -30,4 +30,18 @@ describe('validatePreparedRows', () => {
     expect(result.applied).toBe(false);
     expect(result.counts).toEqual({ books: 2, chapters: 2, verses: 3 });
   });
+
+  it('recognizes YLT and validates its 1898 corpus in dry-run mode', async () => {
+    const yltRows = [
+      { book: 'Genesis', chapter: 1, chapter_id: 'chapter-gen-1', verse_number: 1, text: "In the beginning of God's preparing the heavens and the earth —" },
+    ];
+    const result = await importPublicDomainEdition(yltRows, 'YLT', {
+      apply: false,
+      expected: { books: 1, chapters: 1, verses: 1 },
+    });
+    expect(result.edition).toBe('YLT');
+    expect(result.applied).toBe(false);
+    expect(result.counts).toEqual({ books: 1, chapters: 1, verses: 1 });
+    expect(result.message).toContain('Dry run only');
+  });
 });
