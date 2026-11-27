@@ -22,6 +22,18 @@ describe('parseUsfmBook', () => {
     ]);
   });
 
+  it('preserves red-letter metadata only when the entire verse is marked', () => {
+    const source = [
+      '\\id GEN - Genesis',
+      '\\c 1',
+      '\\v 1 \\wj Jesus said\\wj*',
+      '\\v 2 He spoke, and \\wj words\\wj*.'
+    ].join('\n');
+    const rows = parseUsfmBook(source, names);
+    expect(rows[0]).toEqual({ book: 'Genesis', chapter: 1, verse: 1, text: 'Jesus said', is_jesus_words: true });
+    expect(rows[1]).toEqual({ book: 'Genesis', chapter: 1, verse: 2, text: 'He spoke, and words.', });
+  });
+
   it('rejects missing book-code mappings', () => {
     const source = ['\\id GEN - Genesis', '\\c 1', '\\v 1 Text'].join('\n');
     expect(() => parseUsfmBook(source, {})).toThrow('No canonical book-name mapping for USFM code GEN.');
