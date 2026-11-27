@@ -534,3 +534,22 @@ GitHub Actions CI completed successfully for main commit a7c72d598333bee820dff37
 The official BSB-publishing GitHub release API was rechecked: latest release is v5.24 (published 2026-11-19); standard BSB_usfm.zip is 1,647,915 bytes with SHA-256 be31ef23eb38492de9e6e17983b7d46a1a4abe010bd1ff2ad3e338795d21233d. The official archive still could not be downloaded by this execution environment, so the checksum is release metadata only and the file itself has not been locally verified.
 
 No production version rows or verse data were added.
+
+### 2026-11-27 — Official ASV and BSB prepared for import
+
+**Official source acquisition:** A GitHub Actions preparation workflow successfully downloaded and checksum-verified the official eBible ASV 1901 archive and the BSB-publishing v5.24 standard USFM archive. The ASV archive SHA-256 is 00b7b6c76cb1eb67b22ca51bd5ac13c2df526c13e1c38e78b862a7a2367f7071. The BSB archive SHA-256 is be31ef23eb38492de9e6e17983b7d46a1a4abe010bd1ff2ad3e338795d21233d.
+
+**Parsing and validation:**
+- ASV: 66 books, 1,189 chapters, 31,086 non-empty verse rows. Sixteen empty verse markers in the source (traditional references absent from the edition) are preserved in a separate omission report; no text was invented.
+- BSB: 66 books, 1,189 chapters, 31,086 verse rows.
+- Both prepared corpora mapped to the live canonical chapter IDs and passed the offline import validator.
+- A runtime check of the prepared files found 31,086 unique chapter/verse keys per edition, no empty text, no missing chapter IDs, and no invalid book/chapter mapping.
+- The BSB source explicitly marks whole-verse red-letter speech for 1,218 verses; the parser preserves the boolean only when the entire verse is marked. ASV source yielded no whole-verse red-letter flags.
+
+**Import tooling and safeguards:**
+- Added scripts/import-public-domain-english.mjs and tests. It defaults to dry-run; production writes require the --apply flag plus SUPABASE_URL and SUPABASE_SERVICE_ROLE_KEY.
+- The importer creates/uses one English version row per abbreviation, keeps new versions inactive during import, upserts by (version_id, chapter_id, verse_number), records bible_import_batches provenance, verifies exact row count, and activates only after the count matches 31,086.
+- Added .github/workflows/import-approved-public-domain-english.yml. Its approval marker is currently approved=false. The resulting workflow run succeeded as a no-op; all download/import steps were skipped. No production Bible version rows or verse data were written.
+- The prepared artifact is from workflow run 45931638883 and expires 2026-12-04. The approval marker references that run.
+
+**Current state:** ASV and BSB are fully prepared and mapped but are not yet in the production Reader. The remaining action is explicit owner approval to change the marker to approved=true and run the guarded importer. KJV and WEB remain untouched.
