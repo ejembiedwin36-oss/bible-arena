@@ -7,6 +7,7 @@ on:
       - '.github/workflows/prepare-public-domain-english.yml'
       - 'scripts/parse-usfm-corpus.mjs'
       - 'scripts/usfm-book-code-map.json'
+      - 'scripts/import-stage/chapter-map.json'
   workflow_dispatch:
 
 permissions:
@@ -84,6 +85,14 @@ jobs:
           echo "parse_rc=$rc" >> "$GITHUB_OUTPUT"
           exit "$rc"
 
+      - name: Prepare mapped import rows for review (offline)
+        if: steps.parse.outcome == 'success'
+        shell: bash
+        run: |
+          set -euo pipefail
+          node scripts/prepare-bible-version-import.mjs /tmp/english-bible-sources/asv-normalized.json scripts/import-stage/chapter-map.json /tmp/english-bible-sources/asv-prepared.json 66 1189 31086
+          node scripts/prepare-bible-version-import.mjs /tmp/english-bible-sources/bsb-normalized.json scripts/import-stage/chapter-map.json /tmp/english-bible-sources/bsb-prepared.json 66 1189 31086
+
       - name: Save normalized corpus artifacts for review
         if: always()
         uses: actions/upload-artifact@v4
@@ -97,6 +106,8 @@ jobs:
             /tmp/english-bible-sources/asv-normalized.json
             /tmp/english-bible-sources/asv-normalized.json.omitted.json
             /tmp/english-bible-sources/bsb-normalized.json
+            /tmp/english-bible-sources/asv-prepared.json
+            /tmp/english-bible-sources/bsb-prepared.json
 
       - name: Fail if any source corpus needs parser/versification work
         if: steps.parse.outcome == 'failure'
