@@ -144,8 +144,6 @@ describe('bibleReader', () => {
     await expect(Promise.all([first, second])).resolves.toHaveLength(2);
     expect(fromMock).toHaveBeenCalledTimes(1);
   });
-});
-
 
   it('returns the BSB Jesus-words marker for the reader', async () => {
     const directQuery = {
