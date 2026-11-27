@@ -30,6 +30,27 @@ describe('bibleReader', () => {
     fromMock.mockReset();
   });
 
+  it('loads a direct version-backed corpus such as YLT by bible_versions.id', async () => {
+    const directQuery = {
+      select: vi.fn().mockReturnThis(),
+      eq: vi.fn().mockReturnThis(),
+      order: vi.fn().mockResolvedValue({
+        data: [{ id: 'ylt-verse-1', verse_number: 1, text: 'In the beginning of God\'s preparing.' }],
+        error: null,
+      }),
+    };
+    fromMock.mockReturnValue(directQuery);
+
+    const chapter = await loadBibleChapter('ylt-version-id', 'genesis', 1);
+
+    expect(chapter.verses).toEqual([
+      { id: 'ylt-verse-1', verseNumber: 1, text: "In the beginning of God's preparing." },
+    ]);
+    expect(getCachedBibleChapter('ylt-version-id', 'genesis', 1)).toEqual(chapter);
+    expect(fromMock).toHaveBeenCalledTimes(1);
+    expect(directQuery.eq).toHaveBeenCalledWith('version_id', 'ylt-version-id');
+  });
+
   it('loads and caches a chapter with verse IDs for study navigation', async () => {
     const rows = [
       verseRow(1, 'In the beginning.'),
