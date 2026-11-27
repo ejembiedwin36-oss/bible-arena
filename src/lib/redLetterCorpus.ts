@@ -44,7 +44,7 @@ export function useRedLetterBook(book: string | undefined, enabled: boolean, ver
   const [state, setState] = useState<RedLetterLoadState>({ data: null, loading: false, error: false });
   useEffect(() => {
     let active = true;
-    const versionLoaders = version === 'WEB' ? webLoaders : version === 'YLT' ? yltLoaders : loaders;
+    const versionLoaders = version === 'WEB' ? webLoaders : version === 'ASV' ? asvLoaders : version === 'YLT' ? yltLoaders : loaders;
     const supported = Boolean(book && versionLoaders[book.toLowerCase()]);
     setState({ data: null, loading: enabled && supported, error: false });
     if (enabled && book && supported) void loadBook(book, version).then((data) => {
