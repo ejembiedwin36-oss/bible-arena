@@ -739,3 +739,13 @@ The YLT source-preparation workflow run `45942618006` completed successfully.
 - Kept strict exact-text alignment: if displayed YLT wording differs from the curated annotation, the verse stays uncoloured. Unannotated verses also remain normal text.
 - Added tests for the exact John 3:16 highlight, wording mismatch fallback, and unannotated verses.
 - **Coverage limit:** this is an initial YLT annotation for John 3:16, not full-book or full-Bible YLT red-letter coverage. Expand only with translation-specific reviewed annotations.
+
+
+### 2026-11-27 — Red-letter support extended to ASV and BSB
+
+- Added an ASV-specific annotation corpus and exact-text John 3:16 annotation; added the corresponding WEB John 3:16 annotation.
+- Added `isJesusWords` to the Reader verse model and selected the existing `bible_verses.is_jesus_words` field in direct and legacy corpus reads.
+- Enabled BSB red-letter rendering from its existing verse-level database marker (1,218 BSB verses marked at time of audit). This is verse-level, not partial-word annotation, and should be reviewed before treating it as full precision.
+- Enabled the red-letter control for all five English versions: KJV, WEB, ASV, BSB, and YLT.
+- Added regression tests for ASV exact-text alignment and BSB marker retrieval.
+- **Coverage remains partial:** ASV currently has John 3:16 annotated; WEB has its existing partial Matthew/John corpus plus John 3:16; YLT has John 3:16; KJV retains its existing partial corpus; BSB uses 1,218 verse flags. Full red-letter coverage across all 66 books and all five versions is still outstanding.
