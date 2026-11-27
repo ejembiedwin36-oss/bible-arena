@@ -18,7 +18,7 @@ The Reader has been tested with all four versions. This table supersedes the old
 
 ## Requested additional English translations
 
-The owner requested TPT, Good News, AMP, MSG, NLT (the earlier message said "NTL"; confirm if a different edition was intended), and NIV.
+The owner requested TPT, Good News, AMP, MSG, NLT (the owner confirmed this is the intended translation; the earlier "NTL" was a typo), and NIV.
 
 ### The Passion Translation (TPT)
 
@@ -44,6 +44,14 @@ The owner requested TPT, Good News, AMP, MSG, NLT (the earlier message said "NTL
 - Tyndale permissions information: https://www.tyndale.com/permissions
 - Limited quotation guidance is not a full-text app licence. Bible app use should be referred to the publisher's authorized licensing/API process.
 - **Decision:** Request written authorization for the exact edition and intended display, storage, caching, offline, audio/TTS, and distribution features before importing.
+
+
+### New Living Translation (NLT) — additional API finding
+
+- Tyndale's official permissions page directs Bible app requests to its authorized Bible API process: https://www.tyndale.com/permissions
+- The published 500-verse / 25% quotation allowance is not permission to reproduce the complete Bible in Bible Arena.
+- The NLT API site currently announces that public API access ends on **2027-01-01**. Anonymous access is limited to 50 verses per request and 500 requests per day for non-commercial use; key-based access has separate limits, and commercial use requires further licensing discussion: https://api.nlt.to/
+- **Decision:** Do not build a production dependency on the public NLT API because its announced shutdown is imminent. Request a durable app licence or authorized provider arrangement from Tyndale, and confirm what access (if any) remains available after the public API shutdown.
 
 ### New International Version (NIV)
 
@@ -72,7 +80,7 @@ Potential candidates discussed for evaluation include Young's Literal Translatio
 - [ ] Verify one additional public-domain candidate from an authoritative source, beginning with YLT or Darby only after its exact source and terms are confirmed.
 - [ ] Prepare permission requests for TPT, AMP (confirm AMP 2015 versus AMPC), GNT, MSG, NLT, and NIV.
 - [ ] Ask rights holders to specify display, storage, caching, offline, audio/TTS, commercial/non-commercial, geographic, and attribution terms.
-- [ ] Confirm whether "NTL" meant NLT.
+- [x] Confirmed: "NTL" meant NLT (New Living Translation).
 - [ ] Do not mark any new version active or rights-verified based only on an internet dataset, public reading website, or API endpoint.
 
 ## Important distinction
