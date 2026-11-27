@@ -35,11 +35,12 @@ export function getCachedBibleChapter(
 }
 
 export async function loadBibleChapter(
-  translationId: string,
+  versionId: string,
   bookId: string,
   chapterNumber: number,
+  legacyTranslationId: string = versionId,
 ): Promise<BibleChapter> {
-  const key = makeChapterKey(translationId, bookId, chapterNumber);
+  const key = makeChapterKey(versionId, bookId, chapterNumber);
 
   const cached = chapterCache.get(key);
   if (cached) return cached;
@@ -47,7 +48,7 @@ export async function loadBibleChapter(
   const existingRequest = inFlightRequests.get(key);
   if (existingRequest) return existingRequest;
 
-  const request = fetchBibleChapter(translationId, bookId, chapterNumber)
+  const request = fetchBibleChapter(versionId, bookId, chapterNumber, legacyTranslationId)
     .then((chapter) => {
       chapterCache.set(key, chapter);
       return chapter;
@@ -61,16 +62,17 @@ export async function loadBibleChapter(
 }
 
 async function fetchBibleChapter(
-  translationId: string,
+  versionId: string,
   bookId: string,
   chapterNumber: number,
+  legacyTranslationId: string,
 ): Promise<BibleChapter> {
-  // Prefer the version-backed corpus (WEB). The legacy translation-backed
-  // corpus (KJV) is queried only when no direct verses exist.
+  // First query the version-backed corpus by bible_versions.id. If this version
+  // has no direct rows, fall back to the legacy translation-backed corpus.
   const { data: directRows, error: directError } = await supabase
     .from('bible_verses')
     .select('id, verse_number, text, bible_chapters!inner(chapter_number, book_id)')
-    .eq('version_id', translationId)
+    .eq('version_id', versionId)
     .eq('bible_chapters.book_id', bookId)
     .eq('bible_chapters.chapter_number', chapterNumber)
     .order('verse_number', { ascending: true });
@@ -78,7 +80,7 @@ async function fetchBibleChapter(
   if (directError) throw directError;
   if ((directRows ?? []).length > 0) {
     return {
-      translationId,
+      translationId: versionId,
       bookId,
       chapterNumber,
       verses: (directRows ?? []).map((row) => ({
@@ -92,7 +94,7 @@ async function fetchBibleChapter(
   const { data, error } = await supabase
     .from('bible_translation_verses')
     .select('verse_id, verse_text, bible_verses!inner(verse_number, chapter_id, bible_chapters!inner(chapter_number, book_id))')
-    .eq('translation_id', translationId)
+    .eq('translation_id', legacyTranslationId)
     .eq('bible_verses.bible_chapters.book_id', bookId)
     .eq('bible_verses.bible_chapters.chapter_number', chapterNumber)
     .order('verse_number', { referencedTable: 'bible_verses', ascending: true });
@@ -113,7 +115,7 @@ async function fetchBibleChapter(
   }>;
 
   return {
-    translationId,
+    translationId: versionId,
     bookId,
     chapterNumber,
     verses: rows.map((row) => ({
