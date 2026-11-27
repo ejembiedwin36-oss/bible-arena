@@ -29,10 +29,21 @@ const asvLoaders: Record<string, () => Promise<{ default: CorpusBook }>> = {
 const yltLoaders: Record<string, () => Promise<{ default: CorpusBook }>> = {
   john: () => import('../data/yltRedLetters/John.json'),
 };
+// BSB annotations are intentionally unavailable until exact speech spans are reviewed.
+// Never fall back to KJV offsets or the database's whole-verse marker for another translation.
+const bsbLoaders: Record<string, () => Promise<{ default: CorpusBook }>> = {};
+const loadersByVersion: Record<string, Record<string, () => Promise<{ default: CorpusBook }>>> = {
+  KJV: loaders,
+  WEB: webLoaders,
+  ASV: asvLoaders,
+  BSB: bsbLoaders,
+  YLT: yltLoaders,
+};
 const cache = new Map<string, Promise<CorpusBook | null>>();
 async function loadBook(book: string, version: string): Promise<CorpusBook | null> {
   const key = book.toLowerCase();
-  const versionLoaders = version === 'WEB' ? webLoaders : version === 'ASV' ? asvLoaders : version === 'YLT' ? yltLoaders : loaders;
+  const versionLoaders = loadersByVersion[version];
+  if (!versionLoaders) return null;
   const loader = versionLoaders[key];
   if (!loader) return null;
   const cacheKey = `${version}:${key}`;
@@ -44,8 +55,8 @@ export function useRedLetterBook(book: string | undefined, enabled: boolean, ver
   const [state, setState] = useState<RedLetterLoadState>({ data: null, loading: false, error: false });
   useEffect(() => {
     let active = true;
-    const versionLoaders = version === 'WEB' ? webLoaders : version === 'ASV' ? asvLoaders : version === 'YLT' ? yltLoaders : loaders;
-    const supported = Boolean(book && versionLoaders[book.toLowerCase()]);
+    const versionLoaders = loadersByVersion[version];
+    const supported = Boolean(book && versionLoaders?.[book.toLowerCase()]);
     setState({ data: null, loading: enabled && supported, error: false });
     if (enabled && book && supported) void loadBook(book, version).then((data) => {
       if (active) setState({ data, loading: false, error: !data });
