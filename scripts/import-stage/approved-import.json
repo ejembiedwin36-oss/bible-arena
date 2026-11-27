@@ -1,10 +1,9 @@
 {
   "approved": true,
-  "prepared_run_id": 45931638883,
+  "prepared_run_id": 45942946335,
   "editions": [
-    "ASV",
-    "BSB"
+    "YLT"
   ],
-  "expected_verse_rows_per_edition": 31086,
-  "approval_note": "Owner approved production import on 2026-11-27. Required GitHub Actions Supabase secrets are configured. Import rerun authorized after fixing consistent is_jesus_words payload keys; verify exact verse counts before activation."
+  "expected_verse_rows_per_edition": 31102,
+  "approval_note": "Owner explicitly approved production import and activation of Young's Literal Translation (1898) on 2026-11-27. Import only YLT from the validated preparation artifact. Do not re-import ASV or BSB. Activate YLT only after exact verse-count verification."
 }
