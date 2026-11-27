@@ -8,6 +8,7 @@ on:
       - 'scripts/parse-usfm-corpus.mjs'
       - 'scripts/usfm-book-code-map.json'
       - 'scripts/import-stage/chapter-map.json'
+      - 'scripts/import-public-domain-english.mjs'
   workflow_dispatch:
 
 permissions:
@@ -107,6 +108,10 @@ jobs:
           node scripts/prepare-bible-version-import.mjs /tmp/english-bible-sources/asv-normalized.json scripts/import-stage/chapter-map.json /tmp/english-bible-sources/asv-prepared.json 66 1189 31086
           node scripts/prepare-bible-version-import.mjs /tmp/english-bible-sources/bsb-normalized.json scripts/import-stage/chapter-map.json /tmp/english-bible-sources/bsb-prepared.json 66 1189 31086
           node scripts/prepare-bible-version-import.mjs /tmp/english-bible-sources/ylt-normalized.json scripts/import-stage/chapter-map.json /tmp/english-bible-sources/ylt-prepared.json 66 1189 31102
+
+      - name: Validate YLT with importer dry run (no database writes)
+        if: steps.parse.outcome == 'success'
+        run: node scripts/import-public-domain-english.mjs /tmp/english-bible-sources/ylt-prepared.json
 
       - name: Save normalized corpus artifacts for review
         if: always()
