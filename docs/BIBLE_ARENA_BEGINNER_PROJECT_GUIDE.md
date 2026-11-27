@@ -593,3 +593,18 @@ The official ASV and BSB source ZIP files could not be downloaded by the connect
 The new USFM parser tests have now run successfully in GitHub Actions. The complete CI job also passed API type-checking and the application build for commit a7c72d598333bee820dff375e549978bf11a0190. This confirms the parser code compiles and its test cases pass; it does not confirm that a full ASV/BSB source archive has been parsed.
 
 The official BSB release metadata currently identifies v5.24 (published 2026-11-19), and the standard BSB USFM archive is listed as 1,647,915 bytes with SHA-256 be31ef23eb38492de9e6e17983b7d46a1a4abe010bd1ff2ad3e338795d21233d. The archive download remains blocked in the connected execution environment.
+
+## 2026-11-27 — ASV and BSB import preparation completed
+
+We obtained the official ASV 1901 and BSB v5.24 USFM archives in GitHub Actions, verified their archive integrity, parsed them, and mapped the resulting verses to Bible Arena's existing chapter IDs.
+
+Validated totals:
+- ASV: 66 books, 1,189 chapters, 31,086 verse rows.
+- BSB: 66 books, 1,189 chapters, 31,086 verse rows.
+- Each prepared file has unique chapter/verse keys, non-empty text, and valid chapter IDs.
+- ASV has 16 empty source verse markers that are listed separately; they were not filled with guessed text.
+- BSB preserves full-verse red-letter metadata for 1,218 verses.
+
+The guarded import script is scripts/import-public-domain-english.mjs. It is dry-run by default and only writes when run with --apply and server-side Supabase credentials. It leaves new versions inactive until the exact verse count is confirmed, then activates them and records an import batch.
+
+The approval marker at scripts/import-stage/approved-import.json is deliberately false. The import workflow ran successfully as a no-op, so production still contains only KJV and WEB. The prepared artifact is temporary and expires 2026-12-04.
