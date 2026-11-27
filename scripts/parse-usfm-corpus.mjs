@@ -36,7 +36,16 @@ export function parseUsfmBook(source, bookNameByCode, onOmittedVerse) {
       const verse = Number(verseToken);
       const textStart = verseMatches[verseIndex].index + verseMatches[verseIndex][0].length;
       const textEnd = verseIndex + 1 < verseMatches.length ? verseMatches[verseIndex + 1].index : chapterText.length;
-      let verseText = chapterText.slice(textStart, textEnd);
+      const rawVerseText = chapterText.slice(textStart, textEnd);
+      const wjSegments = rawVerseText.match(/\\wj\\b[\\s\\S]*?\\wj\\*/g) || [];
+      const outsideWj = rawVerseText
+        .replace(/\\wj\\b[\\s\\S]*?\\wj\\*/g, ' ')
+        .replace(/\\[a-zA-Z]+[0-9]*\\*?/g, ' ')
+        .replace(/\\\\\\*/g, ' ')
+        .replace(/\\s+/g, ' ')
+        .trim();
+      const isJesusWords = wjSegments.length > 0 && !/[A-Za-z0-9]/.test(outsideWj);
+      let verseText = rawVerseText;
       verseText = verseText
         .replace(/\\f\b[\s\S]*?\\f\*/g, ' ')
         .replace(/\\x\b[\s\S]*?\\x\*/g, ' ')
@@ -53,7 +62,9 @@ export function parseUsfmBook(source, bookNameByCode, onOmittedVerse) {
         if (typeof onOmittedVerse === 'function') { onOmittedVerse(omitted); continue; }
         throw new Error('Empty normalized verse at ' + book + ' ' + chapter + ':' + verse + '.');
       }
-      rows.push({ book: book.trim(), chapter: chapter, verse: verse, text: verseText });
+      const row = { book: book.trim(), chapter: chapter, verse: verse, text: verseText };
+      if (isJesusWords) row.is_jesus_words = true;
+      rows.push(row);
     }
   }
   if (!rows.length) throw new Error('USFM book ' + code + ' contained no verse rows.');
