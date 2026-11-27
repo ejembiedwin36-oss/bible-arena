@@ -4,6 +4,7 @@ export type BibleChapterVerse = {
   id: string;
   verseNumber: number;
   text: string;
+  isJesusWords: boolean;
 };
 
 export type BibleChapter = {
@@ -71,7 +72,7 @@ async function fetchBibleChapter(
   // has no direct rows, fall back to the legacy translation-backed corpus.
   const { data: directRows, error: directError } = await supabase
     .from('bible_verses')
-    .select('id, verse_number, text, bible_chapters!inner(chapter_number, book_id)')
+    .select('id, verse_number, text, is_jesus_words, bible_chapters!inner(chapter_number, book_id)')
     .eq('version_id', versionId)
     .eq('bible_chapters.book_id', bookId)
     .eq('bible_chapters.chapter_number', chapterNumber)
@@ -87,13 +88,14 @@ async function fetchBibleChapter(
         id: row.id,
         verseNumber: row.verse_number,
         text: row.text,
+        isJesusWords: row.is_jesus_words === true,
       })),
     };
   }
 
   const { data, error } = await supabase
     .from('bible_translation_verses')
-    .select('verse_id, verse_text, bible_verses!inner(verse_number, chapter_id, bible_chapters!inner(chapter_number, book_id))')
+    .select('verse_id, verse_text, bible_verses!inner(verse_number, chapter_id, is_jesus_words, bible_chapters!inner(chapter_number, book_id))')
     .eq('translation_id', legacyTranslationId)
     .eq('bible_verses.bible_chapters.book_id', bookId)
     .eq('bible_verses.bible_chapters.chapter_number', chapterNumber)
@@ -107,6 +109,7 @@ async function fetchBibleChapter(
     bible_verses: {
       verse_number: number;
       chapter_id: string;
+      is_jesus_words: boolean | null;
       bible_chapters: {
         chapter_number: number;
         book_id: string;
@@ -122,6 +125,7 @@ async function fetchBibleChapter(
       id: row.verse_id,
       verseNumber: row.bible_verses.verse_number,
       text: row.verse_text,
+      isJesusWords: row.bible_verses.is_jesus_words === true,
     })),
   };
 }
