@@ -69,3 +69,16 @@ The production grants were corrected:
 The eight active language catalogue rows were rechecked and left unchanged: English (`en`), Idoma (`id`), Igbo (`ig`), Yoruba (`yo`), Hausa (`ha`), Tiv (`tiv`), Igala (`igl`), and Efik / Calabar (`efi`). These are language entries, not proof that a Bible edition in each language has been imported.
 
 See [English Edition Master Register](ENGLISH_VERSION_MASTER_REGISTER.md) for the single-source, duplicate-free English edition list and release gate.
+
+## Official ASV/BSB preparation and guarded import (2026-11-27)
+
+The preparation workflow downloaded and verified official source archives:
+
+- ASV 1901 eBible USFM: 2,875,616 bytes; SHA-256 00b7b6c76cb1eb67b22ca51bd5ac13c2df526c13e1c38e78b862a7a2367f7071.
+- Berean Standard Bible USFM release v5.24: 1,647,915 bytes; SHA-256 be31ef23eb38492de9e6e17983b7d46a1a4abe010bd1ff2ad3e338795d21233d.
+
+Both normalized corpora passed the current offline validator and were mapped to the live canonical chapter IDs: 66 books, 1,189 chapters, and 31,086 verse rows each. ASV has 16 empty verse markers in the source; the importer skips those empty markers and stores an omission report rather than fabricating text. BSB has 1,218 whole-verse red-letter flags preserved from explicit USFM markers.
+
+The guarded importer is scripts/import-public-domain-english.mjs. It requires --apply and server-side Supabase credentials; it creates/uses one version row per language+abbreviation, writes in idempotent batches, records bible_import_batches provenance, verifies exact count, and only then activates the edition. The approval marker is currently false, so no production rows have been inserted. The import workflow was verified as a no-op while approval was false.
+
+Prepared artifact workflow run: 45931638883 (expires 2026-12-04).
