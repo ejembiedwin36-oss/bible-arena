@@ -601,3 +601,23 @@ No production version rows or verse data were added.
 - YLT is approved only for the next technical acquisition and offline-validation stage; it is not yet approved for production import.
 
 **Next exact step:** Obtain the official eBible.org 1898 YLT archive, inspect its licence/metadata and file structure, record its SHA-256 checksum, then run the existing USFM parser and canonical chapter-map validator in dry-run mode. Review all parser exceptions and verse counts before considering any importer change.
+
+
+### 2026-11-27 — YLT official USFM archive preparation added
+
+**Goal:** Obtain and parse the exact eBible.org 1898 YLT source without changing production Bible data.
+
+**Source confirmation:**
+- The official eBible.org YLT page identifies the edition as public domain and provides a dedicated USFM archive: https://ebible.org/Scriptures/engylt_usfm.zip
+- The archive link is listed on the official edition page: https://ebible.org/find/show.php?id=engylt
+- The exact source archive could not be downloaded by the connected container environment. No substitute or third-party modified text was used.
+
+**Repository change:**
+- Extended `.github/workflows/prepare-public-domain-english.yml` to download and checksum-report the official YLT USFM archive, validate the ZIP, extract its USFM files, run the existing parser, report book/chapter/verse counts, and retain the source/normalized files as a short-lived review artifact.
+- YLT has deliberately not been added to the production importer. The workflow prepares and parses source material only; it contains no Supabase write step.
+- Commit: `511d9becd30313238554a5310a5f26133f0515b1` — `ci: validate YLT source archive offline`.
+- GitHub Actions preparation run `45942618006` was observed queued at the time of this entry; parsing and download outcome are not yet verified.
+
+**Safety:** No production data, schema, version rows, rights flags, app deployment, or existing English Bible text were changed. KJV, WEB, ASV, and BSB remain untouched.
+
+**Next exact step:** Check run `45942618006`. If the YLT download and parser succeed, inspect its archive checksum, exact edition metadata, all book/chapter/verse counts, and omission report. If parsing fails, use the parser logs to identify edition-specific USFM/versification exceptions; do not flatten or guess. Only after full offline validation should we extend the importer and prepare a dry-run. Production import still requires a separate explicit approval.
