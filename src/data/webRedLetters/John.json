@@ -1256,12 +1256,93 @@
     }
   },
   "8": {
+    "7": {
+      "text": "But when they continued asking him, he looked up and said to them, “He who is without sin among you, let him throw the first stone at her.”",
+      "spans": [
+        {
+          "start": 68,
+          "end": 100
+        }
+      ]
+    },
+    "10": {
+      "text": "Jesus, standing up, saw her and said, “Woman, where are your accusers? Did no one condemn you?”",
+      "spans": [
+        {
+          "start": 39,
+          "end": 70
+        }
+      ]
+    },
+    "11": {
+      "text": "She said, “No one, Lord.” Jesus said, “Neither do I condemn you. Go your way. From now on, sin no more.”",
+      "spans": [
+        {
+          "start": 39,
+          "end": 104
+        }
+      ]
+    },
     "12": {
       "text": "Again, therefore, Jesus spoke to them, saying, “I am the light of the world. He who follows me will not walk in the darkness, but will have the light of life.”",
       "spans": [
         {
           "start": 48,
           "end": 159
+        }
+      ]
+    },
+    "14": {
+      "text": "Jesus answered them, “Even if I testify about myself, my testimony is true, for I know where I came from, and where I am going; but you don’t know where I came from, or where I am going.",
+      "spans": [
+        {
+          "start": 22,
+          "end": 186
+        }
+      ]
+    },
+    "15": {
+      "text": "You judge according to the flesh. I judge no one.",
+      "spans": [
+        {
+          "start": 0,
+          "end": 49
+        }
+      ]
+    },
+    "16": {
+      "text": "Even if I do judge, my judgment is true, for I am not alone, but I am with the Father who sent me.",
+      "spans": [
+        {
+          "start": 0,
+          "end": 98
+        }
+      ]
+    },
+    "17": {
+      "text": "It’s also written in your law that the testimony of two people is valid.",
+      "spans": [
+        {
+          "start": 0,
+          "end": 72
+        }
+      ]
+    },
+    "18": {
+      "text": "I am one who testifies about myself, and the Father who sent me testifies about me.”",
+      "spans": [
+        {
+          "start": 0,
+          "end": 84
+        }
+      ]
+    },
+    "19": {
+      "text": "They said therefore to him, “Where is your Father?” Jesus answered, “You know neither me nor my Father. If you knew me, you would know my Father also.”",
+      "spans": [
+        {
+          "start": 69,
+          "end": 151
         }
       ]
     },
@@ -1292,12 +1373,39 @@
         }
       ]
     },
+    "25": {
+      "text": "They said therefore to him, “Who are you?” Jesus said to them, “Just what I have been saying to you from the beginning.",
+      "spans": [
+        {
+          "start": 64,
+          "end": 119
+        }
+      ]
+    },
+    "26": {
+      "text": "I have many things to speak and to judge concerning you. However he who sent me is true; and the things which I heard from him, these I say to the world.”",
+      "spans": [
+        {
+          "start": 0,
+          "end": 154
+        }
+      ]
+    },
     "28": {
       "text": "Jesus therefore said to them, “When you have lifted up the Son of Man, then you will know that I am he, and I do nothing of myself, but as my Father taught me, I say these things.",
       "spans": [
         {
           "start": 31,
           "end": 179
+        }
+      ]
+    },
+    "29": {
+      "text": "He who sent me is with me. The Father hasn’t left me alone, for I always do the things that are pleasing to him.”",
+      "spans": [
+        {
+          "start": 0,
+          "end": 113
         }
       ]
     },
@@ -1328,6 +1436,15 @@
         }
       ]
     },
+    "35": {
+      "text": "A bondservant doesn’t live in the house forever. A son remains forever.",
+      "spans": [
+        {
+          "start": 0,
+          "end": 71
+        }
+      ]
+    },
     "36": {
       "text": "If therefore the Son makes you free, you will be free indeed.",
       "spans": [
@@ -1337,12 +1454,147 @@
         }
       ]
     },
+    "37": {
+      "text": "I know that you are Abraham’s offspring, yet you seek to kill me, because my word finds no place in you.",
+      "spans": [
+        {
+          "start": 0,
+          "end": 104
+        }
+      ]
+    },
+    "38": {
+      "text": "I say the things which I have seen with my Father; and you also do the things which you have seen with your father.”",
+      "spans": [
+        {
+          "start": 0,
+          "end": 116
+        }
+      ]
+    },
+    "39": {
+      "text": "They answered him, “Our father is Abraham.” Jesus said to them, “If you were Abraham’s children, you would do the works of Abraham.",
+      "spans": [
+        {
+          "start": 65,
+          "end": 131
+        }
+      ]
+    },
+    "40": {
+      "text": "But now you seek to kill me, a man who has told you the truth which I heard from God. Abraham didn’t do this.",
+      "spans": [
+        {
+          "start": 0,
+          "end": 109
+        }
+      ]
+    },
+    "41": {
+      "text": "You do the works of your father.” They said to him, “We were not born of sexual immorality. We have one Father, God.”",
+      "spans": [
+        {
+          "start": 0,
+          "end": 33
+        }
+      ]
+    },
+    "42": {
+      "text": "Therefore Jesus said to them, “If God were your father, you would love me, for I came out and have come from God. For I haven’t come of myself, but he sent me.",
+      "spans": [
+        {
+          "start": 31,
+          "end": 159
+        }
+      ]
+    },
+    "43": {
+      "text": "Why don’t you understand my speech? Because you can’t hear my word.",
+      "spans": [
+        {
+          "start": 0,
+          "end": 67
+        }
+      ]
+    },
+    "44": {
+      "text": "You are of your father, the devil, and you want to do the desires of your father. He was a murderer from the beginning, and doesn’t stand in the truth, because there is no truth in him. When he speaks a lie, he speaks on his own; for he is a liar, and the father of lies.",
+      "spans": [
+        {
+          "start": 0,
+          "end": 271
+        }
+      ]
+    },
+    "45": {
+      "text": "But because I tell the truth, you don’t believe me.",
+      "spans": [
+        {
+          "start": 0,
+          "end": 51
+        }
+      ]
+    },
+    "46": {
+      "text": "Which of you convicts me of sin? If I tell the truth, why do you not believe me?",
+      "spans": [
+        {
+          "start": 0,
+          "end": 80
+        }
+      ]
+    },
+    "47": {
+      "text": "He who is of God hears the words of God. For this cause you don’t hear, because you are not of God.”",
+      "spans": [
+        {
+          "start": 0,
+          "end": 100
+        }
+      ]
+    },
+    "49": {
+      "text": "Jesus answered, “I don’t have a demon, but I honor my Father and you dishonor me.",
+      "spans": [
+        {
+          "start": 17,
+          "end": 81
+        }
+      ]
+    },
+    "50": {
+      "text": "But I don’t seek my own glory. There is one who seeks and judges.",
+      "spans": [
+        {
+          "start": 0,
+          "end": 65
+        }
+      ]
+    },
     "51": {
       "text": "Most certainly, I tell you, if a person keeps my word, he will never see death.”",
       "spans": [
         {
           "start": 0,
           "end": 80
+        }
+      ]
+    },
+    "54": {
+      "text": "Jesus answered, “If I glorify myself, my glory is nothing. It is my Father who glorifies me, of whom you say that he is our God.",
+      "spans": [
+        {
+          "start": 17,
+          "end": 128
+        }
+      ]
+    },
+    "55": {
+      "text": "You have not known him, but I know him. If I said, ‘I don’t know him,’ I would be like you, a liar. But I know him and keep his word.",
+      "spans": [
+        {
+          "start": 0,
+          "end": 133
         }
       ]
     },
