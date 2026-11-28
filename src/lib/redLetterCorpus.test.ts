@@ -871,3 +871,54 @@ describe('John chapter 13 translation-specific red-letter spans', () => {
     expect(redLetterVerse(webJohn, 13, 34, 'Changed wording')).toEqual([{ text: 'Changed wording', red: false }]);
   });
 });
+
+const john14ReviewedVerses = [1, 2, 3, 4, 6, 7, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21, 23, 24, 25, 26, 27, 28, 29, 30, 31] as const;
+
+describe('John chapter 14 translation-specific red-letter spans', () => {
+  const versions = [
+    { version: 'KJV', corpus: john },
+    { version: 'WEB', corpus: webJohn },
+    { version: 'ASV', corpus: asvJohn },
+    { version: 'BSB', corpus: bsbJohn },
+    { version: 'YLT', corpus: yltJohn },
+  ];
+
+  it.each(versions)('$version has reviewed Jesus-speech spans in John 14', ({ corpus }) => {
+    const typedCorpus = corpus as unknown as ChapterCorpus;
+    for (const verseNumber of john14ReviewedVerses) {
+      const annotation = typedCorpus['14'][String(verseNumber)];
+      expect(annotation, `missing John 14:${verseNumber} annotation`).toBeDefined();
+      const parts = redLetterVerse(corpus, 14, verseNumber, annotation.text);
+      expect(parts.map(part => part.text).join('')).toBe(annotation.text);
+      expect(parts.some(part => part.red)).toBe(true);
+    }
+  });
+
+  it('keeps BSB John 14 section headings outside the red text', () => {
+    const verse4 = bsbJohn['14']['4'];
+    const red4 = redLetterVerse(bsbJohn, 14, 4, verse4.text).filter(part => part.red).map(part => part.text).join('');
+    expect(red4).toBe('You know the way to the place where I am going. ”');
+    expect(red4).not.toContain('The Way, the Truth, and the Life');
+
+    const verse14 = bsbJohn['14']['14'];
+    const red14 = redLetterVerse(bsbJohn, 14, 14, verse14.text).filter(part => part.red).map(part => part.text).join('');
+    expect(red14).toBe('If you ask Me for anything in My name, I will do it.');
+    expect(red14).not.toContain('Jesus Promises the Holy Spirit');
+
+    const verse26 = bsbJohn['14']['26'];
+    const red26 = redLetterVerse(bsbJohn, 14, 26, verse26.text).filter(part => part.red).map(part => part.text).join('');
+    expect(red26).toBe('But the Advocate, the Holy Spirit, whom the Father will send in My name, will teach you all things and will remind you of everything I have told you.');
+    expect(red26).not.toContain('Peace I Leave with You');
+  });
+
+  it('keeps the John 14:6 speaker introduction outside the red text', () => {
+    const verse = bsbJohn['14']['6'];
+    const parts = redLetterVerse(bsbJohn, 14, 6, verse.text);
+    expect(parts.some(part => !part.red && part.text.includes('Jesus answered'))).toBe(true);
+    expect(parts.some(part => part.red)).toBe(true);
+  });
+
+  it('does not apply John 14 red letters when the displayed text differs', () => {
+    expect(redLetterVerse(webJohn, 14, 23, 'Changed wording')).toEqual([{ text: 'Changed wording', red: false }]);
+  });
+});
