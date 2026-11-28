@@ -750,3 +750,62 @@ describe('John chapter 11 translation-specific red-letter spans', () => {
     expect(redLetterVerse(asvJohn, 11, 43, 'Changed wording')).toEqual([{ text: 'Changed wording', red: false }]);
   });
 });
+
+const john12ReviewedVerses = [7, 8, 23, 24, 25, 26, 27, 28, 30, 31, 32, 35, 36, 44, 45, 46, 47, 48, 49, 50] as const;
+
+describe('John chapter 12 translation-specific red-letter spans', () => {
+  const versions = [
+    { version: 'KJV', corpus: john },
+    { version: 'WEB', corpus: webJohn },
+    { version: 'ASV', corpus: asvJohn },
+    { version: 'BSB', corpus: bsbJohn },
+    { version: 'YLT', corpus: yltJohn },
+  ];
+
+  it.each(versions)('$version has reviewed Jesus-speech spans in John 12', ({ corpus }) => {
+    const typedCorpus = corpus as unknown as ChapterCorpus;
+    for (const verseNumber of john12ReviewedVerses) {
+      const annotation = typedCorpus['12'][String(verseNumber)];
+      expect(annotation, `missing John 12:${verseNumber} annotation`).toBeDefined();
+      const parts = redLetterVerse(corpus, 12, verseNumber, annotation.text);
+      expect(parts.map(part => part.text).join('')).toBe(annotation.text);
+      expect(parts.some(part => part.red)).toBe(true);
+    }
+  });
+
+  it('splits BSB John 12:7 and excludes the John 12:8 section heading', () => {
+    const verse7 = bsbJohn['12']['7'];
+    const parts7 = redLetterVerse(bsbJohn, 12, 7, verse7.text);
+    const red7 = parts7.filter(part => part.red).map(part => part.text).join('');
+    expect(red7).toBe('Leave her alone,”She has kept this perfume in preparation for the day of My burial.');
+    expect(parts7.some(part => !part.red && part.text.includes('Jesus replied'))).toBe(true);
+
+    const verse8 = bsbJohn['12']['8'];
+    const red8 = redLetterVerse(bsbJohn, 12, 8, verse8.text).filter(part => part.red).map(part => part.text).join('');
+    expect(red8).toBe('The poor you will always have with you, but you will not always have Me.”');
+    expect(red8).not.toContain('The Plot to Kill Lazarus');
+  });
+
+  it('stops Jesus speech before the heavenly voice and narration in John 12:28 and 12:36', () => {
+    const verse28 = webJohn['12']['28'];
+    const red28 = redLetterVerse(webJohn, 12, 28, verse28.text).filter(part => part.red).map(part => part.text).join('');
+    expect(red28).toBe('Father, glorify your name!”');
+    expect(red28).not.toContain('I have both glorified it');
+
+    const verse36 = bsbJohn['12']['36'];
+    const red36 = redLetterVerse(bsbJohn, 12, 36, verse36.text).filter(part => part.red).map(part => part.text).join('');
+    expect(red36).toBe('While you have the Light, believe in the Light, so that you may become sons of light.”');
+    expect(red36).not.toContain('After Jesus had spoken');
+  });
+
+  it('keeps the John 12:44 speaker introduction outside the red text', () => {
+    const verse = webJohn['12']['44'];
+    const parts = redLetterVerse(webJohn, 12, 44, verse.text);
+    expect(parts.some(part => !part.red && part.text.includes('Jesus cried out and said'))).toBe(true);
+    expect(parts.some(part => part.red)).toBe(true);
+  });
+
+  it('does not apply John 12 red letters when the displayed text differs', () => {
+    expect(redLetterVerse(yltJohn, 12, 50, 'Changed wording')).toEqual([{ text: 'Changed wording', red: false }]);
+  });
+});
