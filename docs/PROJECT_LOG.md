@@ -815,3 +815,12 @@ The YLT source-preparation workflow run `45942618006` completed successfully.
 - Added regression tests for all reviewed verse keys in all five versions, attribution boundaries, BSB heading/narration exclusions, and verses spoken by other people.
 - Verification is pending for the resulting commit; no deployment is claimed.
 - Next: continue John chapter 7 using exact translation text and reviewed speaker boundaries.
+
+
+## John chapter 7 annotation checkpoint — 2026-11-28
+
+- Added exact-text Jesus-speech spans for 17 reviewed verses in John 7 to WEB, ASV, YLT, and BSB; existing KJV John 7 annotations remain unchanged.
+- Speaker introductions are excluded where they appear before the speech. BSB John 7:16 uses two spans because “Jesus replied” separates Jesus’ two speech portions. BSB John 7:24 stops before the appended “Is Jesus the Christ?” heading.
+- Added tests for all 17 reviewed verses across all five versions, attribution boundaries, BSB section-heading exclusion, and other speakers/narration.
+- Verification and deployment status must be checked on the resulting commit before this checkpoint is treated as complete.
+- Next: continue John chapter 8 using exact production translation text and reviewed speaker boundaries.
