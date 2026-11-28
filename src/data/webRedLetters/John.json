@@ -3355,5 +3355,52 @@
         }
       ]
     }
+  },
+  "19": {
+    "11": {
+      "text": "Jesus answered, “You would have no power at all against me, unless it were given to you from above. Therefore he who delivered me to you has greater sin.”",
+      "spans": [
+        {
+          "start": 17,
+          "end": 59
+        }
+      ]
+    },
+    "26": {
+      "text": "Therefore when Jesus saw his mother, and the disciple whom he loved standing there, he said to his mother, “Woman, behold, your son!”",
+      "spans": [
+        {
+          "start": 108,
+          "end": 133
+        }
+      ]
+    },
+    "27": {
+      "text": "Then he said to the disciple, “Behold, your mother!” From that hour, the disciple took her to his own home.",
+      "spans": [
+        {
+          "start": 31,
+          "end": 52
+        }
+      ]
+    },
+    "28": {
+      "text": "After this, Jesus, seeing that all things were now finished, that the Scripture might be fulfilled, said, “I am thirsty.”",
+      "spans": [
+        {
+          "start": 107,
+          "end": 121
+        }
+      ]
+    },
+    "30": {
+      "text": "When Jesus therefore had received the vinegar, he said, “It is finished.” He bowed his head, and gave up his spirit.",
+      "spans": [
+        {
+          "start": 57,
+          "end": 73
+        }
+      ]
+    }
   }
 }
