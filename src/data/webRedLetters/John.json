@@ -1438,5 +1438,160 @@
         }
       ]
     }
+  },
+  "10": {
+    "1": {
+      "text": "“Most certainly, I tell you, one who doesn’t enter by the door into the sheep fold, but climbs up some other way, is a thief and a robber.",
+      "spans": [
+        {
+          "start": 0,
+          "end": 138
+        }
+      ]
+    },
+    "2": {
+      "text": "But one who enters in by the door is the shepherd of the sheep.",
+      "spans": [
+        {
+          "start": 0,
+          "end": 63
+        }
+      ]
+    },
+    "3": {
+      "text": "The gatekeeper opens the gate for him, and the sheep listen to his voice. He calls his own sheep by name, and leads them out.",
+      "spans": [
+        {
+          "start": 0,
+          "end": 125
+        }
+      ]
+    },
+    "4": {
+      "text": "Whenever he brings out his own sheep, he goes before them, and the sheep follow him, for they know his voice.",
+      "spans": [
+        {
+          "start": 0,
+          "end": 109
+        }
+      ]
+    },
+    "5": {
+      "text": "They will by no means follow a stranger, but will flee from him; for they don’t know the voice of strangers.”",
+      "spans": [
+        {
+          "start": 0,
+          "end": 109
+        }
+      ]
+    },
+    "7": {
+      "text": "Jesus therefore said to them again, “Most certainly, I tell you, I am the sheep’s door.",
+      "spans": [
+        {
+          "start": 37,
+          "end": 87
+        }
+      ]
+    },
+    "8": {
+      "text": "All who came before me are thieves and robbers, but the sheep didn’t listen to them.",
+      "spans": [
+        {
+          "start": 0,
+          "end": 84
+        }
+      ]
+    },
+    "9": {
+      "text": "I am the door. If anyone enters in by me, he will be saved, and will go in and go out, and will find pasture.",
+      "spans": [
+        {
+          "start": 0,
+          "end": 109
+        }
+      ]
+    },
+    "10": {
+      "text": "The thief only comes to steal, kill, and destroy. I came that they may have life, and may have it abundantly.",
+      "spans": [
+        {
+          "start": 0,
+          "end": 109
+        }
+      ]
+    },
+    "11": {
+      "text": "I am the good shepherd. The good shepherd lays down his life for the sheep.",
+      "spans": [
+        {
+          "start": 0,
+          "end": 75
+        }
+      ]
+    },
+    "12": {
+      "text": "He who is a hired hand, and not a shepherd, who doesn’t own the sheep, sees the wolf coming, leaves the sheep, and flees. The wolf snatches the sheep, and scatters them.",
+      "spans": [
+        {
+          "start": 0,
+          "end": 169
+        }
+      ]
+    },
+    "13": {
+      "text": "The hired hand flees because he is a hired hand, and doesn’t care for the sheep.",
+      "spans": [
+        {
+          "start": 0,
+          "end": 80
+        }
+      ]
+    },
+    "14": {
+      "text": "I am the good shepherd. I know my own, and I’m known by my own;",
+      "spans": [
+        {
+          "start": 0,
+          "end": 63
+        }
+      ]
+    },
+    "15": {
+      "text": "even as the Father knows me, and I know the Father. I lay down my life for the sheep.",
+      "spans": [
+        {
+          "start": 0,
+          "end": 85
+        }
+      ]
+    },
+    "16": {
+      "text": "I have other sheep, which are not of this fold. I must bring them also, and they will hear my voice. They will become one flock with one shepherd.",
+      "spans": [
+        {
+          "start": 0,
+          "end": 146
+        }
+      ]
+    },
+    "17": {
+      "text": "Therefore the Father loves me, because I lay down my life, that I may take it again.",
+      "spans": [
+        {
+          "start": 0,
+          "end": 84
+        }
+      ]
+    },
+    "18": {
+      "text": "No one takes it away from me, but I lay it down by myself. I have power to lay it down, and I have power to take it again. I received this commandment from my Father.”",
+      "spans": [
+        {
+          "start": 0,
+          "end": 167
+        }
+      ]
+    }
   }
 }
