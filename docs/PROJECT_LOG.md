@@ -934,3 +934,12 @@ The YLT source-preparation workflow run `45942618006` completed successfully.
 - Added regression tests for all 5 reviewed verses in all five versions, mixed narration boundaries, heading exclusion, and text mismatch fallback. A direct exact-text audit confirmed all 20 new annotations match production text and have valid spans.
 - CI and Reader verification are pending for this John 19 checkpoint; deployment is not confirmed.
 - Next: verify John 19, then continue with John chapter 20.
+
+
+## John chapter 20 annotation checkpoint — 2026-11-28
+
+- Added exact-text Jesus-speech spans for 10 reviewed verses (20:15–17, 20:19, 20:21–23, 20:26–27, and 20:29) to WEB, ASV, YLT, and BSB; existing KJV annotations were preserved.
+- John 20:15 highlights Jesus’ questions and excludes Mary’s reply. BSB 20:15 and 20:17 use separate spans around speaker attributions. BSB 20:23 and 20:29 stop before appended section headings.
+- Added regression tests for all 10 reviewed verses in all five versions, mixed-speaker boundaries, heading exclusions, and text mismatch fallback. A direct exact-text audit confirmed all 40 new annotations match production text and have valid spans.
+- CI and Reader verification are pending for this John 20 checkpoint; deployment is not confirmed.
+- Next: verify John 20, then continue with John chapter 21.
