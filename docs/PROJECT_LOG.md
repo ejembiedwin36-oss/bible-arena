@@ -889,3 +889,12 @@ The YLT source-preparation workflow run `45942618006` completed successfully.
 - Added regression tests for all 28 reviewed verses in all five versions, attribution/heading boundaries, and text mismatch fallback. A direct exact-text audit confirmed all 112 new annotations match production text and have valid spans.
 - Verification for commit `1324bc5`: CI and Reader verification succeeded; 29 test files / 234 tests passed, API and TypeScript checks passed, and the production build passed. Deployment to the live website has not been independently confirmed.
 - Next: verify John 14, then continue with John chapter 15.
+
+
+## John chapter 15 annotation checkpoint — 2026-11-28
+
+- Added exact-text Jesus-speech spans for all 27 reviewed verses in John 15 to WEB, ASV, YLT, and BSB; existing KJV annotations were preserved.
+- BSB John 15:8 and 15:17 stop before appended section headings.
+- Added regression tests for all 27 verses in all five versions, BSB heading exclusions, and text mismatch fallback. A direct exact-text audit confirmed all 108 new annotations match production text and have valid spans.
+- CI and Reader verification are pending for this John 15 checkpoint; deployment is not confirmed.
+- Next: verify John 15, then continue with John chapter 16.
