@@ -318,3 +318,12 @@ The Reader now offers the red-letter control for KJV, WEB, ASV, BSB, and YLT. AS
 - Added regression tests for all 8 reviewed verses in all five versions, the Siloam explanation boundary, BSB split speech, and text mismatch fallback. A direct exact-text audit confirmed all 32 new annotations match the production verse text and have valid spans.
 - Verification for commit `edda7a4`: CI and Reader verification succeeded; 29 test files / 186 tests passed, API and TypeScript checks passed, and the production build passed. Deployment to the live website has not been independently confirmed.
 - Next: verify John 9, then continue with John chapter 10.
+
+
+## John chapter 10:1–18 annotation checkpoint — 2026-11-28
+
+- Added exact-text Jesus-speech spans for 17 reviewed verses (10:1–5 and 10:7–18) to WEB, ASV, YLT, and BSB; existing KJV annotations were preserved.
+- John 10:7 starts after the translation-specific speaker introduction. The remaining reviewed verses in this section contain Jesus’ sheepfold/good-shepherd discourse.
+- Added regression tests for the 17 reviewed verses in all five versions, the John 10:7 attribution boundary, and text mismatch fallback. A direct exact-text audit confirmed all 68 new annotations match production text and have valid spans.
+- CI and Reader verification are pending for this John 10:1–18 checkpoint; deployment is not confirmed.
+- Next: continue the reviewed John 10:25–38 passages, then verify the chapter checkpoint.
