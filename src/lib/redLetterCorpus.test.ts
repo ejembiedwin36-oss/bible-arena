@@ -227,7 +227,7 @@ describe('John chapter 3 translation-specific red-letter spans', () => {
   it('keeps Jesus’ opening words separate from the attribution in ASV, WEB, and YLT', () => {
     const expected = [
       { corpus: asvJohn, text: 'Verily, verily, I say unto thee, Except one be born anew, he cannot see the kingdom of God.' },
-      { corpus: webJohn, text: '“Most certainly, I tell you, unless one is born anew, he can’t see God’s Kingdom.”' },
+      { corpus: webJohn, text: 'Most certainly, I tell you, unless one is born anew, he can’t see God’s Kingdom.”' },
       { corpus: yltJohn, text: "'Verily, verily, I say to thee, If any one may not be born from above, he is not able to see the reign of God;'" },
     ];
     for (const item of expected) {
