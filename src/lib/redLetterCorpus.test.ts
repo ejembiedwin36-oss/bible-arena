@@ -1111,7 +1111,7 @@ describe('John chapter 18 translation-specific red-letter spans', () => {
       { verse: 37, spoken: 'You say that I am a king,”For this reason I was born and have come into the world, to testify to the truth. Everyone who belongs to the truth listens to My voice.”', attribution: 'Jesus answered' },
     ];
     for (const item of cases) {
-      const verse = bsbJohn['18'][String(item.verse)];
+      const verse = bsbJohn['18'][String(item.verse) as '8' | '11' | '20' | '34' | '37'];
       const parts = redLetterVerse(bsbJohn, 18, item.verse, verse.text);
       expect(parts.filter(part => part.red).map(part => part.text).join('')).toBe(item.spoken);
       expect(parts.some(part => !part.red && part.text.includes(item.attribution))).toBe(true);
