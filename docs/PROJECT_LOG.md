@@ -950,5 +950,5 @@ The YLT source-preparation workflow run `45942618006` completed successfully.
 - Added exact-text Jesus-speech spans for 10 reviewed verses (21:5–6, 21:10, 21:12, 21:15–19, and 21:22) to WEB, ASV, YLT, and BSB; existing KJV annotations were preserved.
 - John 21:5–6 highlight Jesus’ questions/command, not the fishermen’s answers. John 21:15–17 uses separate spans for Jesus’ questions and shepherding commands, leaving Peter’s replies uncoloured. John 21:19 stops at “Follow Me” before narration and the BSB heading.
 - Added regression tests for all 10 reviewed verses in all five versions, mixed-speaker boundaries, and text mismatch fallback. A direct exact-text audit confirmed all 40 new annotations match production text and have valid spans.
-- CI and Reader verification are pending for this John 21 checkpoint; deployment is not confirmed.
+- Verification for commit `5f7235c`: CI and Reader verification succeeded; 29 test files / 294 tests passed, API and TypeScript checks passed, and the production build passed. Deployment to the live website has not been independently confirmed.
 - Next: verify John 21, then audit remaining unreviewed Jesus-speech verses in John.
