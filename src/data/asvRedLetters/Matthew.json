@@ -1025,5 +1025,106 @@
         }
       ]
     }
+  },
+  "8": {
+    "3": {
+      "text": "And he stretched forth his hand, and touched him, saying, I will; be thou made clean. And straightway his leprosy was cleansed.",
+      "spans": [
+        {
+          "start": 58,
+          "end": 85
+        }
+      ]
+    },
+    "4": {
+      "text": "And Jesus saith unto him, See thou tell no man; but go, show thyself to the priest, and offer the gift that Moses commanded, for a testimony unto them.",
+      "spans": [
+        {
+          "start": 26,
+          "end": 151
+        }
+      ]
+    },
+    "7": {
+      "text": "And he saith unto him, I will come and heal him.",
+      "spans": [
+        {
+          "start": 23,
+          "end": 48
+        }
+      ]
+    },
+    "10": {
+      "text": "And when Jesus heard it, he marvelled, and said to them that followed, Verily I say unto you, I have not found so great faith, no, not in Israel.",
+      "spans": [
+        {
+          "start": 71,
+          "end": 145
+        }
+      ]
+    },
+    "11": {
+      "text": "And I say unto you, that many shall come from the east and the west, and shall sit down with Abraham, and Isaac, and Jacob, in the kingdom of heaven:",
+      "spans": [
+        {
+          "start": 0,
+          "end": 149
+        }
+      ]
+    },
+    "12": {
+      "text": "but the sons of the kingdom shall be cast forth into the outer darkness: there shall be the weeping and the gnashing of teeth.",
+      "spans": [
+        {
+          "start": 0,
+          "end": 126
+        }
+      ]
+    },
+    "13": {
+      "text": "And Jesus said unto the centurion, Go thy way; as thou hast believed, so be it done unto thee. And the servant was healed in that hour.",
+      "spans": [
+        {
+          "start": 35,
+          "end": 94
+        }
+      ]
+    },
+    "20": {
+      "text": "And Jesus saith unto him, The foxes have holes, and the birds of the heaven have nests; but the Son of man hath not where to lay his head.",
+      "spans": [
+        {
+          "start": 26,
+          "end": 138
+        }
+      ]
+    },
+    "22": {
+      "text": "But Jesus saith unto him, Follow me; and leave the dead to bury their own dead.",
+      "spans": [
+        {
+          "start": 26,
+          "end": 79
+        }
+      ]
+    },
+    "26": {
+      "text": "And he saith unto them, Why are ye fearful, O ye of little faith? Then he arose, and rebuked the winds and the sea; and there was a great calm.",
+      "spans": [
+        {
+          "start": 24,
+          "end": 65
+        }
+      ]
+    },
+    "32": {
+      "text": "And he said unto them, Go. And they came out, and went into the swine: and behold, the whole herd rushed down the steep into the sea, and perished in the waters.",
+      "spans": [
+        {
+          "start": 23,
+          "end": 26
+        }
+      ]
+    }
   }
 }
