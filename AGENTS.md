@@ -242,3 +242,12 @@ The Reader now offers the red-letter control for KJV, WEB, ASV, BSB, and YLT. AS
 - Span boundaries in mixed-dialogue verses are limited to Jesus' own quoted words; surrounding narrator text and replies from other speakers remain uncoloured.
 - Added Vitest coverage for the John 1:38 mixed-dialogue boundary, BSB John 1:51, and unannotated verses.
 - This is a chapter-one checkpoint, not completion of the Gospel of John. Continue with John chapter 2 across all five versions and then audit every remaining chapter.
+
+
+## John chapter 2 annotation checkpoint — 2026-11-28
+
+- Preserved the existing KJV John 2 annotations and added exact translation-specific speech spans for WEB, ASV, YLT, and BSB at John 2:4, 2:7, 2:8, 2:16, and 2:19.
+- In BSB John 2:4 and 2:8, the annotation uses separate spans because narrator attribution interrupts Jesus' words. Only Jesus' spoken phrases are highlighted.
+- Added regression tests that verify the highlighted text for all five versions and confirm that Mary’s words in John 2:5 remain uncoloured.
+- Annotation scope is selected verses, not all of John chapter 2. Unannotated verses remain normal text. Exact-text mismatch also disables highlighting.
+- Next: verify CI and reader verification; then continue chapter-by-chapter through John.
