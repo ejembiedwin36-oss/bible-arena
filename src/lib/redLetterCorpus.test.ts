@@ -1129,3 +1129,55 @@ describe('John chapter 18 translation-specific red-letter spans', () => {
     expect(redLetterVerse(webJohn, 18, 36, 'Changed wording')).toEqual([{ text: 'Changed wording', red: false }]);
   });
 });
+
+const john19ReviewedVerses = [11, 26, 27, 28, 30] as const;
+
+describe('John chapter 19 translation-specific red-letter spans', () => {
+  const versions = [
+    { version: 'KJV', corpus: john },
+    { version: 'WEB', corpus: webJohn },
+    { version: 'ASV', corpus: asvJohn },
+    { version: 'BSB', corpus: bsbJohn },
+    { version: 'YLT', corpus: yltJohn },
+  ];
+
+  it.each(versions)('$version has reviewed Jesus-speech spans in John 19', ({ corpus }) => {
+    const typedCorpus = corpus as unknown as ChapterCorpus;
+    for (const verseNumber of john19ReviewedVerses) {
+      const annotation = typedCorpus['19'][String(verseNumber)];
+      expect(annotation, `missing John 19:${verseNumber} annotation`).toBeDefined();
+      const parts = redLetterVerse(corpus, 19, verseNumber, annotation.text);
+      expect(parts.map(part => part.text).join('')).toBe(annotation.text);
+      expect(parts.some(part => part.red)).toBe(true);
+    }
+  });
+
+  it('keeps the John 19:11 speaker introduction outside the complete spoken answer', () => {
+    const verse = bsbJohn['19']['11'];
+    const parts = redLetterVerse(bsbJohn, 19, 11, verse.text);
+    const red = parts.filter(part => part.red).map(part => part.text).join('');
+    expect(red).toBe('You would have no authority over Me if it were not given to you from above. Therefore the one who handed Me over to you is guilty of greater sin.”');
+    expect(parts.some(part => !part.red && part.text.includes('Jesus answered'))).toBe(true);
+  });
+
+  it('highlights only Jesus’ words to His mother and the disciple', () => {
+    const verse26 = bsbJohn['19']['26'];
+    expect(redLetterVerse(bsbJohn, 19, 26, verse26.text).filter(part => part.red).map(part => part.text).join('')).toBe('Woman, here is your son.”');
+
+    const verse27 = bsbJohn['19']['27'];
+    const red27 = redLetterVerse(bsbJohn, 19, 27, verse27.text).filter(part => part.red).map(part => part.text).join('');
+    expect(red27).toBe('Here is your mother.”');
+    expect(red27).not.toContain('The Death of Jesus');
+  });
+
+  it('excludes the BSB John 19:30 section heading', () => {
+    const verse = bsbJohn['19']['30'];
+    const red = redLetterVerse(bsbJohn, 19, 30, verse.text).filter(part => part.red).map(part => part.text).join('');
+    expect(red).toBe('It is finished.”');
+    expect(red).not.toContain('Jesus’ Side Is Pierced');
+  });
+
+  it('does not apply John 19 red letters when the displayed text differs', () => {
+    expect(redLetterVerse(webJohn, 19, 28, 'Changed wording')).toEqual([{ text: 'Changed wording', red: false }]);
+  });
+});
