@@ -1438,5 +1438,160 @@
         }
       ]
     }
+  },
+  "10": {
+    "1": {
+      "text": "'Verily, verily, I say to you, He who is not entering through the door to the fold of the sheep, but is going up from another side, that one is a thief and a robber;",
+      "spans": [
+        {
+          "start": 0,
+          "end": 165
+        }
+      ]
+    },
+    "2": {
+      "text": "and he who is entering through the door is shepherd of the sheep;",
+      "spans": [
+        {
+          "start": 0,
+          "end": 65
+        }
+      ]
+    },
+    "3": {
+      "text": "to this one the doorkeeper doth open, and the sheep hear his voice, and his own sheep he doth call by name, and doth lead them forth;",
+      "spans": [
+        {
+          "start": 0,
+          "end": 133
+        }
+      ]
+    },
+    "4": {
+      "text": "and when his own sheep he may put forth, before them he goeth on, and the sheep follow him, because they have known his voice;",
+      "spans": [
+        {
+          "start": 0,
+          "end": 126
+        }
+      ]
+    },
+    "5": {
+      "text": "and a stranger they will not follow, but will flee from him, because they have not known the voice of strangers.'",
+      "spans": [
+        {
+          "start": 0,
+          "end": 113
+        }
+      ]
+    },
+    "7": {
+      "text": "Jesus said therefore again to them, 'Verily, verily, I say to you — I am the door of the sheep;",
+      "spans": [
+        {
+          "start": 37,
+          "end": 95
+        }
+      ]
+    },
+    "8": {
+      "text": "all, as many as came before me, are thieves and robbers, but the sheep did not hear them;",
+      "spans": [
+        {
+          "start": 0,
+          "end": 89
+        }
+      ]
+    },
+    "9": {
+      "text": "I am the door, through me if any one may come in, he shall be saved, and he shall come in, and go out, and find pasture.",
+      "spans": [
+        {
+          "start": 0,
+          "end": 120
+        }
+      ]
+    },
+    "10": {
+      "text": "'The thief doth not come, except that he may steal, and kill, and destroy; I came that they may have life, and may have [it] abundantly.",
+      "spans": [
+        {
+          "start": 0,
+          "end": 136
+        }
+      ]
+    },
+    "11": {
+      "text": "'I am the good shepherd; the good shepherd his life layeth down for the sheep;",
+      "spans": [
+        {
+          "start": 0,
+          "end": 78
+        }
+      ]
+    },
+    "12": {
+      "text": "and the hireling, and not being a shepherd, whose own the sheep are not, doth behold the wolf coming, and doth leave the sheep, and doth flee; and the wolf catcheth them, and scattereth the sheep;",
+      "spans": [
+        {
+          "start": 0,
+          "end": 196
+        }
+      ]
+    },
+    "13": {
+      "text": "and the hireling doth flee because he is an hireling, and is not caring for the sheep.",
+      "spans": [
+        {
+          "start": 0,
+          "end": 86
+        }
+      ]
+    },
+    "14": {
+      "text": "'I am the good shepherd, and I know my [sheep], and am known by mine,",
+      "spans": [
+        {
+          "start": 0,
+          "end": 69
+        }
+      ]
+    },
+    "15": {
+      "text": "according as the Father doth know me, and I know the Father, and my life I lay down for the sheep,",
+      "spans": [
+        {
+          "start": 0,
+          "end": 98
+        }
+      ]
+    },
+    "16": {
+      "text": "and other sheep I have that are not of this fold, these also it behoveth me to bring, and my voice they will hear, and there shall become one flock — one shepherd.",
+      "spans": [
+        {
+          "start": 0,
+          "end": 163
+        }
+      ]
+    },
+    "17": {
+      "text": "'Because of this doth the Father love me, because I lay down my life, that again I may take it;",
+      "spans": [
+        {
+          "start": 0,
+          "end": 95
+        }
+      ]
+    },
+    "18": {
+      "text": "no one doth take it from me, but I lay it down of myself; authority I have to lay it down, and authority I have again to take it; this command I received from my Father.'",
+      "spans": [
+        {
+          "start": 0,
+          "end": 170
+        }
+      ]
+    }
   }
 }
