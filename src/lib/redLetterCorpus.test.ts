@@ -1702,3 +1702,53 @@ describe('Matthew chapter 9 translation-specific red-letter spans', () => {
     expect(redLetterVerse(webMatthew, 9, 30, 'Changed wording')).toEqual([{ text: 'Changed wording', red: false }]);
   });
 });
+
+describe('Matthew chapter 10 complete red-letter spans', () => {
+  const versions = [
+    { version: 'KJV', corpus: matthew },
+    { version: 'WEB', corpus: webMatthew },
+    { version: 'ASV', corpus: asvMatthew },
+    { version: 'BSB', corpus: bsbMatthew },
+    { version: 'YLT', corpus: yltMatthew },
+  ];
+
+  it.each(versions)('$version has Jesus-speech spans for Matthew 10:5-42', ({ corpus }) => {
+    const typedCorpus = corpus as unknown as ChapterCorpus;
+    for (let verseNumber = 5; verseNumber <= 42; verseNumber++) {
+      const annotation = typedCorpus['10'][String(verseNumber)];
+      expect(annotation, `missing Matthew 10:${verseNumber} annotation`).toBeDefined();
+      const parts = redLetterVerse(corpus, 10, verseNumber, annotation.text);
+      expect(parts.map(part => part.text).join('')).toBe(annotation.text);
+      expect(parts.some(part => part.red)).toBe(true);
+    }
+  });
+
+  it('keeps Matthew 10:5 narration outside Jesus’ instructions', () => {
+    const verse = bsbMatthew['10']['5'];
+    const parts = redLetterVerse(bsbMatthew, 10, 5, verse.text);
+    expect(parts.filter(part => part.red).map(part => part.text).join('')).toBe('Do not go onto the road of the Gentiles or enter any town of the Samaritans.');
+    expect(parts.some(part => !part.red && part.text.includes('These twelve Jesus sent out'))).toBe(true);
+  });
+
+  it('stops BSB Matthew 10 before appended section headings', () => {
+    const headings = {
+      15: 'Sheep among Wolves',
+      25: 'Fear God Alone',
+      31: 'Confessing Christ',
+      33: 'Not Peace but a Sword',
+      39: 'The Reward of Service',
+    } as const;
+    for (const [verseKey, heading] of Object.entries(headings)) {
+      const verse = bsbMatthew['10'][verseKey as keyof typeof bsbMatthew['10']];
+      const red = redLetterVerse(bsbMatthew, 10, Number(verseKey), verse.text).filter(part => part.red).map(part => part.text).join('');
+      const headingIndex = verse.text.indexOf(heading);
+      expect(headingIndex).toBeGreaterThan(0);
+      expect(red).toBe(verse.text.slice(0, headingIndex).trimEnd());
+      expect(red).not.toContain(heading);
+    }
+  });
+
+  it('does not apply Matthew 10 red letters when the displayed text differs', () => {
+    expect(redLetterVerse(asvMatthew, 10, 42, 'Changed wording')).toEqual([{ text: 'Changed wording', red: false }]);
+  });
+});
