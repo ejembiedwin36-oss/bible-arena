@@ -1896,5 +1896,191 @@
         }
       ]
     }
+  },
+  "12": {
+    "7": {
+      "text": "“Leave her alone,” Jesus replied. “She has kept this perfume in preparation for the day of My burial.",
+      "spans": [
+        {
+          "start": 1,
+          "end": 18
+        },
+        {
+          "start": 35,
+          "end": 101
+        }
+      ]
+    },
+    "8": {
+      "text": "The poor you will always have with you, but you will not always have Me.” The Plot to Kill Lazarus",
+      "spans": [
+        {
+          "start": 0,
+          "end": 73
+        }
+      ]
+    },
+    "23": {
+      "text": "But Jesus replied, “The hour has come for the Son of Man to be glorified.",
+      "spans": [
+        {
+          "start": 20,
+          "end": 73
+        }
+      ]
+    },
+    "24": {
+      "text": "Truly, truly, I tell you, unless a kernel of wheat falls to the ground and dies, it remains only a seed. But if it dies, it bears much fruit.",
+      "spans": [
+        {
+          "start": 0,
+          "end": 141
+        }
+      ]
+    },
+    "25": {
+      "text": "Whoever loves his life will lose it, but whoever hates his life in this world will keep it for eternal life.",
+      "spans": [
+        {
+          "start": 0,
+          "end": 108
+        }
+      ]
+    },
+    "26": {
+      "text": "If anyone serves Me, he must follow Me; and where I am, My servant will be as well. If anyone serves Me, the Father will honor him.",
+      "spans": [
+        {
+          "start": 0,
+          "end": 131
+        }
+      ]
+    },
+    "27": {
+      "text": "Now My soul is troubled, and what shall I say? ‘Father, save Me from this hour’? No, it is for this purpose that I have come to this hour.",
+      "spans": [
+        {
+          "start": 0,
+          "end": 138
+        }
+      ]
+    },
+    "28": {
+      "text": "Father, glorify Your name!” Then a voice came from heaven: “I have glorified it, and I will glorify it again.”",
+      "spans": [
+        {
+          "start": 0,
+          "end": 27
+        }
+      ]
+    },
+    "30": {
+      "text": "In response, Jesus said, “This voice was not for My benefit, but yours.",
+      "spans": [
+        {
+          "start": 26,
+          "end": 71
+        }
+      ]
+    },
+    "31": {
+      "text": "Now judgment is upon this world; now the prince of this world will be cast out.",
+      "spans": [
+        {
+          "start": 0,
+          "end": 79
+        }
+      ]
+    },
+    "32": {
+      "text": "And I, when I am lifted up from the earth, will draw everyone to Myself.”",
+      "spans": [
+        {
+          "start": 0,
+          "end": 73
+        }
+      ]
+    },
+    "35": {
+      "text": "Then Jesus told them, “ For a little while longer, the Light will be among you. Walk while you have the Light, so that darkness will not overtake you. The one who walks in the darkness does not know where he is going.",
+      "spans": [
+        {
+          "start": 24,
+          "end": 217
+        }
+      ]
+    },
+    "36": {
+      "text": "While you have the Light, believe in the Light, so that you may become sons of light.” After Jesus had spoken these things, He went away and was hidden from them. Belief and Unbelief",
+      "spans": [
+        {
+          "start": 0,
+          "end": 86
+        }
+      ]
+    },
+    "44": {
+      "text": "Then Jesus cried out, “Whoever believes in Me does not believe in Me alone, but in the One who sent Me.",
+      "spans": [
+        {
+          "start": 23,
+          "end": 103
+        }
+      ]
+    },
+    "45": {
+      "text": "And whoever sees Me sees the One who sent Me.",
+      "spans": [
+        {
+          "start": 0,
+          "end": 45
+        }
+      ]
+    },
+    "46": {
+      "text": "I have come into the world as a light, so that no one who believes in Me should remain in darkness.",
+      "spans": [
+        {
+          "start": 0,
+          "end": 99
+        }
+      ]
+    },
+    "47": {
+      "text": "As for anyone who hears My words and does not keep them, I do not judge him. For I have not come to judge the world, but to save the world.",
+      "spans": [
+        {
+          "start": 0,
+          "end": 139
+        }
+      ]
+    },
+    "48": {
+      "text": "There is a judge for the one who rejects Me and does not receive My words: The word that I have spoken will judge him on the last day.",
+      "spans": [
+        {
+          "start": 0,
+          "end": 134
+        }
+      ]
+    },
+    "49": {
+      "text": "I have not spoken on My own, but the Father who sent Me has commanded Me what to say and how to say it.",
+      "spans": [
+        {
+          "start": 0,
+          "end": 103
+        }
+      ]
+    },
+    "50": {
+      "text": "And I know that His command leads to eternal life. So I speak exactly what the Father has told Me to say.”",
+      "spans": [
+        {
+          "start": 0,
+          "end": 106
+        }
+      ]
+    }
   }
 }
