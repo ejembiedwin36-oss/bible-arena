@@ -1486,3 +1486,46 @@ describe('Matthew chapter 5 complete Sermon on the Mount red-letter spans', () =
     expect(redLetterVerse(asvMatthew, 5, 48, 'Changed wording')).toEqual([{ text: 'Changed wording', red: false }]);
   });
 });
+
+describe('Matthew chapter 6 complete red-letter spans', () => {
+  const versions = [
+    { version: 'KJV', corpus: matthew },
+    { version: 'WEB', corpus: webMatthew },
+    { version: 'ASV', corpus: asvMatthew },
+    { version: 'BSB', corpus: bsbMatthew },
+    { version: 'YLT', corpus: yltMatthew },
+  ];
+
+  it.each(versions)('$version has Jesus-speech spans for Matthew 6:1-34', ({ corpus }) => {
+    const typedCorpus = corpus as unknown as ChapterCorpus;
+    for (let verseNumber = 1; verseNumber <= 34; verseNumber++) {
+      const annotation = typedCorpus['6'][String(verseNumber)];
+      expect(annotation, `missing Matthew 6:${verseNumber} annotation`).toBeDefined();
+      const parts = redLetterVerse(corpus, 6, verseNumber, annotation.text);
+      expect(parts.map(part => part.text).join('')).toBe(annotation.text);
+      expect(parts.some(part => part.red)).toBe(true);
+    }
+  });
+
+  it('stops BSB Matthew 6 before all appended section headings', () => {
+    const headings = {
+      4: 'The Lord’s Prayer',
+      15: 'Proper Fasting',
+      18: 'Treasures in Heaven',
+      21: 'The Lamp of the Body',
+      24: 'Do Not Worry',
+    } as const;
+    for (const [verseKey, heading] of Object.entries(headings)) {
+      const verse = bsbMatthew['6'][verseKey as keyof typeof bsbMatthew['6']];
+      const red = redLetterVerse(bsbMatthew, 6, Number(verseKey), verse.text).filter(part => part.red).map(part => part.text).join('');
+      const headingIndex = verse.text.indexOf(heading);
+      expect(headingIndex).toBeGreaterThan(0);
+      expect(red).toBe(verse.text.slice(0, headingIndex).trimEnd());
+      expect(red).not.toContain(heading);
+    }
+  });
+
+  it('does not apply Matthew 6 red letters when the displayed text differs', () => {
+    expect(redLetterVerse(yltMatthew, 6, 34, 'Changed wording')).toEqual([{ text: 'Changed wording', red: false }]);
+  });
+});
