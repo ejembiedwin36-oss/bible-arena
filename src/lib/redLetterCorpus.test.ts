@@ -501,3 +501,51 @@ describe('John chapter 7 translation-specific red-letter spans', () => {
     }
   });
 });
+
+const john8ReviewedVerses = [12, 21, 23, 24, 28, 31, 32, 34, 36, 51, 56, 58] as const;
+
+describe('John chapter 8 translation-specific red-letter spans', () => {
+  const versions = [
+    { version: 'KJV', corpus: john },
+    { version: 'WEB', corpus: webJohn },
+    { version: 'ASV', corpus: asvJohn },
+    { version: 'BSB', corpus: bsbJohn },
+    { version: 'YLT', corpus: yltJohn },
+  ];
+
+  it.each(versions)('$version has reviewed Jesus-speech spans in John 8', ({ corpus }) => {
+    const typedCorpus = corpus as unknown as ChapterCorpus;
+    for (const verseNumber of john8ReviewedVerses) {
+      const annotation = typedCorpus['8'][String(verseNumber)];
+      expect(annotation, `missing John 8:${verseNumber} annotation`).toBeDefined();
+      const parts = redLetterVerse(corpus, 8, verseNumber, annotation.text);
+      expect(parts.map(part => part.text).join('')).toBe(annotation.text);
+      expect(parts.some(part => part.red)).toBe(true);
+    }
+  });
+
+  it('keeps speaker introductions outside the red spans in John 8', () => {
+    const cases = [
+      { corpus: webJohn, verse: 12, attribution: 'Jesus spoke to them, saying' },
+      { corpus: asvJohn, verse: 28, attribution: 'Jesus therefore said' },
+      { corpus: yltJohn, verse: 21, attribution: 'therefore said Jesus again to them' },
+    ];
+    for (const item of cases) {
+      const annotation = (item.corpus as unknown as ChapterCorpus)['8'][String(item.verse)];
+      const parts = redLetterVerse(item.corpus, 8, item.verse, annotation.text);
+      expect(parts.some(part => !part.red && part.text.includes(item.attribution))).toBe(true);
+    }
+  });
+
+  it('splits BSB John 8:58 around the speaker attribution', () => {
+    const verse = bsbJohn['8']['58'];
+    const parts = redLetterVerse(bsbJohn, 8, 58, verse.text);
+    const red = parts.filter(part => part.red).map(part => part.text).join('');
+    expect(red).toBe('Truly, truly, I tell you,”before Abraham was born, I am!');
+    expect(parts.some(part => !part.red && part.text.includes('Jesus declared'))).toBe(true);
+  });
+
+  it('does not apply John 8 red letters when the displayed text differs', () => {
+    expect(redLetterVerse(webJohn, 8, 12, 'Changed wording')).toEqual([{ text: 'Changed wording', red: false }]);
+  });
+});
