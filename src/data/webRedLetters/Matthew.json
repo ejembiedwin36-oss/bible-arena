@@ -1126,5 +1126,164 @@
         }
       ]
     }
+  },
+  "9": {
+    "2": {
+      "text": "Behold, they brought to him a man who was paralyzed, lying on a bed. Jesus, seeing their faith, said to the paralytic, “Son, cheer up! Your sins are forgiven you.”",
+      "spans": [
+        {
+          "start": 120,
+          "end": 163
+        }
+      ]
+    },
+    "4": {
+      "text": "Jesus, knowing their thoughts, said, “Why do you think evil in your hearts?",
+      "spans": [
+        {
+          "start": 38,
+          "end": 75
+        }
+      ]
+    },
+    "5": {
+      "text": "For which is easier, to say, ‘Your sins are forgiven;’ or to say, ‘Get up, and walk?’",
+      "spans": [
+        {
+          "start": 0,
+          "end": 85
+        }
+      ]
+    },
+    "6": {
+      "text": "But that you may know that the Son of Man has authority on earth to forgive sins-” (then he said to the paralytic), “Get up, and take up your mat, and go to your house.”",
+      "spans": [
+        {
+          "start": 0,
+          "end": 82
+        },
+        {
+          "start": 117,
+          "end": 169
+        }
+      ]
+    },
+    "9": {
+      "text": "As Jesus passed by from there, he saw a man called Matthew sitting at the tax collection office. He said to him, “Follow me.” He got up and followed him.",
+      "spans": [
+        {
+          "start": 114,
+          "end": 125
+        }
+      ]
+    },
+    "12": {
+      "text": "When Jesus heard it, he said to them, “Those who are healthy have no need for a physician, but those who are sick do.",
+      "spans": [
+        {
+          "start": 39,
+          "end": 117
+        }
+      ]
+    },
+    "13": {
+      "text": "But you go and learn what this means: ‘I desire mercy, and not sacrifice,’ for I came not to call the righteous, but sinners to repentance.”",
+      "spans": [
+        {
+          "start": 0,
+          "end": 140
+        }
+      ]
+    },
+    "15": {
+      "text": "Jesus said to them, “Can the friends of the bridegroom mourn, as long as the bridegroom is with them? But the days will come when the bridegroom will be taken away from them, and then they will fast.",
+      "spans": [
+        {
+          "start": 21,
+          "end": 199
+        }
+      ]
+    },
+    "16": {
+      "text": "No one puts a piece of unshrunk cloth on an old garment; for the patch would tear away from the garment, and a worse hole is made.",
+      "spans": [
+        {
+          "start": 0,
+          "end": 130
+        }
+      ]
+    },
+    "17": {
+      "text": "Neither do people put new wine into old wine skins, or else the skins would burst, and the wine be spilled, and the skins ruined. No, they put new wine into fresh wine skins, and both are preserved.”",
+      "spans": [
+        {
+          "start": 0,
+          "end": 199
+        }
+      ]
+    },
+    "22": {
+      "text": "But Jesus, turning around and seeing her, said, “Daughter, cheer up! Your faith has made you well.” And the woman was made well from that hour.",
+      "spans": [
+        {
+          "start": 49,
+          "end": 143
+        }
+      ]
+    },
+    "24": {
+      "text": "he said to them, “Make room, because the girl isn’t dead, but sleeping.” They were ridiculing him.",
+      "spans": [
+        {
+          "start": 18,
+          "end": 72
+        }
+      ]
+    },
+    "28": {
+      "text": "When he had come into the house, the blind men came to him. Jesus said to them, “Do you believe that I am able to do this?” They told him, “Yes, Lord.”",
+      "spans": [
+        {
+          "start": 81,
+          "end": 123
+        }
+      ]
+    },
+    "29": {
+      "text": "Then he touched their eyes, saying, “According to your faith be it done to you.”",
+      "spans": [
+        {
+          "start": 37,
+          "end": 80
+        }
+      ]
+    },
+    "30": {
+      "text": "Their eyes were opened. Jesus strictly commanded them, saying, “See that no one knows about this.”",
+      "spans": [
+        {
+          "start": 64,
+          "end": 98
+        }
+      ]
+    },
+    "37": {
+      "text": "Then he said to his disciples, “The harvest indeed is plentiful, but the laborers are few.",
+      "spans": [
+        {
+          "start": 32,
+          "end": 90
+        }
+      ]
+    },
+    "38": {
+      "text": "Pray therefore that the Lord of the harvest will send out laborers into his harvest.”",
+      "spans": [
+        {
+          "start": 0,
+          "end": 85
+        }
+      ]
+    }
   }
 }
