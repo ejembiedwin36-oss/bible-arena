@@ -1304,3 +1304,71 @@ describe('John chapter 21 translation-specific red-letter spans', () => {
     expect(redLetterVerse(yltJohn, 21, 22, 'Changed wording')).toEqual([{ text: 'Changed wording', red: false }]);
   });
 });
+
+const john8RemainingVerses = [7, 10, 11, 14, 15, 16, 17, 18, 19, 25, 26, 29, 35, 37, 38, 39, 40, 41, 42, 43, 44, 45, 46, 47, 49, 50, 54, 55] as const;
+
+describe('John chapter 8 remaining translation-specific red-letter spans', () => {
+  const versions = [
+    { version: 'KJV', corpus: john },
+    { version: 'WEB', corpus: webJohn },
+    { version: 'ASV', corpus: asvJohn },
+    { version: 'BSB', corpus: bsbJohn },
+    { version: 'YLT', corpus: yltJohn },
+  ];
+
+  it.each(versions)('$version has the remaining reviewed Jesus-speech spans in John 8', ({ corpus }) => {
+    const typedCorpus = corpus as unknown as ChapterCorpus;
+    for (const verseNumber of john8RemainingVerses) {
+      const annotation = typedCorpus['8'][String(verseNumber)];
+      expect(annotation, `missing John 8:${verseNumber} annotation`).toBeDefined();
+      const parts = redLetterVerse(corpus, 8, verseNumber, annotation.text);
+      expect(parts.map(part => part.text).join('')).toBe(annotation.text);
+      expect(parts.some(part => part.red)).toBe(true);
+    }
+  });
+
+  it('splits BSB John 8:11, 8:19, 8:39, and 8:49 around speaker attributions', () => {
+    const cases = [
+      { verse: 11, spoken: 'Then neither do I condemn you,”Now go and sin no more.”', attribution: 'Jesus declared' },
+      { verse: 19, spoken: 'You do not know Me or My Father,”If you knew Me, you would know My Father as well.”', attribution: 'Jesus answered' },
+      { verse: 39, spoken: 'If you were children of Abraham,”you would do the works of Abraham.', attribution: 'said Jesus' },
+      { verse: 49, spoken: 'I do not have a demon,”but I honor My Father, and you dishonor Me.', attribution: 'Jesus replied' },
+    ];
+    for (const item of cases) {
+      const verse = bsbJohn['8'][String(item.verse)];
+      const parts = redLetterVerse(bsbJohn, 8, item.verse, verse.text);
+      expect(parts.filter(part => part.red).map(part => part.text).join('')).toBe(item.spoken);
+      expect(parts.some(part => !part.red && part.text.includes(item.attribution))).toBe(true);
+    }
+  });
+
+  it('keeps other speakers uncoloured and excludes BSB John 8 headings', () => {
+    const verse7 = bsbJohn['8']['7'];
+    expect(redLetterVerse(bsbJohn, 8, 7, verse7.text).filter(part => part.red).map(part => part.text).join('')).toBe('Let him who is without sin among you be the first to cast a stone at her.”');
+
+    const verse10 = bsbJohn['8']['10'];
+    expect(redLetterVerse(bsbJohn, 8, 10, verse10.text).filter(part => part.red).map(part => part.text).join('')).toBe('Woman, where are your accusers? Has no one condemned you?”');
+
+    const verse25 = bsbJohn['8']['25'];
+    const red25 = redLetterVerse(bsbJohn, 8, 25, verse25.text).filter(part => part.red).map(part => part.text).join('');
+    expect(red25).toBe('Just what I have been telling you from the beginning,”');
+    expect(redLetterVerse(bsbJohn, 8, 25, verse25.text).some(part => !part.red && part.text.includes('Jesus replied'))).toBe(true);
+
+    const verse29 = bsbJohn['8']['29'];
+    const red29 = redLetterVerse(bsbJohn, 8, 29, verse29.text).filter(part => part.red).map(part => part.text).join('');
+    expect(red29).toBe('He who sent Me is with Me. He has not left Me alone, because I always do what pleases Him.”');
+    expect(red29).not.toContain('The Truth Will Set You Free');
+
+    const verse41 = bsbJohn['8']['41'];
+    expect(redLetterVerse(bsbJohn, 8, 41, verse41.text).filter(part => part.red).map(part => part.text).join('')).toBe('You are doing the works of your father.”');
+
+    const verse47 = bsbJohn['8']['47'];
+    const red47 = redLetterVerse(bsbJohn, 8, 47, verse47.text).filter(part => part.red).map(part => part.text).join('');
+    expect(red47).toBe('Whoever belongs to God hears the words of God. The reason you do not hear is that you do not belong to God.”');
+    expect(red47).not.toContain('Before Abraham Was Born');
+  });
+
+  it('does not apply remaining John 8 red letters when the displayed text differs', () => {
+    expect(redLetterVerse(asvJohn, 8, 55, 'Changed wording')).toEqual([{ text: 'Changed wording', red: false }]);
+  });
+});
