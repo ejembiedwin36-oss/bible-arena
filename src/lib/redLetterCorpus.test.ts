@@ -961,3 +961,60 @@ describe('John chapter 15 translation-specific red-letter spans', () => {
     expect(redLetterVerse(webJohn, 15, 1, 'Changed wording')).toEqual([{ text: 'Changed wording', red: false }]);
   });
 });
+
+const john16ReviewedVerses = [1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 19, 20, 21, 22, 23, 24, 25, 26, 27, 28, 31, 32, 33] as const;
+
+describe('John chapter 16 translation-specific red-letter spans', () => {
+  const versions = [
+    { version: 'KJV', corpus: john },
+    { version: 'WEB', corpus: webJohn },
+    { version: 'ASV', corpus: asvJohn },
+    { version: 'BSB', corpus: bsbJohn },
+    { version: 'YLT', corpus: yltJohn },
+  ];
+
+  it.each(versions)('$version has reviewed Jesus-speech spans in John 16', ({ corpus }) => {
+    const typedCorpus = corpus as unknown as ChapterCorpus;
+    for (const verseNumber of john16ReviewedVerses) {
+      const annotation = typedCorpus['16'][String(verseNumber)];
+      expect(annotation, `missing John 16:${verseNumber} annotation`).toBeDefined();
+      const parts = redLetterVerse(corpus, 16, verseNumber, annotation.text);
+      expect(parts.map(part => part.text).join('')).toBe(annotation.text);
+      expect(parts.some(part => part.red)).toBe(true);
+    }
+  });
+
+  it('excludes BSB John 16:4, 16, and 22 section headings', () => {
+    const cases = [
+      { verse: 4, speech: 'But I have told you these things so that when their hour comes, you will remember that I told you about them. I did not tell you these things from the beginning, because I was with you.' },
+      { verse: 16, speech: 'In a little while you will see Me no more, and then after a little while you will see Me. ”' },
+      { verse: 22, speech: 'So also you have sorrow now, but I will see you again and your hearts will rejoice, and no one will take away your joy.' },
+    ];
+    for (const item of cases) {
+      const verse = bsbJohn['16'][String(item.verse)];
+      const red = redLetterVerse(bsbJohn, 16, item.verse, verse.text).filter(part => part.red).map(part => part.text).join('');
+      expect(red).toBe(item.speech);
+      expect(red).not.toContain('The Promise of the Holy Spirit');
+      expect(red).not.toContain('Grief Will Turn to Joy');
+      expect(red).not.toContain('Ask in My Name');
+    }
+  });
+
+  it('keeps the speaker introduction outside John 16:19 red text', () => {
+    const verse = bsbJohn['16']['19'];
+    const parts = redLetterVerse(bsbJohn, 16, 19, verse.text);
+    expect(parts.some(part => !part.red && part.text.includes('Jesus said to them'))).toBe(true);
+    expect(parts.some(part => part.red)).toBe(true);
+  });
+
+  it('keeps BSB John 16:31 Jesus replied attribution outside the spoken question', () => {
+    const verse = bsbJohn['16']['31'];
+    const parts = redLetterVerse(bsbJohn, 16, 31, verse.text);
+    expect(parts.filter(part => part.red).map(part => part.text).join('')).toBe('Do you finally believe?”');
+    expect(parts.some(part => !part.red && part.text.includes('Jesus replied'))).toBe(true);
+  });
+
+  it('does not apply John 16 red letters when the displayed text differs', () => {
+    expect(redLetterVerse(webJohn, 16, 33, 'Changed wording')).toEqual([{ text: 'Changed wording', red: false }]);
+  });
+});
