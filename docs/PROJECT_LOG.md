@@ -824,3 +824,12 @@ The YLT source-preparation workflow run `45942618006` completed successfully.
 - Added tests for all 17 reviewed verses across all five versions, attribution boundaries, BSB section-heading exclusion, and other speakers/narration.
 - Verification and deployment status must be checked on the resulting commit before this checkpoint is treated as complete.
 - Next: continue John chapter 8 using exact production translation text and reviewed speaker boundaries.
+
+
+## John chapter 8 annotation checkpoint — 2026-11-28
+
+- Added exact-text red-letter spans for 12 reviewed verses (8:12, 21, 23, 24, 28, 31, 32, 34, 36, 51, 56, and 58) to WEB, ASV, YLT, and BSB. Existing KJV annotations were preserved.
+- John 8:58 BSB uses two spans so the speaker attribution “Jesus declared” remains uncoloured. The remaining reviewed spans begin after speaker introductions and stop at the spoken text boundary.
+- Added regression tests for the reviewed verses in all five versions, attribution exclusion, BSB John 8:58 split speech, and text mismatch fallback.
+- CI and Reader verification are pending for this checkpoint; deployment is not confirmed.
+- Next: verify the John 8 commit and then continue with John chapter 9.
