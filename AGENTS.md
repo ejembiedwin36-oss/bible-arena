@@ -325,5 +325,5 @@ The Reader now offers the red-letter control for KJV, WEB, ASV, BSB, and YLT. AS
 - Added exact-text Jesus-speech spans for 29 reviewed verses (10:1–5, 10:7–18, 10:25–30, and 10:32–38) to WEB, ASV, YLT, and BSB; existing KJV annotations were preserved.
 - John 10:7 starts after translation-specific speaker introductions. BSB John 10:25 uses two spans around “Jesus replied”; the attribution is uncoloured. John 10:32 and 10:34 also start after speaker introductions.
 - Added regression tests for all 29 reviewed verses in all five versions, attribution boundaries, and text mismatch fallback. A direct exact-text audit confirmed all 116 new annotations match production text and have valid spans.
-- CI and Reader verification are pending for the completed John 10 reviewed set; deployment is not confirmed.
+- Verification for commit `f42e542`: CI and Reader verification succeeded; 29 test files / 201 tests passed, API and TypeScript checks passed, and the production build passed. Deployment to the live website has not been independently confirmed.
 - Next: verify John 10, then continue with John chapter 11.
