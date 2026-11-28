@@ -3402,5 +3402,97 @@
         }
       ]
     }
+  },
+  "20": {
+    "15": {
+      "text": "Jesus said to her, “Woman, why are you weeping? Who are you looking for?” She, supposing him to be the gardener, said to him, “Sir, if you have carried him away, tell me where you have laid him, and I will take him away.”",
+      "spans": [
+        {
+          "start": 20,
+          "end": 73
+        }
+      ]
+    },
+    "16": {
+      "text": "Jesus said to her, “Mary.” She turned and said to him, “Rabboni!” which is to say, “Teacher!”",
+      "spans": [
+        {
+          "start": 20,
+          "end": 26
+        }
+      ]
+    },
+    "17": {
+      "text": "Jesus said to her, “Don’t hold me, for I haven’t yet ascended to my Father; but go to my brothers and tell them, ‘I am ascending to my Father and your Father, to my God and your God.’ ”",
+      "spans": [
+        {
+          "start": 20,
+          "end": 185
+        }
+      ]
+    },
+    "19": {
+      "text": "When therefore it was evening on that day, the first day of the week, and when the doors were locked where the disciples were assembled, for fear of the Jews, Jesus came and stood in the middle, and said to them, “Peace be to you.”",
+      "spans": [
+        {
+          "start": 214,
+          "end": 231
+        }
+      ]
+    },
+    "21": {
+      "text": "Jesus therefore said to them again, “Peace be to you. As the Father has sent me, even so I send you.”",
+      "spans": [
+        {
+          "start": 37,
+          "end": 101
+        }
+      ]
+    },
+    "22": {
+      "text": "When he had said this, he breathed on them, and said to them, “Receive the Holy Spirit!",
+      "spans": [
+        {
+          "start": 63,
+          "end": 87
+        }
+      ]
+    },
+    "23": {
+      "text": "If you forgive anyone’s sins, they have been forgiven them. If you retain anyone’s sins, they have been retained.”",
+      "spans": [
+        {
+          "start": 0,
+          "end": 114
+        }
+      ]
+    },
+    "26": {
+      "text": "After eight days again his disciples were inside and Thomas was with them. Jesus came, the doors being locked, and stood in the middle, and said, “Peace be to you.”",
+      "spans": [
+        {
+          "start": 147,
+          "end": 164
+        }
+      ]
+    },
+    "27": {
+      "text": "Then he said to Thomas, “Reach here your finger, and see my hands. Reach here your hand, and put it into my side. Don’t be unbelieving, but believing.”",
+      "spans": [
+        {
+          "start": 25,
+          "end": 151
+        }
+      ]
+    },
+    "29": {
+      "text": "Jesus said to him, “Because you have seen me, you have believed. Blessed are those who have not seen, and have believed.”",
+      "spans": [
+        {
+          "start": 20,
+          "end": 121
+        }
+      ]
+    }
   }
 }
