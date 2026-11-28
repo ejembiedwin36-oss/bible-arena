@@ -426,3 +426,13 @@ The Reader now offers the red-letter control for KJV, WEB, ASV, BSB, and YLT. AS
 - Added regression tests for all 10 reviewed verses in all five versions, mixed-speaker boundaries, and text mismatch fallback. A direct exact-text audit confirmed all 40 new annotations match production text and have valid spans.
 - Verification for commit `5f7235c`: CI and Reader verification succeeded; 29 test files / 294 tests passed, API and TypeScript checks passed, and the production build passed. Deployment to the live website has not been independently confirmed.
 - Next: verify John 21, then audit remaining unreviewed Jesus-speech verses in John.
+
+
+## John 8 completion and Gospel-wide key audit — 2026-11-28
+
+- Added the remaining 28 KJV-listed Jesus-speech verses in John 8 to WEB, ASV, YLT, and BSB (112 new annotations). Together with the earlier 12 reviewed verses, John 8 now covers all 40 KJV red-letter verse keys in each of the four translations.
+- Mixed-speaker boundaries were reviewed, including Jesus’ statement in 8:41, BSB attribution splits in 8:11, 8:19, 8:39, and 8:49, and section-heading exclusions in BSB 8:29 and 8:47. ASV 8:11 stops before its bracketed editorial mark.
+- Added regression tests for the remaining 28 verses in all five versions. A direct exact-text audit confirmed all 112 new annotations match production text and have valid spans.
+- Cross-version key audit: WEB, ASV, BSB, and YLT now contain every existing KJV red-letter verse key in John chapters 1–21; no KJV keys are missing.
+- CI and Reader verification are pending for the John 8 completion checkpoint; deployment is not confirmed.
+- Next: verify this completion, then begin the red-letter key audit for Matthew.
