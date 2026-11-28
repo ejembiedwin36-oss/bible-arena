@@ -1256,12 +1256,93 @@
     }
   },
   "8": {
+    "7": {
+      "text": "and when they continued asking him, having bent himself back, he said unto them, 'The sinless of you — let him first cast the stone at her;'",
+      "spans": [
+        {
+          "start": 82,
+          "end": 139
+        }
+      ]
+    },
+    "10": {
+      "text": "And Jesus having bent himself back, and having seen no one but the woman, said to her, 'Woman, where are those — thine accusers? did no one pass sentence upon thee?'",
+      "spans": [
+        {
+          "start": 88,
+          "end": 165
+        }
+      ]
+    },
+    "11": {
+      "text": "and she said, 'No one, Sir;' and Jesus said to her, 'Neither do I pass sentence on thee; be going on, and no more sin.'",
+      "spans": [
+        {
+          "start": 53,
+          "end": 119
+        }
+      ]
+    },
     "12": {
       "text": "Again, therefore, Jesus spake to them, saying, 'I am the light of the world; he who is following me shall not walk in the darkness, but he shall have the light of the life.'",
       "spans": [
         {
           "start": 48,
           "end": 173
+        }
+      ]
+    },
+    "14": {
+      "text": "Jesus answered and said to them, 'And if I testify of myself — my testimony is true, because I have known whence I came, and whither I go, and ye — ye have not known whence I come, or whither I go.",
+      "spans": [
+        {
+          "start": 34,
+          "end": 197
+        }
+      ]
+    },
+    "15": {
+      "text": "'Ye according to the flesh do judge; I do not judge any one,",
+      "spans": [
+        {
+          "start": 0,
+          "end": 60
+        }
+      ]
+    },
+    "16": {
+      "text": "and even if I do judge my judgment is true, because I am not alone, but I and the Father who sent me;",
+      "spans": [
+        {
+          "start": 0,
+          "end": 101
+        }
+      ]
+    },
+    "17": {
+      "text": "and also in your law it hath been written, that the testimony of two men are true;",
+      "spans": [
+        {
+          "start": 0,
+          "end": 82
+        }
+      ]
+    },
+    "18": {
+      "text": "I am [one] who is testifying of myself, and the Father who sent me doth testify of me.'",
+      "spans": [
+        {
+          "start": 0,
+          "end": 87
+        }
+      ]
+    },
+    "19": {
+      "text": "They said, therefore, to him, 'Where is thy father?' Jesus answered, 'Ye have neither known me nor my Father: if me ye had known, my Father also ye had known.'",
+      "spans": [
+        {
+          "start": 70,
+          "end": 159
         }
       ]
     },
@@ -1292,12 +1373,39 @@
         }
       ]
     },
+    "25": {
+      "text": "They said, therefore, to him, 'Thou — who art thou?' and Jesus said to them, 'Even what I did speak of to you at the beginning;",
+      "spans": [
+        {
+          "start": 78,
+          "end": 127
+        }
+      ]
+    },
+    "26": {
+      "text": "many things I have to speak concerning you and to judge, but He who sent me is true, and I — what things I heard from Him — these I say to the world.'",
+      "spans": [
+        {
+          "start": 0,
+          "end": 150
+        }
+      ]
+    },
     "28": {
       "text": "Jesus, therefore, said to them, 'When ye may lift up the Son of Man then ye will know that I am [he]; and of myself I do nothing, but according as my Father did teach me, these things I speak;",
       "spans": [
         {
           "start": 33,
           "end": 192
+        }
+      ]
+    },
+    "29": {
+      "text": "and He who sent me is with me; the Father did not leave me alone, because I, the things pleasing to Him, do always.'",
+      "spans": [
+        {
+          "start": 0,
+          "end": 116
         }
       ]
     },
@@ -1328,6 +1436,15 @@
         }
       ]
     },
+    "35": {
+      "text": "and the servant doth not remain in the house — to the age, the son doth remain — to the age;",
+      "spans": [
+        {
+          "start": 0,
+          "end": 92
+        }
+      ]
+    },
     "36": {
       "text": "if then the son may make you free, in reality ye shall be free.",
       "spans": [
@@ -1337,12 +1454,147 @@
         }
       ]
     },
+    "37": {
+      "text": "'I have known that ye are seed of Abraham, but ye seek to kill me, because my word hath no place in you;",
+      "spans": [
+        {
+          "start": 1,
+          "end": 104
+        }
+      ]
+    },
+    "38": {
+      "text": "I — that which I have seen with my Father do speak, and ye, therefore, that which ye have seen with your father — ye do.'",
+      "spans": [
+        {
+          "start": 0,
+          "end": 121
+        }
+      ]
+    },
+    "39": {
+      "text": "They answered and said to him, 'Our father is Abraham;' Jesus saith to them, 'If children of Abraham ye were, the works of Abraham ye were doing;",
+      "spans": [
+        {
+          "start": 78,
+          "end": 145
+        }
+      ]
+    },
+    "40": {
+      "text": "and now, ye seek to kill me — a man who hath spoken to you the truth I heard from God; this Abraham did not;",
+      "spans": [
+        {
+          "start": 0,
+          "end": 108
+        }
+      ]
+    },
+    "41": {
+      "text": "ye do the works of your father.' They said, therefore, to him, 'We of whoredom have not been born; one Father we have — God;'",
+      "spans": [
+        {
+          "start": 0,
+          "end": 32
+        }
+      ]
+    },
+    "42": {
+      "text": "Jesus then said to them, 'If God were your father, ye were loving me, for I came forth from God, and am come; for neither have I come of myself, but He sent me;",
+      "spans": [
+        {
+          "start": 26,
+          "end": 160
+        }
+      ]
+    },
+    "43": {
+      "text": "wherefore do ye not know my speech? because ye are not able to hear my word.",
+      "spans": [
+        {
+          "start": 0,
+          "end": 76
+        }
+      ]
+    },
+    "44": {
+      "text": "'Ye are of a father — the devil, and the desires of your father ye will to do; he was a man-slayer from the beginning, and in the truth he hath not stood, because there is no truth in him; when one may speak the falsehood, of his own he speaketh, because he is a liar — also his father.",
+      "spans": [
+        {
+          "start": 0,
+          "end": 286
+        }
+      ]
+    },
+    "45": {
+      "text": "'And because I say the truth, ye do not believe me.",
+      "spans": [
+        {
+          "start": 1,
+          "end": 51
+        }
+      ]
+    },
+    "46": {
+      "text": "Who of you doth convict me of sin? and if I speak truth, wherefore do ye not believe me?",
+      "spans": [
+        {
+          "start": 0,
+          "end": 88
+        }
+      ]
+    },
+    "47": {
+      "text": "he who is of God, the sayings of God he doth hear; because of this ye do not hear, because of God ye are not.'",
+      "spans": [
+        {
+          "start": 0,
+          "end": 110
+        }
+      ]
+    },
+    "49": {
+      "text": "Jesus answered, 'I have not a demon, but I honour my Father, and ye dishonour me;",
+      "spans": [
+        {
+          "start": 17,
+          "end": 81
+        }
+      ]
+    },
+    "50": {
+      "text": "and I do not seek my own glory; there is who is seeking and is judging;",
+      "spans": [
+        {
+          "start": 0,
+          "end": 71
+        }
+      ]
+    },
     "51": {
       "text": "verily, verily, I say to you, If any one may keep my word, death he may not see — to the age.'",
       "spans": [
         {
           "start": 0,
           "end": 94
+        }
+      ]
+    },
+    "54": {
+      "text": "Jesus answered, 'If I glorify myself, my glory is nothing; it is my Father who is glorifying me, of whom ye say that He is your God;",
+      "spans": [
+        {
+          "start": 17,
+          "end": 132
+        }
+      ]
+    },
+    "55": {
+      "text": "and ye have not known Him, and I have known Him, and if I say that I have not known Him, I shall be like you — speaking falsely; but I have known Him, and His word I keep;",
+      "spans": [
+        {
+          "start": 0,
+          "end": 171
         }
       ]
     },
