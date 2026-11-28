@@ -1,0 +1,72 @@
+{
+  "3": {
+    "15": {
+      "text": "“Let it be so now,” Jesus replied. “It is fitting for us to fulfill all righteousness in this way.” Then John permitted Him.",
+      "spans": [
+        {
+          "start": 1,
+          "end": 19
+        },
+        {
+          "start": 36,
+          "end": 99
+        }
+      ]
+    }
+  },
+  "4": {
+    "4": {
+      "text": "But Jesus answered, “It is written: ‘Man shall not live on bread alone, but on every word that comes from the mouth of God.’ ”",
+      "spans": [
+        {
+          "start": 21,
+          "end": 126
+        }
+      ]
+    },
+    "7": {
+      "text": "Jesus replied, “It is also written: ‘Do not put the Lord your God to the test.’ ”",
+      "spans": [
+        {
+          "start": 16,
+          "end": 81
+        }
+      ]
+    },
+    "10": {
+      "text": "“Away from Me, Satan!” Jesus told him. “For it is written: ‘Worship the Lord your God and serve Him only.’ ”",
+      "spans": [
+        {
+          "start": 1,
+          "end": 22
+        },
+        {
+          "start": 40,
+          "end": 108
+        }
+      ]
+    },
+    "17": {
+      "text": "From that time on Jesus began to preach, “Repent, for the kingdom of heaven is near.” The First Disciples ( Mark 1:16–20|MRK 1:16-20; Luke 5:1–11|LUK 5:1-11; John 1:35–42|JHN 1:35-42 )",
+      "spans": [
+        {
+          "start": 42,
+          "end": 85
+        }
+      ]
+    },
+    "19": {
+      "text": "“Come, follow Me,” Jesus said, “and I will make you fishers of men.”",
+      "spans": [
+        {
+          "start": 1,
+          "end": 18
+        },
+        {
+          "start": 32,
+          "end": 67
+        }
+      ]
+    }
+  }
+}
