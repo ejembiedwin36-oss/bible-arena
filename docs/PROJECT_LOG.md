@@ -979,5 +979,5 @@ The YLT source-preparation workflow run `45942618006` completed successfully.
 - Added full Jesus-speech spans for Matthew 5:3–48 in ASV, BSB, and YLT (138 annotations); WEB’s existing 46 verse annotations were preserved and audited.
 - BSB annotations stop before appended headings at 5:12, 5:16, 5:20, 5:26, 5:30, 5:32, and 5:37.
 - Added regression tests for all 46 verses in all five versions and each BSB heading boundary. A direct exact-text audit confirmed 184 annotations (46 verses × 4 translations) match production text and have valid spans.
-- CI and Reader verification are pending for Matthew 5; deployment is not confirmed.
+- Verification for commit `a07faaf`: CI and Reader verification succeeded; 29 test files / 317 tests passed, API and TypeScript checks passed, and the production build passed. Deployment to the live website has not been independently confirmed.
 - Next: verify Matthew 5, then continue with Matthew chapter 6.
