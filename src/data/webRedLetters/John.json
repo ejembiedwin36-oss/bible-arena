@@ -1364,5 +1364,79 @@
         }
       ]
     }
+  },
+  "9": {
+    "3": {
+      "text": "Jesus answered, “This man didn’t sin, nor did his parents; but, that the works of God might be revealed in him.",
+      "spans": [
+        {
+          "start": 17,
+          "end": 111
+        }
+      ]
+    },
+    "4": {
+      "text": "I must work the works of him who sent me while it is day. The night is coming, when no one can work.",
+      "spans": [
+        {
+          "start": 0,
+          "end": 100
+        }
+      ]
+    },
+    "5": {
+      "text": "While I am in the world, I am the light of the world.”",
+      "spans": [
+        {
+          "start": 0,
+          "end": 54
+        }
+      ]
+    },
+    "7": {
+      "text": "and said to him, “Go, wash in the pool of Siloam” (which means “Sent”). So he went away, washed, and came back seeing.",
+      "spans": [
+        {
+          "start": 18,
+          "end": 49
+        }
+      ]
+    },
+    "35": {
+      "text": "Jesus heard that they had thrown him out, and finding him, he said, “Do you believe in the Son of God?”",
+      "spans": [
+        {
+          "start": 69,
+          "end": 103
+        }
+      ]
+    },
+    "37": {
+      "text": "Jesus said to him, “You have both seen him, and it is he who speaks with you.”",
+      "spans": [
+        {
+          "start": 20,
+          "end": 78
+        }
+      ]
+    },
+    "39": {
+      "text": "Jesus said, “I came into this world for judgment, that those who don’t see may see; and that those who see may become blind.”",
+      "spans": [
+        {
+          "start": 13,
+          "end": 125
+        }
+      ]
+    },
+    "41": {
+      "text": "Jesus said to them, “If you were blind, you would have no sin; but now you say, ‘We see.’ Therefore your sin remains.",
+      "spans": [
+        {
+          "start": 21,
+          "end": 117
+        }
+      ]
+    }
   }
 }
