@@ -1440,3 +1440,49 @@ describe('Matthew 3-4 translation-specific red-letter spans', () => {
     expect(red).not.toContain('The First Disciples');
   });
 });
+
+describe('Matthew chapter 5 complete Sermon on the Mount red-letter spans', () => {
+  const versions = [
+    { version: 'KJV', corpus: matthew },
+    { version: 'WEB', corpus: webMatthew },
+    { version: 'ASV', corpus: asvMatthew },
+    { version: 'BSB', corpus: bsbMatthew },
+    { version: 'YLT', corpus: yltMatthew },
+  ];
+
+  it.each(versions)('$version has Jesus-speech spans for Matthew 5:3-48', ({ corpus }) => {
+    const typedCorpus = corpus as unknown as ChapterCorpus;
+    for (let verseNumber = 3; verseNumber <= 48; verseNumber++) {
+      const annotation = typedCorpus['5'][String(verseNumber)];
+      expect(annotation, `missing Matthew 5:${verseNumber} annotation`).toBeDefined();
+      const parts = redLetterVerse(corpus, 5, verseNumber, annotation.text);
+      expect(parts.map(part => part.text).join('')).toBe(annotation.text);
+      expect(parts.some(part => part.red)).toBe(true);
+    }
+  });
+
+  it('stops BSB Matthew 5 red letters before all appended section headings', () => {
+    const headings = {
+      12: 'Salt and Light',
+      16: 'The Fulfillment of the Law',
+      20: 'Anger and Reconciliation',
+      26: 'Adultery',
+      30: 'Divorce',
+      32: 'Oaths and Vows',
+      37: 'Love Your Enemies',
+    } as const;
+    for (const [verseKey, heading] of Object.entries(headings)) {
+      const verse = bsbMatthew['5'][verseKey as keyof typeof bsbMatthew['5']];
+      const parts = redLetterVerse(bsbMatthew, 5, Number(verseKey), verse.text);
+      const red = parts.filter(part => part.red).map(part => part.text).join('');
+      const headingIndex = verse.text.indexOf(heading);
+      expect(headingIndex).toBeGreaterThan(0);
+      expect(red).toBe(verse.text.slice(0, headingIndex).trimEnd());
+      expect(red).not.toContain(heading);
+    }
+  });
+
+  it('does not apply Matthew 5 red letters when the displayed text differs', () => {
+    expect(redLetterVerse(asvMatthew, 5, 48, 'Changed wording')).toEqual([{ text: 'Changed wording', red: false }]);
+  });
+});
