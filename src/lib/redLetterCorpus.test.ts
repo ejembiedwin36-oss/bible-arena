@@ -201,7 +201,6 @@ describe('John chapter 2 translation-specific red-letter spans', () => {
 });
 
 
-import type { RedLetterSegment } from './redLetter';
 
 type ChapterCorpus = Record<string, Record<string, { text: string; spans: { start: number; end: number }[] }>>;
 const john3Versions = [
