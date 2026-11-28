@@ -1423,7 +1423,7 @@ describe('Matthew 3-4 translation-specific red-letter spans', () => {
 
     const verse410 = bsbMatthew['4']['10'];
     const parts410 = redLetterVerse(bsbMatthew, 4, 10, verse410.text);
-    expect(parts410.filter(part => part.red).map(part => part.text).join('')).toBe('Away from Me, Satan!”For it is written: ‘Worship the Lord your God and serve Him only.’ ');
+    expect(parts410.filter(part => part.red).map(part => part.text).join('')).toBe('Away from Me, Satan!”For it is written: ‘Worship the Lord your God and serve Him only.’ ”');
     expect(parts410.some(part => !part.red && part.text.includes('Jesus told him'))).toBe(true);
 
     const verse419 = bsbMatthew['4']['19'];
