@@ -887,5 +887,5 @@ The YLT source-preparation workflow run `45942618006` completed successfully.
 - Added exact-text Jesus-speech spans for 28 reviewed verses (14:1–4, 14:6–7, 14:9–21, and 14:23–31) to WEB, ASV, YLT, and BSB; existing KJV annotations were preserved.
 - Speaker introductions are excluded at John 14:6, 14:9, and 14:23. BSB John 14:4, 14:14, and 14:26 stop before appended section headings.
 - Added regression tests for all 28 reviewed verses in all five versions, attribution/heading boundaries, and text mismatch fallback. A direct exact-text audit confirmed all 112 new annotations match production text and have valid spans.
-- CI and Reader verification are pending for this John 14 checkpoint; deployment is not confirmed.
+- Verification for commit `1324bc5`: CI and Reader verification succeeded; 29 test files / 234 tests passed, API and TypeScript checks passed, and the production build passed. Deployment to the live website has not been independently confirmed.
 - Next: verify John 14, then continue with John chapter 15.
