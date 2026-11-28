@@ -1146,5 +1146,172 @@
         }
       ]
     }
+  },
+  "9": {
+    "2": {
+      "text": "Just then some men brought to Him a paralytic lying on a mat. When Jesus saw their faith, He said to the paralytic, “Take courage, son; your sins are forgiven.”",
+      "spans": [
+        {
+          "start": 117,
+          "end": 160
+        }
+      ]
+    },
+    "4": {
+      "text": "But Jesus knew what they were thinking and said, “Why do you harbor evil in your hearts?",
+      "spans": [
+        {
+          "start": 50,
+          "end": 88
+        }
+      ]
+    },
+    "5": {
+      "text": "Which is easier: to say, ‘Your sins are forgiven,’ or to say, ‘Get up and walk’?",
+      "spans": [
+        {
+          "start": 0,
+          "end": 80
+        }
+      ]
+    },
+    "6": {
+      "text": "But so that you may know that the Son of Man has authority on earth to forgive sins...” Then He said to the paralytic, “Get up, pick up your mat, and go home.”",
+      "spans": [
+        {
+          "start": 0,
+          "end": 87
+        },
+        {
+          "start": 120,
+          "end": 159
+        }
+      ]
+    },
+    "9": {
+      "text": "As Jesus went on from there, He saw a man named Matthew sitting at the tax booth. “Follow Me,” He told him, and Matthew got up and followed Him.",
+      "spans": [
+        {
+          "start": 83,
+          "end": 94
+        }
+      ]
+    },
+    "12": {
+      "text": "On hearing this, Jesus said, “ It is not the healthy who need a doctor, but the sick.",
+      "spans": [
+        {
+          "start": 31,
+          "end": 85
+        }
+      ]
+    },
+    "13": {
+      "text": "But go and learn what this means: ‘I desire mercy, not sacrifice.’ For I have not come to call the righteous, but sinners. ” Questions about Fasting ( Mark 2:18–20|MRK 2:18-20; Luke 5:33–35|LUK 5:33-35 )",
+      "spans": [
+        {
+          "start": 0,
+          "end": 124
+        }
+      ]
+    },
+    "15": {
+      "text": "Jesus replied, “How can the guests of the bridegroom mourn while He is with them? But the time will come when the bridegroom will be taken from them; then they will fast. The Patches and the Wineskins ( Mark 2:21–22|MRK 2:21-22; Luke 5:36–39|LUK 5:36-39 )",
+      "spans": [
+        {
+          "start": 16,
+          "end": 170
+        }
+      ]
+    },
+    "16": {
+      "text": "No one sews a patch of unshrunk cloth on an old garment. For the patch will pull away from the garment, and a worse tear will result.",
+      "spans": [
+        {
+          "start": 0,
+          "end": 133
+        }
+      ]
+    },
+    "17": {
+      "text": "Neither do men pour new wine into old wineskins. If they do, the skins will burst, the wine will spill, and the wineskins will be ruined. Instead, they pour new wine into new wineskins, and both are preserved.” The Healing Touch of Jesus ( Mark 5:21–43|MRK 5:21-43; Luke 8:40–56|LUK 8:40-56 )",
+      "spans": [
+        {
+          "start": 0,
+          "end": 210
+        }
+      ]
+    },
+    "22": {
+      "text": "Jesus turned and saw her. “Take courage, daughter,” He said, “your faith has healed you.” And the woman was healed from that very hour.",
+      "spans": [
+        {
+          "start": 27,
+          "end": 51
+        },
+        {
+          "start": 62,
+          "end": 89
+        }
+      ]
+    },
+    "24": {
+      "text": "“Go away,” He told them. “The girl is not dead, but asleep.” And they laughed at Him.",
+      "spans": [
+        {
+          "start": 1,
+          "end": 10
+        },
+        {
+          "start": 26,
+          "end": 60
+        }
+      ]
+    },
+    "28": {
+      "text": "After Jesus had entered the house, the blind men came to Him. “Do you believe that I am able to do this?” He asked. “Yes, Lord,” they answered.",
+      "spans": [
+        {
+          "start": 63,
+          "end": 105
+        }
+      ]
+    },
+    "29": {
+      "text": "Then He touched their eyes and said, “According to your faith will it be done to you.”",
+      "spans": [
+        {
+          "start": 38,
+          "end": 86
+        }
+      ]
+    },
+    "30": {
+      "text": "And their eyes were opened. Jesus warned them sternly, “See that no one finds out about this!”",
+      "spans": [
+        {
+          "start": 56,
+          "end": 94
+        }
+      ]
+    },
+    "37": {
+      "text": "Then He said to His disciples, “The harvest is plentiful, but the workers are few.",
+      "spans": [
+        {
+          "start": 32,
+          "end": 82
+        }
+      ]
+    },
+    "38": {
+      "text": "Ask the Lord of the harvest, therefore, to send out workers into His harvest.”",
+      "spans": [
+        {
+          "start": 0,
+          "end": 78
+        }
+      ]
+    }
   }
 }
