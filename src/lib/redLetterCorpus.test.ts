@@ -991,7 +991,7 @@ describe('John chapter 16 translation-specific red-letter spans', () => {
       { verse: 22, speech: 'So also you have sorrow now, but I will see you again and your hearts will rejoice, and no one will take away your joy.' },
     ];
     for (const item of cases) {
-      const verse = bsbJohn['16'][String(item.verse)];
+      const verse = bsbJohn['16'][String(item.verse) as '4' | '16' | '22'];
       const red = redLetterVerse(bsbJohn, 16, item.verse, verse.text).filter(part => part.red).map(part => part.text).join('');
       expect(red).toBe(item.speech);
       expect(red).not.toContain('The Promise of the Holy Spirit');
