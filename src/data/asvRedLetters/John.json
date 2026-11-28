@@ -3355,5 +3355,52 @@
         }
       ]
     }
+  },
+  "19": {
+    "11": {
+      "text": "Jesus answered him, Thou wouldest have no power against me, except it were given thee from above: therefore he that delivered me unto thee hath greater sin.",
+      "spans": [
+        {
+          "start": 20,
+          "end": 59
+        }
+      ]
+    },
+    "26": {
+      "text": "When Jesus therefore saw his mother, and the disciple standing by whom he loved, he saith unto his mother, Woman, behold, thy son!",
+      "spans": [
+        {
+          "start": 107,
+          "end": 130
+        }
+      ]
+    },
+    "27": {
+      "text": "Then saith he to the disciple, Behold, thy mother! And from that hour the disciple took her unto his own home.",
+      "spans": [
+        {
+          "start": 31,
+          "end": 50
+        }
+      ]
+    },
+    "28": {
+      "text": "After this Jesus, knowing that all things are now finished, that the scripture might be accomplished, saith, I thirst.",
+      "spans": [
+        {
+          "start": 109,
+          "end": 118
+        }
+      ]
+    },
+    "30": {
+      "text": "When Jesus therefore had received the vinegar, he said, It is finished: and he bowed his head, and gave up his spirit.",
+      "spans": [
+        {
+          "start": 56,
+          "end": 71
+        }
+      ]
+    }
   }
 }
