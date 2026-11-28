@@ -270,3 +270,12 @@ The Reader now offers the red-letter control for KJV, WEB, ASV, BSB, and YLT. AS
 - Verification for commit `699e0ed`: main CI and Reader verification succeeded; 29 test files / 145 tests passed, API and TypeScript checks passed, and the production build passed.
 - Deployment to the live website has not been independently confirmed.
 - Next: continue John chapter 5 with translation-specific spans and exact speaker boundaries.
+
+
+## John chapter 5 annotation checkpoint — 2026-11-28
+
+- Preserved the existing KJV annotations and added exact-text speech spans for WEB, ASV, YLT, and BSB at John 5:6, 5:8, 5:14, 5:17, and 5:19–47 (33 reviewed verses per version; 132 new annotations).
+- BSB John 5:30 and 5:38 spans stop before appended section headings. Tests confirm the narration in John 5:9, 5:15, and 5:18 remains uncoloured.
+- Verification for commit `d4c9845`: main CI and Reader verification succeeded; 29 test files / 153 tests passed, API and TypeScript checks passed, and the production build passed.
+- Deployment to the live website has not been independently confirmed.
+- Next: continue John chapter 6 with exact translation text and reviewed speaker boundaries.
