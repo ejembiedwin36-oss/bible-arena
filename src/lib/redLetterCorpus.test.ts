@@ -1406,8 +1406,9 @@ describe('Matthew 3-4 translation-specific red-letter spans', () => {
   ];
 
   it.each(versions)('$version has reviewed Jesus-speech spans in Matthew 3-4', ({ corpus }) => {
+    const typedCorpus = corpus as unknown as ChapterCorpus;
     for (const item of matthew34Reviewed) {
-      const annotation = corpus[String(item.chapter)][String(item.verse)];
+      const annotation = typedCorpus[String(item.chapter)][String(item.verse)];
       expect(annotation, `missing Matthew ${item.chapter}:${item.verse}`).toBeDefined();
       const parts = redLetterVerse(corpus, item.chapter, item.verse, annotation.text);
       expect(parts.map(part => part.text).join('')).toBe(annotation.text);
