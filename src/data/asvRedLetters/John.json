@@ -2038,5 +2038,214 @@
         }
       ]
     }
+  },
+  "13": {
+    "7": {
+      "text": "Jesus answered and said unto him, What I do thou knowest not now; but thou shalt understand hereafter.",
+      "spans": [
+        {
+          "start": 34,
+          "end": 102
+        }
+      ]
+    },
+    "8": {
+      "text": "Peter saith unto him, Thou shalt never wash my feet. Jesus answered him, If I wash thee not, thou hast no part with me.",
+      "spans": [
+        {
+          "start": 73,
+          "end": 119
+        }
+      ]
+    },
+    "10": {
+      "text": "Jesus saith to him, He that is bathed needeth not save to wash his feet, but is clean every whit: and ye are clean, but not all.",
+      "spans": [
+        {
+          "start": 20,
+          "end": 128
+        }
+      ]
+    },
+    "11": {
+      "text": "For he knew him that should betray him; therefore said he, Ye are not all clean.",
+      "spans": [
+        {
+          "start": 59,
+          "end": 80
+        }
+      ]
+    },
+    "12": {
+      "text": "So when he had washed their feet, and taken his garments, and sat down again, he said unto them, Know ye what I have done to you?",
+      "spans": [
+        {
+          "start": 97,
+          "end": 129
+        }
+      ]
+    },
+    "13": {
+      "text": "Ye call me, Teacher, and, Lord: and ye say well; for so I am.",
+      "spans": [
+        {
+          "start": 0,
+          "end": 61
+        }
+      ]
+    },
+    "14": {
+      "text": "If I then, the Lord and the Teacher, have washed your feet, ye also ought to wash one another’s feet.",
+      "spans": [
+        {
+          "start": 0,
+          "end": 101
+        }
+      ]
+    },
+    "15": {
+      "text": "For I have given you an example, that ye also should do as I have done to you.",
+      "spans": [
+        {
+          "start": 0,
+          "end": 78
+        }
+      ]
+    },
+    "16": {
+      "text": "Verily, verily, I say unto you, A servant is not greater than his lord; neither one that is sent greater than he that sent him.",
+      "spans": [
+        {
+          "start": 0,
+          "end": 127
+        }
+      ]
+    },
+    "17": {
+      "text": "If ye know these things, blessed are ye if ye do them.",
+      "spans": [
+        {
+          "start": 0,
+          "end": 54
+        }
+      ]
+    },
+    "18": {
+      "text": "I speak not of you all: I know whom I have chosen: but that the scripture may be fulfilled, He that eateth my bread lifted up his heel against me.",
+      "spans": [
+        {
+          "start": 0,
+          "end": 146
+        }
+      ]
+    },
+    "19": {
+      "text": "From henceforth I tell you before it come to pass, that, when it is come to pass, ye may believe that I am he.",
+      "spans": [
+        {
+          "start": 0,
+          "end": 110
+        }
+      ]
+    },
+    "20": {
+      "text": "Verily, verily, I say unto you, He that receiveth whomsoever I send receiveth me; and he that receiveth me receiveth him that sent me.",
+      "spans": [
+        {
+          "start": 0,
+          "end": 134
+        }
+      ]
+    },
+    "21": {
+      "text": "When Jesus had thus said, he was troubled in the spirit, and testified, and said, Verily, verily, I say unto you, that one of you shall betray me.",
+      "spans": [
+        {
+          "start": 82,
+          "end": 146
+        }
+      ]
+    },
+    "26": {
+      "text": "Jesus therefore answereth, He it is, for whom I shall dip the sop, and give it him. So when he had dipped the sop, he taketh and giveth it to Judas, the son of Simon Iscariot.",
+      "spans": [
+        {
+          "start": 27,
+          "end": 83
+        }
+      ]
+    },
+    "27": {
+      "text": "And after the sop, then entered Satan into him. Jesus therefore saith unto him, What thou doest, do quickly.",
+      "spans": [
+        {
+          "start": 80,
+          "end": 108
+        }
+      ]
+    },
+    "31": {
+      "text": "When therefore he was gone out, Jesus saith, Now is the Son of man glorified, and God is glorified in him;",
+      "spans": [
+        {
+          "start": 45,
+          "end": 106
+        }
+      ]
+    },
+    "32": {
+      "text": "and God shall glorify him in himself, and straightway shall he glorify him.",
+      "spans": [
+        {
+          "start": 0,
+          "end": 75
+        }
+      ]
+    },
+    "33": {
+      "text": "Little children, yet a little while I am with you. Ye shall seek me: and as I said unto the Jews, Whither I go, ye cannot come; so now I say unto you.",
+      "spans": [
+        {
+          "start": 0,
+          "end": 150
+        }
+      ]
+    },
+    "34": {
+      "text": "A new commandment I give unto you, that ye love one another; even as I have loved you, that ye also love one another.",
+      "spans": [
+        {
+          "start": 0,
+          "end": 117
+        }
+      ]
+    },
+    "35": {
+      "text": "By this shall all men know that ye are my disciples, if ye have love one to another.",
+      "spans": [
+        {
+          "start": 0,
+          "end": 84
+        }
+      ]
+    },
+    "36": {
+      "text": "Simon Peter saith unto him, Lord, whither goest thou? Jesus answered, Whither I go, thou canst not follow me now; but thou shalt follow afterwards.",
+      "spans": [
+        {
+          "start": 70,
+          "end": 147
+        }
+      ]
+    },
+    "38": {
+      "text": "Jesus answereth, Wilt thou lay down thy life for me? Verily, verily, I say unto thee, The cock shall not crow, till thou hast denied me thrice.",
+      "spans": [
+        {
+          "start": 17,
+          "end": 143
+        }
+      ]
+    }
   }
 }
