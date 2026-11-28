@@ -986,7 +986,7 @@ describe('John chapter 16 translation-specific red-letter spans', () => {
 
   it('excludes BSB John 16:4, 16, and 22 section headings', () => {
     const cases = [
-      { verse: 4, speech: '“ I have told you these things so that when their hour comes, you will remember that I told you about them. I did not tell you these things from the beginning, because I was with you.' },
+      { verse: 4, speech: 'But I have told you these things so that when their hour comes, you will remember that I told you about them. I did not tell you these things from the beginning, because I was with you.' },
       { verse: 16, speech: 'In a little while you will see Me no more, and then after a little while you will see Me. ”' },
       { verse: 22, speech: 'So also you have sorrow now, but I will see you again and your hearts will rejoice, and no one will take away your joy.' },
     ];
