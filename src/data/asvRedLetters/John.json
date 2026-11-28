@@ -1364,5 +1364,79 @@
         }
       ]
     }
+  },
+  "9": {
+    "3": {
+      "text": "Jesus answered, Neither did this man sin, nor his parents: but that the works of God should be made manifest in him.",
+      "spans": [
+        {
+          "start": 16,
+          "end": 116
+        }
+      ]
+    },
+    "4": {
+      "text": "We must work the works of him that sent me, while it is day: the night cometh, when no man can work.",
+      "spans": [
+        {
+          "start": 0,
+          "end": 100
+        }
+      ]
+    },
+    "5": {
+      "text": "When I am in the world, I am the light of the world.",
+      "spans": [
+        {
+          "start": 0,
+          "end": 52
+        }
+      ]
+    },
+    "7": {
+      "text": "and said unto him, Go, wash in the pool of Siloam (which is by interpretation, Sent). He went away therefore, and washed, and came seeing.",
+      "spans": [
+        {
+          "start": 19,
+          "end": 49
+        }
+      ]
+    },
+    "35": {
+      "text": "Jesus heard that they had cast him out; and finding him, he said, Dost thou believe on the Son of God?",
+      "spans": [
+        {
+          "start": 66,
+          "end": 102
+        }
+      ]
+    },
+    "37": {
+      "text": "Jesus said unto him, Thou hast both seen him, and he it is that speaketh with thee.",
+      "spans": [
+        {
+          "start": 21,
+          "end": 83
+        }
+      ]
+    },
+    "39": {
+      "text": "And Jesus said, For judgment came I into this world, that they that see not may see; and that they that see may become blind.",
+      "spans": [
+        {
+          "start": 16,
+          "end": 125
+        }
+      ]
+    },
+    "41": {
+      "text": "Jesus said unto them, If ye were blind, ye would have no sin: but now ye say, We see: your sin remaineth.",
+      "spans": [
+        {
+          "start": 22,
+          "end": 105
+        }
+      ]
+    }
   }
 }
