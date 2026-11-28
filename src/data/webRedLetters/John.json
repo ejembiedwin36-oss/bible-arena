@@ -3494,5 +3494,113 @@
         }
       ]
     }
+  },
+  "21": {
+    "5": {
+      "text": "Jesus therefore said to them, “Children, have you anything to eat?” They answered him, “No.”",
+      "spans": [
+        {
+          "start": 31,
+          "end": 67
+        }
+      ]
+    },
+    "6": {
+      "text": "He said to them, “Cast the net on the right side of the boat, and you will find some.” They cast it therefore, and now they weren’t able to draw it in for the multitude of fish.",
+      "spans": [
+        {
+          "start": 18,
+          "end": 86
+        }
+      ]
+    },
+    "10": {
+      "text": "Jesus said to them, “Bring some of the fish which you have just caught.”",
+      "spans": [
+        {
+          "start": 21,
+          "end": 72
+        }
+      ]
+    },
+    "12": {
+      "text": "Jesus said to them, “Come and eat breakfast!” None of the disciples dared inquire of him, “Who are you?” knowing that it was the Lord.",
+      "spans": [
+        {
+          "start": 21,
+          "end": 45
+        }
+      ]
+    },
+    "15": {
+      "text": "So when they had eaten their breakfast, Jesus said to Simon Peter, “Simon, son of Jonah, do you love me more than these?” He said to him, “Yes, Lord; you know that I have affection for you.” He said to him, “Feed my lambs.”",
+      "spans": [
+        {
+          "start": 68,
+          "end": 121
+        },
+        {
+          "start": 208,
+          "end": 223
+        }
+      ]
+    },
+    "16": {
+      "text": "He said to him again a second time, “Simon, son of Jonah, do you love me?” He said to him, “Yes, Lord; you know that I have affection for you.” He said to him, “Tend my sheep.”",
+      "spans": [
+        {
+          "start": 37,
+          "end": 74
+        },
+        {
+          "start": 161,
+          "end": 176
+        }
+      ]
+    },
+    "17": {
+      "text": "He said to him the third time, “Simon, son of Jonah, do you have affection for me?” Peter was grieved because he asked him the third time, “Do you have affection for me?” He said to him, “Lord, you know everything. You know that I have affection for you.” Jesus said to him, “Feed my sheep.",
+      "spans": [
+        {
+          "start": 32,
+          "end": 83
+        },
+        {
+          "start": 140,
+          "end": 170
+        },
+        {
+          "start": 276,
+          "end": 290
+        }
+      ]
+    },
+    "18": {
+      "text": "Most certainly I tell you, when you were young, you dressed yourself and walked where you wanted to. But when you are old, you will stretch out your hands, and another will dress you and carry you where you don’t want to go.”",
+      "spans": [
+        {
+          "start": 0,
+          "end": 225
+        }
+      ]
+    },
+    "19": {
+      "text": "Now he said this, signifying by what kind of death he would glorify God. When he had said this, he said to him, “Follow me.”",
+      "spans": [
+        {
+          "start": 113,
+          "end": 124
+        }
+      ]
+    },
+    "22": {
+      "text": "Jesus said to him, “If I desire that he stay until I come, what is that to you? You follow me.”",
+      "spans": [
+        {
+          "start": 20,
+          "end": 95
+        }
+      ]
+    }
   }
 }
