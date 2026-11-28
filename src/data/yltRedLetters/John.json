@@ -3245,5 +3245,115 @@
         }
       ]
     }
+  },
+  "18": {
+    "4": {
+      "text": "Jesus, therefore, knowing all things that are coming upon him, having gone forth, said to them, 'Whom do ye seek?'",
+      "spans": [
+        {
+          "start": 97,
+          "end": 114
+        }
+      ]
+    },
+    "5": {
+      "text": "they answered him, 'Jesus the Nazarene;' Jesus saith to them, 'I am [he];' — and Judas who delivered him up was standing with them; —",
+      "spans": [
+        {
+          "start": 63,
+          "end": 74
+        }
+      ]
+    },
+    "6": {
+      "text": "when, therefore, he said to them — 'I am [he],' they went away backward, and fell to the ground.",
+      "spans": [
+        {
+          "start": 36,
+          "end": 47
+        }
+      ]
+    },
+    "7": {
+      "text": "Again, therefore, he questioned them, 'Whom do ye seek?' and they said, 'Jesus the Nazarene;'",
+      "spans": [
+        {
+          "start": 39,
+          "end": 56
+        }
+      ]
+    },
+    "8": {
+      "text": "Jesus answered, 'I said to you that I am [he]; if, then, me ye seek, suffer these to go away;'",
+      "spans": [
+        {
+          "start": 17,
+          "end": 94
+        }
+      ]
+    },
+    "11": {
+      "text": "Jesus, therefore, said to Peter, 'Put the sword into the sheath; the cup that the Father hath given to me, may I not drink it?'",
+      "spans": [
+        {
+          "start": 34,
+          "end": 127
+        }
+      ]
+    },
+    "20": {
+      "text": "Jesus answered him, 'I spake freely to the world, I did always teach in a synagogue, and in the temple, where the Jews do always come together; and in secret I spake nothing;",
+      "spans": [
+        {
+          "start": 21,
+          "end": 174
+        }
+      ]
+    },
+    "21": {
+      "text": "why me dost thou question? question those having heard what I spake to them; lo, these have known what I said.'",
+      "spans": [
+        {
+          "start": 0,
+          "end": 111
+        }
+      ]
+    },
+    "23": {
+      "text": "Jesus answered him, 'If I spake ill, testify concerning the ill; and if well, why me dost thou smite?'",
+      "spans": [
+        {
+          "start": 21,
+          "end": 102
+        }
+      ]
+    },
+    "34": {
+      "text": "Jesus answered him, 'From thyself dost thou say this? or did others say it to thee about me?'",
+      "spans": [
+        {
+          "start": 21,
+          "end": 93
+        }
+      ]
+    },
+    "36": {
+      "text": "Jesus answered, 'My kingdom is not of this world; if my kingdom were of this world, my officers had struggled that I might not be delivered up to Jews; but now my kingdom is not from hence.'",
+      "spans": [
+        {
+          "start": 17,
+          "end": 190
+        }
+      ]
+    },
+    "37": {
+      "text": "Pilate, therefore, said to him, 'Art thou then a king?' Jesus answered, 'Thou dost say [it]; because a king I am, I for this have been born, and for this I have come to the world, that I may testify to the truth; every one who is of the truth, doth hear my voice.'",
+      "spans": [
+        {
+          "start": 73,
+          "end": 264
+        }
+      ]
+    }
   }
 }
