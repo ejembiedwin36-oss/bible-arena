@@ -1089,16 +1089,16 @@ describe('John chapter 18 translation-specific red-letter spans', () => {
 
   it('highlights the reported words in John 18:6 but not the surrounding narration', () => {
     const cases = [
-      { corpus: webJohn, speech: 'I am he,”' },
-      { corpus: asvJohn, speech: 'I am he,' },
-      { corpus: bsbJohn, speech: 'I am He,”' },
+      { corpus: webJohn, speech: 'I am he,”', narration: 'they went backward' },
+      { corpus: asvJohn, speech: 'I am he,', narration: 'they went backward' },
+      { corpus: bsbJohn, speech: 'I am He,”', narration: 'they drew back' },
       { corpus: yltJohn, speech: 'I am [he],\'' },
     ];
     for (const item of cases) {
       const verse = item.corpus['18']['6'];
       const parts = redLetterVerse(item.corpus, 18, 6, verse.text);
       expect(parts.filter(part => part.red).map(part => part.text).join('')).toBe(item.speech);
-      expect(parts.some(part => !part.red && part.text.includes('they went'))).toBe(true);
+      expect(parts.some(part => !part.red && part.text.includes(item.narration ?? 'they went'))).toBe(true);
     }
   });
 
