@@ -1285,5 +1285,349 @@
         }
       ]
     }
+  },
+  "10": {
+    "5": {
+      "text": "Jesus sent these twelve out, and commanded them, saying, “Don’t go among the Gentiles, and don’t enter into any city of the Samaritans.",
+      "spans": [
+        {
+          "start": 58,
+          "end": 135
+        }
+      ]
+    },
+    "6": {
+      "text": "Rather, go to the lost sheep of the house of Israel.",
+      "spans": [
+        {
+          "start": 0,
+          "end": 52
+        }
+      ]
+    },
+    "7": {
+      "text": "As you go, preach, saying, ‘The Kingdom of Heaven is at hand!’",
+      "spans": [
+        {
+          "start": 0,
+          "end": 62
+        }
+      ]
+    },
+    "8": {
+      "text": "Heal the sick, cleanse the lepers, and cast out demons. Freely you received, so freely give.",
+      "spans": [
+        {
+          "start": 0,
+          "end": 92
+        }
+      ]
+    },
+    "9": {
+      "text": "Don’t take any gold, silver, or brass in your money belts.",
+      "spans": [
+        {
+          "start": 0,
+          "end": 58
+        }
+      ]
+    },
+    "10": {
+      "text": "Take no bag for your journey, neither two coats, nor sandals, nor staff: for the laborer is worthy of his food.",
+      "spans": [
+        {
+          "start": 0,
+          "end": 111
+        }
+      ]
+    },
+    "11": {
+      "text": "Into whatever city or village you enter, find out who in it is worthy; and stay there until you go on.",
+      "spans": [
+        {
+          "start": 0,
+          "end": 102
+        }
+      ]
+    },
+    "12": {
+      "text": "As you enter into the household, greet it.",
+      "spans": [
+        {
+          "start": 0,
+          "end": 42
+        }
+      ]
+    },
+    "13": {
+      "text": "If the household is worthy, let your peace come on it, but if it isn’t worthy, let your peace return to you.",
+      "spans": [
+        {
+          "start": 0,
+          "end": 108
+        }
+      ]
+    },
+    "14": {
+      "text": "Whoever doesn’t receive you, nor hear your words, as you go out of that house or that city, shake the dust off your feet.",
+      "spans": [
+        {
+          "start": 0,
+          "end": 121
+        }
+      ]
+    },
+    "15": {
+      "text": "Most certainly I tell you, it will be more tolerable for the land of Sodom and Gomorrah in the day of judgment than for that city.",
+      "spans": [
+        {
+          "start": 0,
+          "end": 130
+        }
+      ]
+    },
+    "16": {
+      "text": "“Behold, I send you out as sheep among wolves. Therefore be wise as serpents, and harmless as doves.",
+      "spans": [
+        {
+          "start": 0,
+          "end": 100
+        }
+      ]
+    },
+    "17": {
+      "text": "But beware of men: for they will deliver you up to councils, and in their synagogues they will scourge you.",
+      "spans": [
+        {
+          "start": 0,
+          "end": 107
+        }
+      ]
+    },
+    "18": {
+      "text": "Yes, and you will be brought before governors and kings for my sake, for a testimony to them and to the nations.",
+      "spans": [
+        {
+          "start": 0,
+          "end": 112
+        }
+      ]
+    },
+    "19": {
+      "text": "But when they deliver you up, don’t be anxious how or what you will say, for it will be given you in that hour what you will say.",
+      "spans": [
+        {
+          "start": 0,
+          "end": 129
+        }
+      ]
+    },
+    "20": {
+      "text": "For it is not you who speak, but the Spirit of your Father who speaks in you.",
+      "spans": [
+        {
+          "start": 0,
+          "end": 77
+        }
+      ]
+    },
+    "21": {
+      "text": "“Brother will deliver up brother to death, and the father his child. Children will rise up against parents, and cause them to be put to death.",
+      "spans": [
+        {
+          "start": 0,
+          "end": 142
+        }
+      ]
+    },
+    "22": {
+      "text": "You will be hated by all men for my name’s sake, but he who endures to the end will be saved.",
+      "spans": [
+        {
+          "start": 0,
+          "end": 93
+        }
+      ]
+    },
+    "23": {
+      "text": "But when they persecute you in this city, flee into the next, for most certainly I tell you, you will not have gone through the cities of Israel until the Son of Man has come.",
+      "spans": [
+        {
+          "start": 0,
+          "end": 175
+        }
+      ]
+    },
+    "24": {
+      "text": "“A disciple is not above his teacher, nor a servant above his lord.",
+      "spans": [
+        {
+          "start": 0,
+          "end": 67
+        }
+      ]
+    },
+    "25": {
+      "text": "It is enough for the disciple that he be like his teacher, and the servant like his lord. If they have called the master of the house Beelzebul, how much more those of his household!",
+      "spans": [
+        {
+          "start": 0,
+          "end": 182
+        }
+      ]
+    },
+    "26": {
+      "text": "Therefore don’t be afraid of them, for there is nothing covered that will not be revealed; and hidden that will not be known.",
+      "spans": [
+        {
+          "start": 0,
+          "end": 125
+        }
+      ]
+    },
+    "27": {
+      "text": "What I tell you in the darkness, speak in the light; and what you hear whispered in the ear, proclaim on the housetops.",
+      "spans": [
+        {
+          "start": 0,
+          "end": 119
+        }
+      ]
+    },
+    "28": {
+      "text": "Don’t be afraid of those who kill the body, but are not able to kill the soul. Rather, fear him who is able to destroy both soul and body in Gehenna.",
+      "spans": [
+        {
+          "start": 0,
+          "end": 149
+        }
+      ]
+    },
+    "29": {
+      "text": "“Aren’t two sparrows sold for an assarion coin? Not one of them falls on the ground apart from your Father’s will,",
+      "spans": [
+        {
+          "start": 0,
+          "end": 114
+        }
+      ]
+    },
+    "30": {
+      "text": "but the very hairs of your head are all numbered.",
+      "spans": [
+        {
+          "start": 0,
+          "end": 49
+        }
+      ]
+    },
+    "31": {
+      "text": "Therefore don’t be afraid. You are of more value than many sparrows.",
+      "spans": [
+        {
+          "start": 0,
+          "end": 68
+        }
+      ]
+    },
+    "32": {
+      "text": "Everyone therefore who confesses me before men, I will also confess him before my Father who is in heaven.",
+      "spans": [
+        {
+          "start": 0,
+          "end": 106
+        }
+      ]
+    },
+    "33": {
+      "text": "But whoever denies me before men, I will also deny him before my Father who is in heaven.",
+      "spans": [
+        {
+          "start": 0,
+          "end": 89
+        }
+      ]
+    },
+    "34": {
+      "text": "“Don’t think that I came to send peace on the earth. I didn’t come to send peace, but a sword.",
+      "spans": [
+        {
+          "start": 0,
+          "end": 94
+        }
+      ]
+    },
+    "35": {
+      "text": "For I came to set a man at odds against his father, and a daughter against her mother, and a daughter-in-law against her mother-in-law.",
+      "spans": [
+        {
+          "start": 0,
+          "end": 135
+        }
+      ]
+    },
+    "36": {
+      "text": "A man’s foes will be those of his own household.",
+      "spans": [
+        {
+          "start": 0,
+          "end": 48
+        }
+      ]
+    },
+    "37": {
+      "text": "He who loves father or mother more than me is not worthy of me; and he who loves son or daughter more than me isn’t worthy of me.",
+      "spans": [
+        {
+          "start": 0,
+          "end": 129
+        }
+      ]
+    },
+    "38": {
+      "text": "He who doesn’t take his cross and follow after me, isn’t worthy of me.",
+      "spans": [
+        {
+          "start": 0,
+          "end": 70
+        }
+      ]
+    },
+    "39": {
+      "text": "He who seeks his life will lose it; and he who loses his life for my sake will find it.",
+      "spans": [
+        {
+          "start": 0,
+          "end": 87
+        }
+      ]
+    },
+    "40": {
+      "text": "He who receives you receives me, and he who receives me receives him who sent me.",
+      "spans": [
+        {
+          "start": 0,
+          "end": 81
+        }
+      ]
+    },
+    "41": {
+      "text": "He who receives a prophet in the name of a prophet will receive a prophet’s reward. He who receives a righteous man in the name of a righteous man will receive a righteous man’s reward.",
+      "spans": [
+        {
+          "start": 0,
+          "end": 185
+        }
+      ]
+    },
+    "42": {
+      "text": "Whoever gives one of these little ones just a cup of cold water to drink in the name of a disciple, most certainly I tell you he will in no way lose his reward.”",
+      "spans": [
+        {
+          "start": 0,
+          "end": 161
+        }
+      ]
+    }
   }
 }
