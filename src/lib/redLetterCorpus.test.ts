@@ -1335,7 +1335,7 @@ describe('John chapter 8 remaining translation-specific red-letter spans', () =>
       { verse: 49, spoken: 'I do not have a demon,”but I honor My Father, and you dishonor Me.', attribution: 'Jesus replied' },
     ];
     for (const item of cases) {
-      const verse = bsbJohn['8'][String(item.verse)];
+      const verse = bsbJohn['8'][String(item.verse) as '11' | '19' | '39' | '49'];
       const parts = redLetterVerse(bsbJohn, 8, item.verse, verse.text);
       expect(parts.filter(part => part.red).map(part => part.text).join('')).toBe(item.spoken);
       expect(parts.some(part => !part.red && part.text.includes(item.attribution))).toBe(true);
