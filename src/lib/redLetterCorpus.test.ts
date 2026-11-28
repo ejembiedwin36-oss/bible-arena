@@ -563,3 +563,52 @@ describe('John chapter 8 translation-specific red-letter spans', () => {
   });
 
 });
+const john9ReviewedVerses = [3, 4, 5, 7, 35, 37, 39, 41] as const;
+
+describe('John chapter 9 translation-specific red-letter spans', () => {
+  const versions = [
+    { version: 'KJV', corpus: john },
+    { version: 'WEB', corpus: webJohn },
+    { version: 'ASV', corpus: asvJohn },
+    { version: 'BSB', corpus: bsbJohn },
+    { version: 'YLT', corpus: yltJohn },
+  ];
+
+  it.each(versions)('$version has reviewed Jesus-speech spans in John 9', ({ corpus }) => {
+    const typedCorpus = corpus as unknown as ChapterCorpus;
+    for (const verseNumber of john9ReviewedVerses) {
+      const annotation = typedCorpus['9'][String(verseNumber)];
+      expect(annotation, `missing John 9:${verseNumber} annotation`).toBeDefined();
+      const parts = redLetterVerse(corpus, 9, verseNumber, annotation.text);
+      expect(parts.map(part => part.text).join('')).toBe(annotation.text);
+      expect(parts.some(part => part.red)).toBe(true);
+    }
+  });
+
+  it('keeps speaker introductions and the Siloam explanation outside the red spans', () => {
+    const verse3 = webJohn['9']['3'];
+    const parts3 = redLetterVerse(webJohn, 9, 3, verse3.text);
+    expect(parts3.some(part => !part.red && part.text.includes('Jesus answered'))).toBe(true);
+
+    const verse7 = webJohn['9']['7'];
+    const red7 = redLetterVerse(webJohn, 9, 7, verse7.text).filter(part => part.red).map(part => part.text).join('');
+    expect(red7).toBe('Go, wash in the pool of Siloam”');
+    expect(red7).not.toContain('Sent');
+  });
+
+  it('splits BSB John 9:37 and 9:41 around Jesus attribution', () => {
+    const verse37 = bsbJohn['9']['37'];
+    const red37 = redLetterVerse(bsbJohn, 9, 37, verse37.text).filter(part => part.red).map(part => part.text).join('');
+    expect(red37).toBe('You have already seen Him,”He is the One speaking with you.”');
+    expect(redLetterVerse(bsbJohn, 9, 37, verse37.text).some(part => !part.red && part.text.includes('Jesus answered'))).toBe(true);
+
+    const verse41 = bsbJohn['9']['41'];
+    const red41 = redLetterVerse(bsbJohn, 9, 41, verse41.text).filter(part => part.red).map(part => part.text).join('');
+    expect(red41).toBe('If you were blind,”you would not be guilty of sin. But since you claim you can see, your guilt remains.”');
+    expect(red41).not.toContain('Jesus replied');
+  });
+
+  it('does not apply John 9 red letters when the displayed text differs', () => {
+    expect(redLetterVerse(yltJohn, 9, 3, 'Changed wording')).toEqual([{ text: 'Changed wording', red: false }]);
+  });
+});
