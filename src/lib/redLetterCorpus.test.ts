@@ -334,3 +334,56 @@ describe('John chapter 4 translation-specific red-letter spans', () => {
     }
   });
 });
+
+
+const john5ReviewedVerses = [6, 8, 14, 17, ...Array.from({ length: 29 }, (_, i) => i + 19)];
+
+describe('John chapter 5 translation-specific red-letter spans', () => {
+  it.each(john3Versions)('$version has reviewed Jesus-speech spans in John 5', ({ corpus }) => {
+    const typedCorpus = corpus as unknown as ChapterCorpus;
+    for (const verseNumber of john5ReviewedVerses) {
+      const annotation = typedCorpus['5'][String(verseNumber)];
+      expect(annotation, `missing John 5:${verseNumber} annotation`).toBeDefined();
+      const parts = redLetterVerse(corpus, 5, verseNumber, annotation.text);
+      expect(parts.map((part) => part.text).join('')).toBe(annotation.text);
+      expect(parts.some((part) => part.red)).toBe(true);
+    }
+  });
+
+  it('highlights Jesus’ question in John 5:6 without colouring the narration', () => {
+    const expected = [
+      { corpus: john, text: 'Wilt thou be made whole?' },
+      { corpus: webJohn, text: '“Do you want to be made well?”' },
+      { corpus: asvJohn, text: 'Wouldest thou be made whole?' },
+      { corpus: yltJohn, text: "'Dost thou wish to become whole?'" },
+      { corpus: bsbJohn, text: '“Do you want to get well?”' },
+    ];
+    for (const item of expected) {
+      const verse = (item.corpus as unknown as ChapterCorpus)['5']['6'];
+      const parts = redLetterVerse(item.corpus, 5, 6, verse.text);
+      expect(parts.filter((part) => part.red).map((part) => part.text).join('')).toBe(item.text);
+      expect(parts.some((part) => !part.red)).toBe(true);
+    }
+  });
+
+  it('excludes BSB section headings from John 5:30 and 5:38', () => {
+    const verse30 = bsbJohn['5']['30'];
+    const red30 = redLetterVerse(bsbJohn, 5, 30, verse30.text).filter((part) => part.red).map((part) => part.text).join('');
+    expect(red30).toBe('I can do nothing by Myself; I judge only as I hear. And My judgment is just, because I do not seek My own will, but the will of Him who sent Me.');
+    expect(red30).not.toContain('Testimonies about Jesus');
+    const verse38 = bsbJohn['5']['38'];
+    const red38 = redLetterVerse(bsbJohn, 5, 38, verse38.text).filter((part) => part.red).map((part) => part.text).join('');
+    expect(red38).toBe('nor does His word abide in you, because you do not believe the One He sent.');
+    expect(red38).not.toContain('The Witness of Scripture');
+  });
+
+  it('leaves the non-speech verses John 5:9, 15, and 18 uncoloured', () => {
+    for (const { corpus } of john3Versions) {
+      const typedCorpus = corpus as unknown as ChapterCorpus;
+      for (const verseNumber of [9, 15, 18]) {
+        const text = typedCorpus['5'][String(verseNumber)]?.text ?? 'Unannotated verse';
+        expect(redLetterVerse(corpus, 5, verseNumber, text).some((part) => part.red)).toBe(false);
+      }
+    }
+  });
+});
