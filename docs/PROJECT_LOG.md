@@ -925,3 +925,12 @@ The YLT source-preparation workflow run `45942618006` completed successfully.
 - Added regression tests for all 12 reviewed verses in all five versions, reported speech, mixed-speaker boundaries, and text mismatch fallback. A direct exact-text audit confirmed all 48 new annotations match production text and have valid spans.
 - Verification for commit `6ad4ffc`: CI and Reader verification succeeded; 29 test files / 267 tests passed, API and TypeScript checks passed, and the production build passed. Deployment to the live website has not been independently confirmed.
 - Next: verify John 18, then continue with John chapter 19.
+
+
+## John chapter 19 annotation checkpoint — 2026-11-28
+
+- Added exact-text Jesus-speech spans for the 5 reviewed verses (19:11, 19:26–28, and 19:30) to WEB, ASV, YLT, and BSB; existing KJV annotations were preserved.
+- John 19:11 highlights Jesus’ complete answer after the attribution. John 19:26–27 highlight only His words to His mother and the disciple; BSB 19:27 and 19:30 stop before appended section headings.
+- Added regression tests for all 5 reviewed verses in all five versions, mixed narration boundaries, heading exclusion, and text mismatch fallback. A direct exact-text audit confirmed all 20 new annotations match production text and have valid spans.
+- CI and Reader verification are pending for this John 19 checkpoint; deployment is not confirmed.
+- Next: verify John 19, then continue with John chapter 20.
