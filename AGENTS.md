@@ -446,3 +446,12 @@ The Reader now offers the red-letter control for KJV, WEB, ASV, BSB, and YLT. AS
 - Added regression tests for the six reviewed verse keys across all five versions and the BSB attribution/heading boundaries. A direct exact-text audit confirmed all 24 new annotations match production text and have valid spans.
 - Verification for commit `064685f`: CI and Reader verification succeeded; 29 test files / 310 tests passed, API and TypeScript checks passed, and the production build passed. Deployment to the live website has not been independently confirmed.
 - Next: verify this checkpoint, then continue Matthew chapter 5 and the remaining KJV-listed verses chapter by chapter.
+
+
+## Matthew chapter 5 checkpoint — 2026-11-28
+
+- Added full Jesus-speech spans for Matthew 5:3–48 in ASV, BSB, and YLT (138 annotations); WEB’s existing 46 verse annotations were preserved and audited.
+- BSB annotations stop before appended headings at 5:12, 5:16, 5:20, 5:26, 5:30, 5:32, and 5:37.
+- Added regression tests for all 46 verses in all five versions and each BSB heading boundary. A direct exact-text audit confirmed 184 annotations (46 verses × 4 translations) match production text and have valid spans.
+- CI and Reader verification are pending for Matthew 5; deployment is not confirmed.
+- Next: verify Matthew 5, then continue with Matthew chapter 6.
