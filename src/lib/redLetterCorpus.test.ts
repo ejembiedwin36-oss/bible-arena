@@ -1373,7 +1373,7 @@ describe('John chapter 8 remaining translation-specific red-letter spans', () =>
       { corpus: webJohn, seven: 'He who is without sin among you, let him throw the first stone at her.”', ten: 'Woman, where are your accusers? Did no one condemn you?”' },
       { corpus: asvJohn, seven: 'He that is without sin among you, let him first cast a stone at her.', ten: 'Woman, where are they? did no man condemn thee?' },
       { corpus: bsbJohn, seven: 'Let him who is without sin among you be the first to cast a stone at her.”', ten: 'Woman, where are your accusers? Has no one condemned you?”' },
-      { corpus: yltJohn, seven: 'The sinless of you — let him first cast the stone at her;', ten: 'Woman, where are those — thine accusers? did no one pass sentence upon thee?\'' },
+      { corpus: yltJohn, seven: 'The sinless of you — let him first cast the stone at her;\\'', ten: 'Woman, where are those — thine accusers? did no one pass sentence upon thee?\'' },
     ];
     for (const item of cases) {
       const verse7 = item.corpus['8']['7'];
