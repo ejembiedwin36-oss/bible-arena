@@ -853,3 +853,12 @@ The YLT source-preparation workflow run `45942618006` completed successfully.
 - Added regression tests for all 29 reviewed verses in all five versions, attribution boundaries, and text mismatch fallback. A direct exact-text audit confirmed all 116 new annotations match production text and have valid spans.
 - Verification for commit `f42e542`: CI and Reader verification succeeded; 29 test files / 201 tests passed, API and TypeScript checks passed, and the production build passed. Deployment to the live website has not been independently confirmed.
 - Next: verify John 10, then continue with John chapter 11.
+
+
+## John chapter 11 annotation checkpoint — 2026-11-28
+
+- Added exact-text Jesus-speech spans for 17 reviewed verses (11:4, 7, 9–11, 14–15, 23, 25–26, and 34, 39–44) to WEB, ASV, YLT, and BSB; existing KJV annotations were preserved.
+- John 11:9 starts after Jesus’ speaker introduction. John 11:34 and 11:39 highlight only Jesus’ questions/command, not the replies from others. John 11:44 stops before the appended BSB section heading and excludes the speaker attribution.
+- Added regression tests for all 17 reviewed verses in all five versions, mixed-speaker boundaries, and text mismatch fallback. A direct exact-text audit confirmed all 68 new annotations match production text and have valid spans.
+- CI and Reader verification are pending for this John 11 checkpoint; deployment is not confirmed.
+- Next: verify John 11, then continue with John chapter 12.
