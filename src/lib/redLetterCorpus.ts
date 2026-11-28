@@ -29,7 +29,7 @@ const asvLoaders: Record<string, () => Promise<{ default: CorpusBook }>> = {
 const yltLoaders: Record<string, () => Promise<{ default: CorpusBook }>> = {
   john: () => import('../data/yltRedLetters/John.json'),
 };
-// BSB annotations are intentionally unavailable until exact speech spans are reviewed.
+// BSB John annotations are reviewed chapter-by-chapter; unannotated verses remain normal text.
 // Never fall back to KJV offsets or the database's whole-verse marker for another translation.
 const bsbLoaders: Record<string, () => Promise<{ default: CorpusBook }>> = {
   john: () => import('../data/bsbRedLetters/John.json'),
