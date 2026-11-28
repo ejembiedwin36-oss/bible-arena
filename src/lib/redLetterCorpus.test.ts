@@ -1018,3 +1018,49 @@ describe('John chapter 16 translation-specific red-letter spans', () => {
     expect(redLetterVerse(webJohn, 16, 33, 'Changed wording')).toEqual([{ text: 'Changed wording', red: false }]);
   });
 });
+
+const john17ReviewedVerses = [1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21, 22, 23, 24, 25, 26] as const;
+
+describe('John chapter 17 translation-specific red-letter spans', () => {
+  const versions = [
+    { version: 'KJV', corpus: john },
+    { version: 'WEB', corpus: webJohn },
+    { version: 'ASV', corpus: asvJohn },
+    { version: 'BSB', corpus: bsbJohn },
+    { version: 'YLT', corpus: yltJohn },
+  ];
+
+  it.each(versions)('$version has reviewed Jesus-speech spans in John 17', ({ corpus }) => {
+    const typedCorpus = corpus as unknown as ChapterCorpus;
+    for (const verseNumber of john17ReviewedVerses) {
+      const annotation = typedCorpus['17'][String(verseNumber)];
+      expect(annotation, `missing John 17:${verseNumber} annotation`).toBeDefined();
+      const parts = redLetterVerse(corpus, 17, verseNumber, annotation.text);
+      expect(parts.map(part => part.text).join('')).toBe(annotation.text);
+      expect(parts.some(part => part.red)).toBe(true);
+    }
+  });
+
+  it('keeps John 17:1 narration outside the prayer', () => {
+    const verse = bsbJohn['17']['1'];
+    const parts = redLetterVerse(bsbJohn, 17, 1, verse.text);
+    expect(parts.some(part => !part.red && part.text.includes('When Jesus had spoken these things'))).toBe(true);
+    expect(parts.filter(part => part.red).map(part => part.text).join('')).toBe('Father, the hour has come. Glorify Your Son, that Your Son may glorify You.');
+  });
+
+  it('excludes BSB John 17:5 and 17:19 section headings', () => {
+    const verse5 = bsbJohn['17']['5'];
+    const red5 = redLetterVerse(bsbJohn, 17, 5, verse5.text).filter(part => part.red).map(part => part.text).join('');
+    expect(red5).toBe('And now, Father, glorify Me in Your presence with the glory I had with You before the world existed.');
+    expect(red5).not.toContain('Prayer for the Disciples');
+
+    const verse19 = bsbJohn['17']['19'];
+    const red19 = redLetterVerse(bsbJohn, 17, 19, verse19.text).filter(part => part.red).map(part => part.text).join('');
+    expect(red19).toBe('For them I sanctify Myself, so that they too may be sanctified by the truth.');
+    expect(red19).not.toContain('Prayer for All Believers');
+  });
+
+  it('does not apply John 17 red letters when the displayed text differs', () => {
+    expect(redLetterVerse(yltJohn, 17, 26, 'Changed wording')).toEqual([{ text: 'Changed wording', red: false }]);
+  });
+});
