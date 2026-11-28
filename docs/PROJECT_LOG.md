@@ -787,3 +787,12 @@ The YLT source-preparation workflow run `45942618006` completed successfully.
 - Verification for commit `c2ee791`: Reader verification and main CI both succeeded; 29 test files / 135 tests passed, TypeScript checks passed, and the production build passed.
 - Deployment to the live website has not been independently confirmed in this checkpoint.
 - Next: continue John chapter 4 using exact translation text and reviewed speech boundaries.
+
+
+## John chapter 4 annotation checkpoint — 2026-11-28
+
+- Preserved the existing KJV John 4 corpus and added exact-text speech spans for WEB, ASV, YLT, and BSB at verses 7, 10, 13–14, 16–18, 21–24, 26, 32, 34–38, 48, 50, and 53 (21 reviewed verses per version).
+- Mixed dialogue is separated carefully: John 4:17 highlights Jesus’ reply but not the woman’s statement; BSB 4:21 and 4:50 use multiple spans around speaker attributions; BSB 4:38 excludes its appended section heading; John 4:53 highlights only the reported spoken words.
+- Verification for commit `699e0ed`: main CI and Reader verification succeeded; 29 test files / 145 tests passed, API and TypeScript checks passed, and the production build passed.
+- Deployment to the live website has not been independently confirmed.
+- Next: continue John chapter 5 with translation-specific spans and exact speaker boundaries.
