@@ -199,3 +199,69 @@ describe('John chapter 2 translation-specific red-letter spans', () => {
     }
   });
 });
+
+
+import type { RedLetterSegment } from './redLetter';
+
+type ChapterCorpus = Record<string, Record<string, { text: string; spans: { start: number; end: number }[] }>>;
+const john3Versions = [
+  { version: 'KJV', corpus: john },
+  { version: 'WEB', corpus: webJohn },
+  { version: 'ASV', corpus: asvJohn },
+  { version: 'BSB', corpus: bsbJohn },
+  { version: 'YLT', corpus: yltJohn },
+] as const;
+const john3ReviewedVerses = [3, 5, 6, 7, 8, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21] as const;
+
+describe('John chapter 3 translation-specific red-letter spans', () => {
+  it.each(john3Versions)('$version has reviewed Jesus-speech spans in John 3', ({ corpus }) => {
+    const typedCorpus = corpus as unknown as ChapterCorpus;
+    for (const verseNumber of john3ReviewedVerses) {
+      const annotation = typedCorpus['3'][String(verseNumber)];
+      expect(annotation, `missing John 3:${verseNumber} annotation`).toBeDefined();
+      const parts = redLetterVerse(corpus, 3, verseNumber, annotation.text);
+      expect(parts.map((part) => part.text).join('')).toBe(annotation.text);
+      expect(parts.some((part) => part.red)).toBe(true);
+    }
+  });
+
+  it('keeps Jesus’ opening words separate from the attribution in ASV, WEB, and YLT', () => {
+    const expected = [
+      { corpus: asvJohn, text: 'Verily, verily, I say unto thee, Except one be born anew, he cannot see the kingdom of God.' },
+      { corpus: webJohn, text: '“Most certainly, I tell you, unless one is born anew, he can’t see God’s Kingdom.”' },
+      { corpus: yltJohn, text: "'Verily, verily, I say to thee, If any one may not be born from above, he is not able to see the reign of God;'" },
+    ];
+    for (const item of expected) {
+      const parts = redLetterVerse(item.corpus, 3, 3, item.corpus['3']['3'].text);
+      expect(parts.filter((part) => part.red).map((part) => part.text).join('')).toBe(item.text);
+      expect(parts.some((part) => !part.red)).toBe(true);
+    }
+  });
+
+  it('highlights both BSB speech portions in John 3:10 but not “said Jesus”', () => {
+    const verse = bsbJohn['3']['10'];
+    const parts = redLetterVerse(bsbJohn, 3, 10, verse.text);
+    expect(parts.filter((part) => part.red).map((part) => part.text).join('')).toBe(
+      '“You are Israel’s teacher,”“and you do not understand these things?',
+    );
+    expect(parts.some((part) => part.text.includes('said Jesus') && !part.red)).toBe(true);
+  });
+
+  it('does not colour the BSB section heading appended after John 3:21', () => {
+    const verse = bsbJohn['3']['21'];
+    const parts = redLetterVerse(bsbJohn, 3, 21, verse.text);
+    const redText = parts.filter((part) => part.red).map((part) => part.text).join('');
+    expect(redText).toBe('But whoever practices the truth comes into the Light, so that it may be seen clearly that what he has done has been accomplished in God.”');
+    expect(redText).not.toContain('John’s Testimony about Jesus');
+  });
+
+  it('leaves Nicodemus’ replies and the following narration uncoloured', () => {
+    for (const { corpus } of john3Versions) {
+      const typedCorpus = corpus as unknown as ChapterCorpus;
+      for (const verseNumber of [4, 9, 22]) {
+        const text = typedCorpus['3'][String(verseNumber)]?.text ?? 'Unannotated verse';
+        expect(redLetterVerse(corpus, 3, verseNumber, text).some((part) => part.red)).toBe(false);
+      }
+    }
+  });
+});
