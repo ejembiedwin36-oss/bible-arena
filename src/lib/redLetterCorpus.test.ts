@@ -922,3 +922,42 @@ describe('John chapter 14 translation-specific red-letter spans', () => {
     expect(redLetterVerse(webJohn, 14, 23, 'Changed wording')).toEqual([{ text: 'Changed wording', red: false }]);
   });
 });
+
+const john15ReviewedVerses = [1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21, 22, 23, 24, 25, 26, 27] as const;
+
+describe('John chapter 15 translation-specific red-letter spans', () => {
+  const versions = [
+    { version: 'KJV', corpus: john },
+    { version: 'WEB', corpus: webJohn },
+    { version: 'ASV', corpus: asvJohn },
+    { version: 'BSB', corpus: bsbJohn },
+    { version: 'YLT', corpus: yltJohn },
+  ];
+
+  it.each(versions)('$version has reviewed Jesus-speech spans in John 15', ({ corpus }) => {
+    const typedCorpus = corpus as unknown as ChapterCorpus;
+    for (const verseNumber of john15ReviewedVerses) {
+      const annotation = typedCorpus['15'][String(verseNumber)];
+      expect(annotation, `missing John 15:${verseNumber} annotation`).toBeDefined();
+      const parts = redLetterVerse(corpus, 15, verseNumber, annotation.text);
+      expect(parts.map(part => part.text).join('')).toBe(annotation.text);
+      expect(parts.some(part => part.red)).toBe(true);
+    }
+  });
+
+  it('excludes BSB John 15:8 and 15:17 section headings', () => {
+    const verse8 = bsbJohn['15']['8'];
+    const red8 = redLetterVerse(bsbJohn, 15, 8, verse8.text).filter(part => part.red).map(part => part.text).join('');
+    expect(red8).toBe('This is to My Father’s glory, that you bear much fruit, proving yourselves to be My disciples.');
+    expect(red8).not.toContain('No Greater Love');
+
+    const verse17 = bsbJohn['15']['17'];
+    const red17 = redLetterVerse(bsbJohn, 15, 17, verse17.text).filter(part => part.red).map(part => part.text).join('');
+    expect(red17).toBe('This is My command to you: Love one another.');
+    expect(red17).not.toContain('The Hatred of the World');
+  });
+
+  it('does not apply John 15 red letters when the displayed text differs', () => {
+    expect(redLetterVerse(webJohn, 15, 1, 'Changed wording')).toEqual([{ text: 'Changed wording', red: false }]);
+  });
+});
