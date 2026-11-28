@@ -1752,3 +1752,62 @@ describe('Matthew chapter 10 complete red-letter spans', () => {
     expect(redLetterVerse(asvMatthew, 10, 42, 'Changed wording')).toEqual([{ text: 'Changed wording', red: false }]);
   });
 });
+
+const matthew11ReviewedVerses = [4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 21, 22, 23, 24, 25, 26, 27, 28, 29, 30] as const;
+
+describe('Matthew chapter 11 translation-specific red-letter spans', () => {
+  const versions = [
+    { version: 'KJV', corpus: matthew },
+    { version: 'WEB', corpus: webMatthew },
+    { version: 'ASV', corpus: asvMatthew },
+    { version: 'BSB', corpus: bsbMatthew },
+    { version: 'YLT', corpus: yltMatthew },
+  ];
+
+  it.each(versions)('$version has reviewed Jesus-speech spans in Matthew 11', ({ corpus }) => {
+    const typedCorpus = corpus as unknown as ChapterCorpus;
+    for (const verseNumber of matthew11ReviewedVerses) {
+      const annotation = typedCorpus['11'][String(verseNumber)];
+      expect(annotation, `missing Matthew 11:${verseNumber} annotation`).toBeDefined();
+      const parts = redLetterVerse(corpus, 11, verseNumber, annotation.text);
+      expect(parts.map(part => part.text).join('')).toBe(annotation.text);
+      expect(parts.some(part => part.red)).toBe(true);
+    }
+  });
+
+  it('keeps the Matthew 11:4, 11:7, and 11:25 attributions outside the spoken text', () => {
+    const verse4 = bsbMatthew['11']['4'];
+    expect(redLetterVerse(bsbMatthew, 11, 4, verse4.text).filter(part => part.red).map(part => part.text).join('')).toBe('Go back and report to John what you hear and see:');
+    expect(redLetterVerse(bsbMatthew, 11, 4, verse4.text).some(part => !part.red && part.text.includes('Jesus replied'))).toBe(true);
+
+    const verse7 = bsbMatthew['11']['7'];
+    const parts7 = redLetterVerse(bsbMatthew, 11, 7, verse7.text);
+    expect(parts7.filter(part => part.red).map(part => part.text).join('')).toBe('What did you go out into the wilderness to see? A reed swaying in the wind?');
+    expect(parts7.some(part => !part.red && part.text.includes('Jesus began to speak'))).toBe(true);
+
+    const verse25 = bsbMatthew['11']['25'];
+    const parts25 = redLetterVerse(bsbMatthew, 11, 25, verse25.text);
+    expect(parts25.filter(part => part.red).map(part => part.text).join('')).toBe('I praise You, Father, Lord of heaven and earth, because You have hidden these things from the wise and learned, and revealed them to little children.');
+    expect(parts25.some(part => !part.red && part.text.includes('At that time Jesus declared'))).toBe(true);
+  });
+
+  it('stops BSB Matthew 11 before appended section headings', () => {
+    const headings = {
+      6: 'Jesus Testifies about John',
+      19: 'Woe to the Unrepentant',
+      24: 'Rest for the Weary',
+    } as const;
+    for (const [verseKey, heading] of Object.entries(headings)) {
+      const verse = bsbMatthew['11'][verseKey as keyof typeof bsbMatthew['11']];
+      const red = redLetterVerse(bsbMatthew, 11, Number(verseKey), verse.text).filter(part => part.red).map(part => part.text).join('');
+      const headingIndex = verse.text.indexOf(heading);
+      expect(headingIndex).toBeGreaterThan(0);
+      expect(red).toBe(verse.text.slice(0, headingIndex).trimEnd());
+      expect(red).not.toContain(heading);
+    }
+  });
+
+  it('does not apply Matthew 11 red letters when the displayed text differs', () => {
+    expect(redLetterVerse(yltMatthew, 11, 30, 'Changed wording')).toEqual([{ text: 'Changed wording', red: false }]);
+  });
+});
