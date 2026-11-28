@@ -2,6 +2,10 @@ import { describe, expect, it } from 'vitest';
 import { alignRedLetters, redLetterVerse } from './redLetterCorpus';
 import john from '../data/redLetters/John.json';
 import matthew from '../data/redLetters/Matthew.json';
+import asvMatthew from '../data/asvRedLetters/Matthew.json';
+import bsbMatthew from '../data/bsbRedLetters/Matthew.json';
+import yltMatthew from '../data/yltRedLetters/Matthew.json';
+
 
 describe('KJV red-letter marker alignment', () => {
   it('bundles the John 4:10 and 4:14 red-letter passages locally', () => {
@@ -1387,5 +1391,51 @@ describe('John chapter 8 remaining translation-specific red-letter spans', () =>
 
   it('does not apply remaining John 8 red letters when the displayed text differs', () => {
     expect(redLetterVerse(asvJohn, 8, 55, 'Changed wording')).toEqual([{ text: 'Changed wording', red: false }]);
+  });
+});
+
+const matthew34Reviewed = [{ chapter: 3, verse: 15 }, { chapter: 4, verse: 4 }, { chapter: 4, verse: 7 }, { chapter: 4, verse: 10 }, { chapter: 4, verse: 17 }, { chapter: 4, verse: 19 }] as const;
+
+describe('Matthew 3-4 translation-specific red-letter spans', () => {
+  const versions = [
+    { version: 'KJV', corpus: matthew },
+    { version: 'WEB', corpus: webMatthew },
+    { version: 'ASV', corpus: asvMatthew },
+    { version: 'BSB', corpus: bsbMatthew },
+    { version: 'YLT', corpus: yltMatthew },
+  ];
+
+  it.each(versions)('$version has reviewed Jesus-speech spans in Matthew 3-4', ({ corpus }) => {
+    for (const item of matthew34Reviewed) {
+      const annotation = corpus[String(item.chapter)][String(item.verse)];
+      expect(annotation, `missing Matthew ${item.chapter}:${item.verse}`).toBeDefined();
+      const parts = redLetterVerse(corpus, item.chapter, item.verse, annotation.text);
+      expect(parts.map(part => part.text).join('')).toBe(annotation.text);
+      expect(parts.some(part => part.red)).toBe(true);
+    }
+  });
+
+  it('splits BSB Matthew 3:15, 4:10, and 4:19 around Jesus attributions', () => {
+    const verse315 = bsbMatthew['3']['15'];
+    const parts315 = redLetterVerse(bsbMatthew, 3, 15, verse315.text);
+    expect(parts315.filter(part => part.red).map(part => part.text).join('')).toBe('Let it be so now,”It is fitting for us to fulfill all righteousness in this way.”');
+    expect(parts315.some(part => !part.red && part.text.includes('Jesus replied'))).toBe(true);
+
+    const verse410 = bsbMatthew['4']['10'];
+    const parts410 = redLetterVerse(bsbMatthew, 4, 10, verse410.text);
+    expect(parts410.filter(part => part.red).map(part => part.text).join('')).toBe('Away from Me, Satan!”For it is written: ‘Worship the Lord your God and serve Him only.’ ');
+    expect(parts410.some(part => !part.red && part.text.includes('Jesus told him'))).toBe(true);
+
+    const verse419 = bsbMatthew['4']['19'];
+    const parts419 = redLetterVerse(bsbMatthew, 4, 19, verse419.text);
+    expect(parts419.filter(part => part.red).map(part => part.text).join('')).toBe('Come, follow Me,”and I will make you fishers of men.');
+    expect(parts419.some(part => !part.red && part.text.includes('Jesus said'))).toBe(true);
+  });
+
+  it('stops BSB Matthew 4:17 before the appended section heading', () => {
+    const verse = bsbMatthew['4']['17'];
+    const red = redLetterVerse(bsbMatthew, 4, 17, verse.text).filter(part => part.red).map(part => part.text).join('');
+    expect(red).toBe('Repent, for the kingdom of heaven is near.”');
+    expect(red).not.toContain('The First Disciples');
   });
 });
