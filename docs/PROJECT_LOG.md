@@ -988,5 +988,5 @@ The YLT source-preparation workflow run `45942618006` completed successfully.
 - Added full Jesus-speech spans for all 34 verses in Matthew 6 to WEB, ASV, BSB, and YLT (136 annotations); existing KJV annotations were preserved.
 - BSB Matthew 6:4, 6:15, 6:18, 6:21, and 6:24 stop before appended section headings.
 - Added regression tests for all 34 verses in all five versions and each BSB heading boundary. A direct exact-text audit confirmed all 136 new annotations match production text and have valid spans.
-- CI and Reader verification are pending for Matthew 6; deployment is not confirmed.
+- Verification for commit `316ee79`: CI and Reader verification succeeded; 29 test files / 324 tests passed, API and TypeScript checks passed, and the production build passed. Deployment to the live website has not been independently confirmed.
 - Next: verify Matthew 6, then continue with Matthew chapter 7.
