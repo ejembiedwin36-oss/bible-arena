@@ -1633,3 +1633,72 @@ describe('Matthew chapter 8 translation-specific red-letter spans', () => {
     expect(redLetterVerse(yltMatthew, 8, 32, 'Changed wording')).toEqual([{ text: 'Changed wording', red: false }]);
   });
 });
+
+const matthew9ReviewedVerses = [2, 4, 5, 6, 9, 12, 13, 15, 16, 17, 22, 24, 28, 29, 30, 37, 38] as const;
+
+describe('Matthew chapter 9 translation-specific red-letter spans', () => {
+  const versions = [
+    { version: 'KJV', corpus: matthew },
+    { version: 'WEB', corpus: webMatthew },
+    { version: 'ASV', corpus: asvMatthew },
+    { version: 'BSB', corpus: bsbMatthew },
+    { version: 'YLT', corpus: yltMatthew },
+  ];
+
+  it.each(versions)('$version has reviewed Jesus-speech spans in Matthew 9', ({ corpus }) => {
+    const typedCorpus = corpus as unknown as ChapterCorpus;
+    for (const verseNumber of matthew9ReviewedVerses) {
+      const annotation = typedCorpus['9'][String(verseNumber)];
+      expect(annotation, `missing Matthew 9:${verseNumber} annotation`).toBeDefined();
+      const parts = redLetterVerse(corpus, 9, verseNumber, annotation.text);
+      expect(parts.map(part => part.text).join('')).toBe(annotation.text);
+      expect(parts.some(part => part.red)).toBe(true);
+    }
+  });
+
+  it('splits BSB Matthew 9:6, 9:22, and 9:24 around speaker attributions', () => {
+    const verse6 = bsbMatthew['9']['6'];
+    const parts6 = redLetterVerse(bsbMatthew, 9, 6, verse6.text);
+    expect(parts6.filter(part => part.red).map(part => part.text).join('')).toBe('But so that you may know that the Son of Man has authority on earth to forgive sins...”Get up, pick up your mat, and go home.”');
+    expect(parts6.some(part => !part.red && part.text.includes('Then He said to the paralytic'))).toBe(true);
+
+    const verse22 = bsbMatthew['9']['22'];
+    const parts22 = redLetterVerse(bsbMatthew, 9, 22, verse22.text);
+    expect(parts22.filter(part => part.red).map(part => part.text).join('')).toBe('Take courage, daughter,”your faith has healed you.”');
+    expect(parts22.some(part => !part.red && part.text.includes('He said'))).toBe(true);
+
+    const verse24 = bsbMatthew['9']['24'];
+    const parts24 = redLetterVerse(bsbMatthew, 9, 24, verse24.text);
+    expect(parts24.filter(part => part.red).map(part => part.text).join('')).toBe('Go away,”The girl is not dead, but asleep.”');
+    expect(parts24.some(part => !part.red && part.text.includes('He told them'))).toBe(true);
+  });
+
+  it('excludes BSB Matthew 9 section headings and other speakers', () => {
+    const headings = [
+      { verse: 13, heading: 'Questions about Fasting' },
+      { verse: 15, heading: 'The Patches and the Wineskins' },
+      { verse: 17, heading: 'The Healing Touch of Jesus' },
+    ];
+    for (const item of headings) {
+      const verse = bsbMatthew['9'][String(item.verse) as '13' | '15' | '17'];
+      const red = redLetterVerse(bsbMatthew, 9, item.verse, verse.text).filter(part => part.red).map(part => part.text).join('');
+      expect(red).not.toContain(item.heading);
+    }
+
+    const verse28 = bsbMatthew['9']['28'];
+    const parts28 = redLetterVerse(bsbMatthew, 9, 28, verse28.text);
+    expect(parts28.filter(part => part.red).map(part => part.text).join('')).toBe('Do you believe that I am able to do this?”');
+    expect(parts28.some(part => !part.red && part.text.includes('Yes, Lord'))).toBe(true);
+  });
+
+  it('keeps narration outside the brief commands in Matthew 9:29-30', () => {
+    const verse29 = bsbMatthew['9']['29'];
+    expect(redLetterVerse(bsbMatthew, 9, 29, verse29.text).filter(part => part.red).map(part => part.text).join('')).toBe('According to your faith will it be done to you.”');
+    const verse30 = bsbMatthew['9']['30'];
+    expect(redLetterVerse(bsbMatthew, 9, 30, verse30.text).filter(part => part.red).map(part => part.text).join('')).toBe('See that no one finds out about this!”');
+  });
+
+  it('does not apply Matthew 9 red letters when the displayed text differs', () => {
+    expect(redLetterVerse(webMatthew, 9, 30, 'Changed wording')).toEqual([{ text: 'Changed wording', red: false }]);
+  });
+});
