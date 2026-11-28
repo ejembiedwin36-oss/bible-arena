@@ -436,3 +436,13 @@ The Reader now offers the red-letter control for KJV, WEB, ASV, BSB, and YLT. AS
 - Cross-version key audit: WEB, ASV, BSB, and YLT now contain every existing KJV red-letter verse key in John chapters 1–21; no KJV keys are missing.
 - Verification for commit `728c3b8`: CI and Reader verification succeeded; 29 test files / 303 tests passed, API and TypeScript checks passed, and the production build passed. Deployment to the live website has not been independently confirmed.
 - Next: verify this completion, then begin the red-letter key audit for Matthew.
+
+
+## Matthew 3–4 initial cross-version checkpoint — 2026-11-28
+
+- Added translation-specific annotations for Matthew 3:15 and 4:4, 4:7, 4:10, 4:17, and 4:19 in WEB, ASV, BSB, and YLT (24 annotations). Existing WEB Matthew chapter 5 data was preserved.
+- Created ASV, BSB, and YLT Matthew corpus files and added Matthew loader entries for those versions. The reader can now load Matthew red-letter data for all five supported English versions.
+- BSB Matthew 3:15, 4:10, and 4:19 split speech around speaker attributions; 4:17 stops before its appended section heading.
+- Added regression tests for the six reviewed verse keys across all five versions and the BSB attribution/heading boundaries. A direct exact-text audit confirmed all 24 new annotations match production text and have valid spans.
+- CI and Reader verification are pending for this Matthew 3–4 checkpoint; deployment is not confirmed.
+- Next: verify this checkpoint, then continue Matthew chapter 5 and the remaining KJV-listed verses chapter by chapter.
