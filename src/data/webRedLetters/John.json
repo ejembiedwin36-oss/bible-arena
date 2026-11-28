@@ -3245,5 +3245,115 @@
         }
       ]
     }
+  },
+  "18": {
+    "4": {
+      "text": "Jesus therefore, knowing all the things that were happening to him, went out, and said to them, “Who are you looking for?”",
+      "spans": [
+        {
+          "start": 97,
+          "end": 122
+        }
+      ]
+    },
+    "5": {
+      "text": "They answered him, “Jesus of Nazareth.” Jesus said to them, “I am he.” Judas also, who betrayed him, was standing with them.",
+      "spans": [
+        {
+          "start": 61,
+          "end": 70
+        }
+      ]
+    },
+    "6": {
+      "text": "When therefore he said to them, “I am he,” they went backward, and fell to the ground.",
+      "spans": [
+        {
+          "start": 33,
+          "end": 42
+        }
+      ]
+    },
+    "7": {
+      "text": "Again therefore he asked them, “Who are you looking for?” They said, “Jesus of Nazareth.”",
+      "spans": [
+        {
+          "start": 32,
+          "end": 57
+        }
+      ]
+    },
+    "8": {
+      "text": "Jesus answered, “I told you that I am he. If therefore you seek me, let these go their way,”",
+      "spans": [
+        {
+          "start": 17,
+          "end": 92
+        }
+      ]
+    },
+    "11": {
+      "text": "Jesus therefore said to Peter, “Put the sword into its sheath. The cup which the Father has given me, shall I not surely drink it?”",
+      "spans": [
+        {
+          "start": 32,
+          "end": 131
+        }
+      ]
+    },
+    "20": {
+      "text": "Jesus answered him, “I spoke openly to the world. I always taught in synagogues, and in the temple, where the Jews always meet. I said nothing in secret.",
+      "spans": [
+        {
+          "start": 21,
+          "end": 153
+        }
+      ]
+    },
+    "21": {
+      "text": "Why do you ask me? Ask those who have heard me what I said to them. Behold, they know the things which I said.”",
+      "spans": [
+        {
+          "start": 0,
+          "end": 111
+        }
+      ]
+    },
+    "23": {
+      "text": "Jesus answered him, “If I have spoken evil, testify of the evil; but if well, why do you beat me?”",
+      "spans": [
+        {
+          "start": 21,
+          "end": 98
+        }
+      ]
+    },
+    "34": {
+      "text": "Jesus answered him, “Do you say this by yourself, or did others tell you about me?”",
+      "spans": [
+        {
+          "start": 21,
+          "end": 83
+        }
+      ]
+    },
+    "36": {
+      "text": "Jesus answered, “My Kingdom is not of this world. If my Kingdom were of this world, then my servants would fight, that I wouldn’t be delivered to the Jews. But now my Kingdom is not from here.”",
+      "spans": [
+        {
+          "start": 17,
+          "end": 193
+        }
+      ]
+    },
+    "37": {
+      "text": "Pilate therefore said to him, “Are you a king then?” Jesus answered, “You say that I am a king. For this reason I have been born, and for this reason I have come into the world, that I should testify to the truth. Everyone who is of the truth listens to my voice.”",
+      "spans": [
+        {
+          "start": 70,
+          "end": 264
+        }
+      ]
+    }
   }
 }
