@@ -1368,6 +1368,23 @@ describe('John chapter 8 remaining translation-specific red-letter spans', () =>
     expect(red47).not.toContain('Before Abraham Was Born');
   });
 
+  it('includes the complete spoken statements in John 8:7 and 8:10 across versions', () => {
+    const cases = [
+      { corpus: webJohn, seven: 'He who is without sin among you, let him throw the first stone at her.”', ten: 'Woman, where are your accusers? Did no one condemn you?”' },
+      { corpus: asvJohn, seven: 'He that is without sin among you, let him first cast a stone at her.', ten: 'Woman, where are they? did no man condemn thee?' },
+      { corpus: bsbJohn, seven: 'Let him who is without sin among you be the first to cast a stone at her.”', ten: 'Woman, where are your accusers? Has no one condemned you?”' },
+      { corpus: yltJohn, seven: 'The sinless of you — let him first cast the stone at her;', ten: 'Woman, where are those — thine accusers? did no one pass sentence upon thee?\'' },
+    ];
+    for (const item of cases) {
+      const verse7 = item.corpus['8']['7'];
+      const red7 = redLetterVerse(item.corpus, 8, 7, verse7.text).filter(part => part.red).map(part => part.text).join('');
+      expect(red7).toBe(item.seven);
+      const verse10 = item.corpus['8']['10'];
+      const red10 = redLetterVerse(item.corpus, 8, 10, verse10.text).filter(part => part.red).map(part => part.text).join('');
+      expect(red10).toBe(item.ten);
+    }
+  });
+
   it('does not apply remaining John 8 red letters when the displayed text differs', () => {
     expect(redLetterVerse(asvJohn, 8, 55, 'Changed wording')).toEqual([{ text: 'Changed wording', red: false }]);
   });
