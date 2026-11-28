@@ -1474,5 +1474,160 @@
         }
       ]
     }
+  },
+  "10": {
+    "1": {
+      "text": "“Truly, truly, I tell you, whoever does not enter the sheepfold by the gate, but climbs in some other way, is a thief and a robber.",
+      "spans": [
+        {
+          "start": 0,
+          "end": 131
+        }
+      ]
+    },
+    "2": {
+      "text": "But the one who enters by the gate is the shepherd of the sheep.",
+      "spans": [
+        {
+          "start": 0,
+          "end": 64
+        }
+      ]
+    },
+    "3": {
+      "text": "The gatekeeper opens the gate for him, and the sheep listen for his voice. He calls his own sheep by name and leads them out.",
+      "spans": [
+        {
+          "start": 0,
+          "end": 125
+        }
+      ]
+    },
+    "4": {
+      "text": "When he has brought out all his own, he goes on ahead of them, and his sheep follow him because they know his voice.",
+      "spans": [
+        {
+          "start": 0,
+          "end": 116
+        }
+      ]
+    },
+    "5": {
+      "text": "But they will never follow a stranger; in fact, they will flee from him because they do not recognize his voice.”",
+      "spans": [
+        {
+          "start": 0,
+          "end": 113
+        }
+      ]
+    },
+    "7": {
+      "text": "So He said to them again, “Truly, truly, I tell you, I am the gate for the sheep.",
+      "spans": [
+        {
+          "start": 27,
+          "end": 81
+        }
+      ]
+    },
+    "8": {
+      "text": "All who came before Me were thieves and robbers, but the sheep did not listen to them.",
+      "spans": [
+        {
+          "start": 0,
+          "end": 86
+        }
+      ]
+    },
+    "9": {
+      "text": "I am the gate. If anyone enters through Me, he will be saved. He will come in and go out and find pasture.",
+      "spans": [
+        {
+          "start": 0,
+          "end": 106
+        }
+      ]
+    },
+    "10": {
+      "text": "The thief comes only to steal and kill and destroy. I have come that they may have life, and have it in all its fullness.",
+      "spans": [
+        {
+          "start": 0,
+          "end": 121
+        }
+      ]
+    },
+    "11": {
+      "text": "I am the good shepherd. The good shepherd lays down His life for the sheep.",
+      "spans": [
+        {
+          "start": 0,
+          "end": 75
+        }
+      ]
+    },
+    "12": {
+      "text": "The hired hand is not the shepherd, and the sheep are not his own. When he sees the wolf coming, he abandons the sheep and runs away. Then the wolf pounces on them and scatters the flock.",
+      "spans": [
+        {
+          "start": 0,
+          "end": 187
+        }
+      ]
+    },
+    "13": {
+      "text": "The man runs away because he is a hired servant and is unconcerned for the sheep.",
+      "spans": [
+        {
+          "start": 0,
+          "end": 81
+        }
+      ]
+    },
+    "14": {
+      "text": "I am the good shepherd. I know My sheep and My sheep know Me,",
+      "spans": [
+        {
+          "start": 0,
+          "end": 61
+        }
+      ]
+    },
+    "15": {
+      "text": "just as the Father knows Me and I know the Father. And I lay down My life for the sheep.",
+      "spans": [
+        {
+          "start": 0,
+          "end": 88
+        }
+      ]
+    },
+    "16": {
+      "text": "I have other sheep that are not of this fold. I must bring them in as well, and they will listen to My voice. Then there will be one flock and one shepherd.",
+      "spans": [
+        {
+          "start": 0,
+          "end": 156
+        }
+      ]
+    },
+    "17": {
+      "text": "The reason the Father loves Me is that I lay down My life in order to take it up again.",
+      "spans": [
+        {
+          "start": 0,
+          "end": 87
+        }
+      ]
+    },
+    "18": {
+      "text": "No one takes it from Me, but I lay it down of My own accord. I have authority to lay it down and authority to take it up again. This charge I have received from My Father.”",
+      "spans": [
+        {
+          "start": 0,
+          "end": 172
+        }
+      ]
+    }
   }
 }
