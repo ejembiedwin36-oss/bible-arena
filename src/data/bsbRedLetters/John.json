@@ -1628,6 +1628,118 @@
           "end": 172
         }
       ]
+    },
+    "25": {
+      "text": "“I already told you,” Jesus replied, “but you did not believe. The works I do in My Father’s name testify on My behalf.",
+      "spans": [
+        {
+          "start": 1,
+          "end": 21
+        },
+        {
+          "start": 38,
+          "end": 119
+        }
+      ]
+    },
+    "26": {
+      "text": "But because you are not My sheep, you refuse to believe.",
+      "spans": [
+        {
+          "start": 0,
+          "end": 56
+        }
+      ]
+    },
+    "27": {
+      "text": "My sheep listen to My voice; I know them, and they follow Me.",
+      "spans": [
+        {
+          "start": 0,
+          "end": 61
+        }
+      ]
+    },
+    "28": {
+      "text": "I give them eternal life, and they will never perish. No one can snatch them out of My hand.",
+      "spans": [
+        {
+          "start": 0,
+          "end": 92
+        }
+      ]
+    },
+    "29": {
+      "text": "My Father who has given them to Me is greater than all. No one can snatch them out of My Father’s hand.",
+      "spans": [
+        {
+          "start": 0,
+          "end": 103
+        }
+      ]
+    },
+    "30": {
+      "text": "I and the Father are one.”",
+      "spans": [
+        {
+          "start": 0,
+          "end": 26
+        }
+      ]
+    },
+    "32": {
+      "text": "But Jesus responded, “I have shown you many good works from the Father. For which of these do you stone Me?”",
+      "spans": [
+        {
+          "start": 22,
+          "end": 108
+        }
+      ]
+    },
+    "34": {
+      "text": "Jesus replied, “Is it not written in your Law: ‘I have said you are gods’?",
+      "spans": [
+        {
+          "start": 16,
+          "end": 74
+        }
+      ]
+    },
+    "35": {
+      "text": "If he called them gods to whom the word of God came — and the Scripture cannot be broken —",
+      "spans": [
+        {
+          "start": 0,
+          "end": 90
+        }
+      ]
+    },
+    "36": {
+      "text": "then what about the One whom the Father sanctified and sent into the world? How then can you accuse Me of blasphemy for stating that I am the Son of God?",
+      "spans": [
+        {
+          "start": 0,
+          "end": 153
+        }
+      ]
+    },
+    "37": {
+      "text": "If I am not doing the works of My Father, then do not believe Me.",
+      "spans": [
+        {
+          "start": 0,
+          "end": 65
+        }
+      ]
+    },
+    "38": {
+      "text": "But if I am doing them, even though you do not believe Me, believe the works themselves, so that you may know and understand that the Father is in Me, and I am in the Father.”",
+      "spans": [
+        {
+          "start": 0,
+          "end": 175
+        }
+      ]
     }
   }
 }
