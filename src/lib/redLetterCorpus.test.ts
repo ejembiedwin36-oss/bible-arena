@@ -1529,3 +1529,46 @@ describe('Matthew chapter 6 complete red-letter spans', () => {
     expect(redLetterVerse(yltMatthew, 6, 34, 'Changed wording')).toEqual([{ text: 'Changed wording', red: false }]);
   });
 });
+
+describe('Matthew chapter 7 complete red-letter spans', () => {
+  const versions = [
+    { version: 'KJV', corpus: matthew },
+    { version: 'WEB', corpus: webMatthew },
+    { version: 'ASV', corpus: asvMatthew },
+    { version: 'BSB', corpus: bsbMatthew },
+    { version: 'YLT', corpus: yltMatthew },
+  ];
+
+  it.each(versions)('$version has Jesus-speech spans for Matthew 7:1-27', ({ corpus }) => {
+    const typedCorpus = corpus as unknown as ChapterCorpus;
+    for (let verseNumber = 1; verseNumber <= 27; verseNumber++) {
+      const annotation = typedCorpus['7'][String(verseNumber)];
+      expect(annotation, `missing Matthew 7:${verseNumber} annotation`).toBeDefined();
+      const parts = redLetterVerse(corpus, 7, verseNumber, annotation.text);
+      expect(parts.map(part => part.text).join('')).toBe(annotation.text);
+      expect(parts.some(part => part.red)).toBe(true);
+    }
+  });
+
+  it('stops BSB Matthew 7 before appended section headings', () => {
+    const headings = {
+      6: 'Ask, Seek, Knock',
+      12: 'The Narrow Gate',
+      14: 'A Tree and Its Fruit',
+      23: 'The House on the Rock',
+      27: 'The Authority of Jesus',
+    } as const;
+    for (const [verseKey, heading] of Object.entries(headings)) {
+      const verse = bsbMatthew['7'][verseKey as keyof typeof bsbMatthew['7']];
+      const red = redLetterVerse(bsbMatthew, 7, Number(verseKey), verse.text).filter(part => part.red).map(part => part.text).join('');
+      const headingIndex = verse.text.indexOf(heading);
+      expect(headingIndex).toBeGreaterThan(0);
+      expect(red).toBe(verse.text.slice(0, headingIndex).trimEnd());
+      expect(red).not.toContain(heading);
+    }
+  });
+
+  it('does not apply Matthew 7 red letters when the displayed text differs', () => {
+    expect(redLetterVerse(webMatthew, 7, 27, 'Changed wording')).toEqual([{ text: 'Changed wording', red: false }]);
+  });
+});
