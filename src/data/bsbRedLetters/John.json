@@ -3470,5 +3470,105 @@
         }
       ]
     }
+  },
+  "20": {
+    "15": {
+      "text": "“Woman, why are you weeping?” Jesus asked. “Whom are you seeking?” Thinking He was the gardener, she said, “Sir, if you have carried Him off, tell me where you have put Him, and I will get Him.”",
+      "spans": [
+        {
+          "start": 1,
+          "end": 29
+        },
+        {
+          "start": 44,
+          "end": 66
+        }
+      ]
+    },
+    "16": {
+      "text": "Jesus said to her, “Mary.” She turned and said to Him in Hebrew, “Rabboni!” (which means “Teacher”).",
+      "spans": [
+        {
+          "start": 20,
+          "end": 26
+        }
+      ]
+    },
+    "17": {
+      "text": "“ Do not cling to Me,” Jesus said, “for I have not yet ascended to the Father. But go and tell My brothers, ‘I am ascending to My Father and your Father, to My God and your God.’”",
+      "spans": [
+        {
+          "start": 2,
+          "end": 22
+        },
+        {
+          "start": 36,
+          "end": 179
+        }
+      ]
+    },
+    "19": {
+      "text": "It was the first day of the week, and that very evening, while the disciples were together with the doors locked for fear of the Jews, Jesus came and stood among them. “Peace be with you!” He said to them.",
+      "spans": [
+        {
+          "start": 169,
+          "end": 188
+        }
+      ]
+    },
+    "21": {
+      "text": "Again Jesus said to them, “Peace be with you. As the Father has sent Me, so also I am sending you.”",
+      "spans": [
+        {
+          "start": 27,
+          "end": 99
+        }
+      ]
+    },
+    "22": {
+      "text": "When He had said this, He breathed on them and said, “Receive the Holy Spirit.",
+      "spans": [
+        {
+          "start": 54,
+          "end": 78
+        }
+      ]
+    },
+    "23": {
+      "text": "If you forgive anyone his sins, they are forgiven; if you withhold forgiveness from anyone, it is withheld.” Jesus Appears to Thomas",
+      "spans": [
+        {
+          "start": 0,
+          "end": 108
+        }
+      ]
+    },
+    "26": {
+      "text": "Eight days later, His disciples were once again inside with the doors locked, and Thomas was with them. Jesus came and stood among them and said, “Peace be with you.”",
+      "spans": [
+        {
+          "start": 147,
+          "end": 165
+        }
+      ]
+    },
+    "27": {
+      "text": "Then Jesus said to Thomas, “Put your finger here and look at My hands. Reach out your hand and put it into My side. Stop doubting and believe.”",
+      "spans": [
+        {
+          "start": 28,
+          "end": 143
+        }
+      ]
+    },
+    "29": {
+      "text": "Jesus said to him, “Because you have seen Me, you have believed; blessed are those who have not seen and yet have believed.” The Purpose of John’s Book",
+      "spans": [
+        {
+          "start": 20,
+          "end": 124
+        }
+      ]
+    }
   }
 }
