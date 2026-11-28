@@ -869,5 +869,5 @@ The YLT source-preparation workflow run `45942618006` completed successfully.
 - Added exact-text Jesus-speech spans for 20 reviewed verses (12:7–8, 12:23–28, 12:30–32, 12:35–36, and 12:44–50) to WEB, ASV, YLT, and BSB; existing KJV annotations were preserved.
 - BSB John 12:7 uses two spans around “Jesus replied”; John 12:8 stops before the appended section heading. John 12:28 highlights Jesus’ prayer only, not the voice from heaven. John 12:36 stops before the narrator resumes.
 - Added regression tests for all 20 reviewed verses in all five versions, attribution boundaries, narration/heading exclusions, and text mismatch fallback. A direct exact-text audit confirmed all 80 new annotations match production text and have valid spans.
-- CI and Reader verification are pending for this John 12 checkpoint; deployment is not confirmed.
+- Verification for commit `4c9205d`: CI and Reader verification succeeded; 29 test files / 217 tests passed, API and TypeScript checks passed, and the production build passed. Deployment to the live website has not been independently confirmed.
 - Next: verify John 12, then continue with John chapter 13.
