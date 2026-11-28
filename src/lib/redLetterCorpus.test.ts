@@ -1288,7 +1288,7 @@ describe('John chapter 21 translation-specific red-letter spans', () => {
       const parts = redLetterVerse(bsbJohn, 21, verseNumber, verse.text);
       const red = parts.filter(part => part.red).map(part => part.text).join('');
       expect(red).toBe(expected[verseNumber]);
-      expect(parts.some(part => !part.red && part.text.includes('Yes, Lord'))).toBe(true);
+      expect(parts.some(part => !part.red && (part.text.includes('Yes, Lord') || part.text.includes('Lord, You know all things')))).toBe(true);
     }
   });
 
