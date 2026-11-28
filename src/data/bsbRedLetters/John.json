@@ -1278,5 +1278,115 @@
         }
       ]
     }
+  },
+  "8": {
+    "12": {
+      "text": "Once again, Jesus spoke to the people and said, “I am the light of the world. Whoever follows Me will never walk in the darkness, but will have the light of life.”",
+      "spans": [
+        {
+          "start": 49,
+          "end": 163
+        }
+      ]
+    },
+    "21": {
+      "text": "Again He said to them, “I am going away, and you will look for Me, but you will die in your sin. Where I am going, you cannot come.”",
+      "spans": [
+        {
+          "start": 24,
+          "end": 132
+        }
+      ]
+    },
+    "23": {
+      "text": "Then He told them, “You are from below; I am from above. You are of this world; I am not of this world.",
+      "spans": [
+        {
+          "start": 20,
+          "end": 103
+        }
+      ]
+    },
+    "24": {
+      "text": "That is why I told you that you would die in your sins. For unless you believe that I am He, you will die in your sins.”",
+      "spans": [
+        {
+          "start": 0,
+          "end": 120
+        }
+      ]
+    },
+    "28": {
+      "text": "So Jesus said, “When you have lifted up the Son of Man, then you will know that I am He, and that I do nothing on My own, but speak exactly what the Father has taught Me.",
+      "spans": [
+        {
+          "start": 16,
+          "end": 170
+        }
+      ]
+    },
+    "31": {
+      "text": "So He said to the Jews who had believed Him, “If you continue in My word, you are truly My disciples.",
+      "spans": [
+        {
+          "start": 46,
+          "end": 101
+        }
+      ]
+    },
+    "32": {
+      "text": "Then you will know the truth, and the truth will set you free.”",
+      "spans": [
+        {
+          "start": 0,
+          "end": 63
+        }
+      ]
+    },
+    "34": {
+      "text": "Jesus replied, “Truly, truly, I tell you, everyone who sins is a slave to sin.",
+      "spans": [
+        {
+          "start": 16,
+          "end": 78
+        }
+      ]
+    },
+    "36": {
+      "text": "So if the Son sets you free, you will be free indeed.",
+      "spans": [
+        {
+          "start": 0,
+          "end": 53
+        }
+      ]
+    },
+    "51": {
+      "text": "Truly, truly, I tell you, if anyone keeps My word, he will never see death.”",
+      "spans": [
+        {
+          "start": 0,
+          "end": 76
+        }
+      ]
+    },
+    "56": {
+      "text": "Your father Abraham rejoiced that he would see My day. He saw it and was glad.”",
+      "spans": [
+        {
+          "start": 0,
+          "end": 79
+        }
+      ]
+    },
+    "58": {
+      "text": "“Truly, truly, I tell you,” Jesus declared, “before Abraham was born, I am! ”",
+      "spans": [
+        {
+          "start": 1,
+          "end": 75
+        }
+      ]
+    }
   }
 }
