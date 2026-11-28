@@ -1438,5 +1438,160 @@
         }
       ]
     }
+  },
+  "10": {
+    "1": {
+      "text": "Verily, verily, I say unto you, He that entereth not by the door into the fold of the sheep, but climbeth up some other way, the same is a thief and a robber.",
+      "spans": [
+        {
+          "start": 0,
+          "end": 158
+        }
+      ]
+    },
+    "2": {
+      "text": "But he that entereth in by the door is the shepherd of the sheep.",
+      "spans": [
+        {
+          "start": 0,
+          "end": 65
+        }
+      ]
+    },
+    "3": {
+      "text": "To him the porter openeth; and the sheep hear his voice: and he calleth his own sheep by name, and leadeth them out.",
+      "spans": [
+        {
+          "start": 0,
+          "end": 116
+        }
+      ]
+    },
+    "4": {
+      "text": "When he hath put forth all his own, he goeth before them, and the sheep follow him: for they know his voice.",
+      "spans": [
+        {
+          "start": 0,
+          "end": 108
+        }
+      ]
+    },
+    "5": {
+      "text": "And a stranger will they not follow, but will flee from him: for they know not the voice of strangers.",
+      "spans": [
+        {
+          "start": 0,
+          "end": 102
+        }
+      ]
+    },
+    "7": {
+      "text": "Jesus therefore said unto them again, Verily, verily, I say unto you, I am the door of the sheep.",
+      "spans": [
+        {
+          "start": 38,
+          "end": 97
+        }
+      ]
+    },
+    "8": {
+      "text": "All that came before me are thieves and robbers: but the sheep did not hear them.",
+      "spans": [
+        {
+          "start": 0,
+          "end": 81
+        }
+      ]
+    },
+    "9": {
+      "text": "I am the door; by me if any man enter in, he shall be saved, and shall go in and go out, and shall find pasture.",
+      "spans": [
+        {
+          "start": 0,
+          "end": 112
+        }
+      ]
+    },
+    "10": {
+      "text": "The thief cometh not, but that he may steal, and kill, and destroy: I came that they may have life, and may have it abundantly.",
+      "spans": [
+        {
+          "start": 0,
+          "end": 127
+        }
+      ]
+    },
+    "11": {
+      "text": "I am the good shepherd: the good shepherd layeth down his life for the sheep.",
+      "spans": [
+        {
+          "start": 0,
+          "end": 77
+        }
+      ]
+    },
+    "12": {
+      "text": "He that is a hireling, and not a shepherd, whose own the sheep are not, beholdeth the wolf coming, and leaveth the sheep, and fleeth, and the wolf snatcheth them, and scattereth them:",
+      "spans": [
+        {
+          "start": 0,
+          "end": 183
+        }
+      ]
+    },
+    "13": {
+      "text": "he fleeth because he is a hireling, and careth not for the sheep.",
+      "spans": [
+        {
+          "start": 0,
+          "end": 65
+        }
+      ]
+    },
+    "14": {
+      "text": "I am the good shepherd; and I know mine own, and mine own know me,",
+      "spans": [
+        {
+          "start": 0,
+          "end": 66
+        }
+      ]
+    },
+    "15": {
+      "text": "even as the Father knoweth me, and I know the Father; and I lay down my life for the sheep.",
+      "spans": [
+        {
+          "start": 0,
+          "end": 91
+        }
+      ]
+    },
+    "16": {
+      "text": "And other sheep I have, which are not of this fold: them also I must bring, and they shall hear my voice; and they shall become one flock, one shepherd.",
+      "spans": [
+        {
+          "start": 0,
+          "end": 152
+        }
+      ]
+    },
+    "17": {
+      "text": "Therefore doth the Father love me, because I lay down my life, that I may take it again.",
+      "spans": [
+        {
+          "start": 0,
+          "end": 88
+        }
+      ]
+    },
+    "18": {
+      "text": "No one taketh it away from me, but I lay it down of myself. I have power to lay it down, and I have power to take it again. This commandment received I from my Father.",
+      "spans": [
+        {
+          "start": 0,
+          "end": 167
+        }
+      ]
+    }
   }
 }
