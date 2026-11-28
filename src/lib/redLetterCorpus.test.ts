@@ -1108,7 +1108,7 @@ describe('John chapter 18 translation-specific red-letter spans', () => {
       { verse: 11, spoken: 'Put your sword back in its sheath!”Shall I not drink the cup the Father has given Me?”', attribution: 'Jesus said to Peter' },
       { verse: 20, spoken: 'I have spoken openly to the world,”I always taught in the synagogues and at the temple, where all the Jews come together. I said nothing in secret.', attribution: 'Jesus answered' },
       { verse: 34, spoken: 'Are you saying this on your own,”or did others tell you about Me?”', attribution: 'Jesus asked' },
-      { verse: 37, spoken: 'You say that I am a king,”For this reason I was born and have come into the world, to testify to the truth. Everyone who belongs to the truth listens to My voice.', attribution: 'Jesus answered' },
+      { verse: 37, spoken: 'You say that I am a king,”For this reason I was born and have come into the world, to testify to the truth. Everyone who belongs to the truth listens to My voice.”', attribution: 'Jesus answered' },
     ];
     for (const item of cases) {
       const verse = bsbJohn['18'][String(item.verse)];
