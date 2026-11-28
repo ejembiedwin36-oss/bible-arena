@@ -305,7 +305,7 @@ The Reader now offers the red-letter control for KJV, WEB, ASV, BSB, and YLT. AS
 - Added exact-text red-letter spans for 12 reviewed verses (8:12, 21, 23, 24, 28, 31, 32, 34, 36, 51, 56, and 58) to WEB, ASV, YLT, and BSB. Existing KJV annotations were preserved.
 - John 8:58 BSB uses two spans so the speaker attribution “Jesus declared” remains uncoloured. The remaining reviewed spans begin after speaker introductions and stop at the spoken text boundary.
 - Added regression tests for the reviewed verses in all five versions, attribution exclusion, BSB John 8:58 split speech, and text mismatch fallback.
-- CI and Reader verification are pending for this checkpoint; deployment is not confirmed.
+- Verification for commit `227267d`: CI and Reader verification succeeded; 29 test files / 178 tests passed, API and TypeScript checks passed, and the production build passed. Deployment to the live website has not been independently confirmed.
 - Next: verify the John 8 commit and then continue with John chapter 9.
 
 - Boundary review correction: John 8:23 in WEB, ASV, BSB, and YLT now includes the complete final clause “I am not of this world”; a regression test checks each translation's full spoken statement.
