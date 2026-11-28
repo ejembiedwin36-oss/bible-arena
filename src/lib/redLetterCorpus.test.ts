@@ -809,3 +809,65 @@ describe('John chapter 12 translation-specific red-letter spans', () => {
     expect(redLetterVerse(yltJohn, 12, 50, 'Changed wording')).toEqual([{ text: 'Changed wording', red: false }]);
   });
 });
+
+const john13ReviewedVerses = [7, 8, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21, 26, 27, 31, 32, 33, 34, 35, 36, 38] as const;
+
+describe('John chapter 13 translation-specific red-letter spans', () => {
+  const versions = [
+    { version: 'KJV', corpus: john },
+    { version: 'WEB', corpus: webJohn },
+    { version: 'ASV', corpus: asvJohn },
+    { version: 'BSB', corpus: bsbJohn },
+    { version: 'YLT', corpus: yltJohn },
+  ];
+
+  it.each(versions)('$version has reviewed Jesus-speech spans in John 13', ({ corpus }) => {
+    const typedCorpus = corpus as unknown as ChapterCorpus;
+    for (const verseNumber of john13ReviewedVerses) {
+      const annotation = typedCorpus['13'][String(verseNumber)];
+      expect(annotation, `missing John 13:${verseNumber} annotation`).toBeDefined();
+      const parts = redLetterVerse(corpus, 13, verseNumber, annotation.text);
+      expect(parts.map(part => part.text).join('')).toBe(annotation.text);
+      expect(parts.some(part => part.red)).toBe(true);
+    }
+  });
+
+  it('keeps Peter’s words and Jesus speaker attributions uncoloured in John 13:8 and 13:36', () => {
+    const verse8 = bsbJohn['13']['8'];
+    const red8 = redLetterVerse(bsbJohn, 13, 8, verse8.text).filter(part => part.red).map(part => part.text).join('');
+    expect(red8).toBe('Unless I wash you, you have no part with Me.');
+    expect(redLetterVerse(bsbJohn, 13, 8, verse8.text).some(part => !part.red && part.text.includes('Never shall You wash my feet'))).toBe(true);
+
+    const verse36 = bsbJohn['13']['36'];
+    const parts36 = redLetterVerse(bsbJohn, 13, 36, verse36.text);
+    expect(parts36.some(part => !part.red && part.text.includes('Simon Peter asked'))).toBe(true);
+    expect(parts36.some(part => !part.red && part.text.includes('Jesus answered'))).toBe(true);
+  });
+
+  it('excludes narration and section headings in John 13:11, 13:17, and 13:26', () => {
+    const verse11 = bsbJohn['13']['11'];
+    expect(redLetterVerse(bsbJohn, 13, 11, verse11.text).filter(part => part.red).map(part => part.text).join('')).toBe('Not all of you are clean.”');
+
+    const verse17 = bsbJohn['13']['17'];
+    const red17 = redLetterVerse(bsbJohn, 13, 17, verse17.text).filter(part => part.red).map(part => part.text).join('');
+    expect(red17).toBe('If you know these things, you will be blessed if you do them.');
+    expect(red17).not.toContain('Jesus Predicts His Betrayal');
+
+    const verse26 = bsbJohn['13']['26'];
+    const red26 = redLetterVerse(bsbJohn, 13, 26, verse26.text).filter(part => part.red).map(part => part.text).join('');
+    expect(red26).toBe('It is the one to whom I give this morsel after I have dipped it.”');
+    expect(red26).not.toContain('Then He dipped the morsel');
+  });
+
+  it('splits BSB John 13:38 around Jesus replied', () => {
+    const verse = bsbJohn['13']['38'];
+    const parts = redLetterVerse(bsbJohn, 13, 38, verse.text);
+    const red = parts.filter(part => part.red).map(part => part.text).join('');
+    expect(red).toBe('Will you lay down your life for Me?”Truly, truly, I tell you, before the rooster crows, you will deny Me three times.’’');
+    expect(parts.some(part => !part.red && part.text.includes('Jesus replied'))).toBe(true);
+  });
+
+  it('does not apply John 13 red letters when the displayed text differs', () => {
+    expect(redLetterVerse(webJohn, 13, 34, 'Changed wording')).toEqual([{ text: 'Changed wording', red: false }]);
+  });
+});
