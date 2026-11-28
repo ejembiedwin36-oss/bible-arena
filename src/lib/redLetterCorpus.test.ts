@@ -612,3 +612,39 @@ describe('John chapter 9 translation-specific red-letter spans', () => {
     expect(redLetterVerse(yltJohn, 9, 3, 'Changed wording')).toEqual([{ text: 'Changed wording', red: false }]);
   });
 });
+
+const john10ReviewedVerses = [1, 2, 3, 4, 5, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18] as const;
+
+describe('John chapter 10:1-18 translation-specific red-letter spans', () => {
+  const versions = [
+    { version: 'KJV', corpus: john },
+    { version: 'WEB', corpus: webJohn },
+    { version: 'ASV', corpus: asvJohn },
+    { version: 'BSB', corpus: bsbJohn },
+    { version: 'YLT', corpus: yltJohn },
+  ];
+
+  it.each(versions)('$version has reviewed Jesus-speech spans in John 10:1-18', ({ corpus }) => {
+    const typedCorpus = corpus as unknown as ChapterCorpus;
+    for (const verseNumber of john10ReviewedVerses) {
+      const annotation = typedCorpus['10'][String(verseNumber)];
+      expect(annotation, `missing John 10:${verseNumber} annotation`).toBeDefined();
+      const parts = redLetterVerse(corpus, 10, verseNumber, annotation.text);
+      expect(parts.map(part => part.text).join('')).toBe(annotation.text);
+      expect(parts.some(part => part.red)).toBe(true);
+    }
+  });
+
+  it('keeps the John 10:7 speaker introduction outside the red text', () => {
+    for (const corpus of [webJohn, asvJohn, bsbJohn, yltJohn]) {
+      const verse = (corpus as unknown as ChapterCorpus)['10']['7'];
+      const parts = redLetterVerse(corpus, 10, 7, verse.text);
+      expect(parts.some(part => !part.red && part.text.includes('Jesus'))).toBe(true);
+      expect(parts.some(part => part.red)).toBe(true);
+    }
+  });
+
+  it('does not apply John 10 red letters when the displayed text differs', () => {
+    expect(redLetterVerse(webJohn, 10, 7, 'Changed wording')).toEqual([{ text: 'Changed wording', red: false }]);
+  });
+});
