@@ -1064,3 +1064,68 @@ describe('John chapter 17 translation-specific red-letter spans', () => {
     expect(redLetterVerse(yltJohn, 17, 26, 'Changed wording')).toEqual([{ text: 'Changed wording', red: false }]);
   });
 });
+
+const john18ReviewedVerses = [4, 5, 6, 7, 8, 11, 20, 21, 23, 34, 36, 37] as const;
+
+describe('John chapter 18 translation-specific red-letter spans', () => {
+  const versions = [
+    { version: 'KJV', corpus: john },
+    { version: 'WEB', corpus: webJohn },
+    { version: 'ASV', corpus: asvJohn },
+    { version: 'BSB', corpus: bsbJohn },
+    { version: 'YLT', corpus: yltJohn },
+  ];
+
+  it.each(versions)('$version has reviewed Jesus-speech spans in John 18', ({ corpus }) => {
+    const typedCorpus = corpus as unknown as ChapterCorpus;
+    for (const verseNumber of john18ReviewedVerses) {
+      const annotation = typedCorpus['18'][String(verseNumber)];
+      expect(annotation, `missing John 18:${verseNumber} annotation`).toBeDefined();
+      const parts = redLetterVerse(corpus, 18, verseNumber, annotation.text);
+      expect(parts.map(part => part.text).join('')).toBe(annotation.text);
+      expect(parts.some(part => part.red)).toBe(true);
+    }
+  });
+
+  it('highlights the reported words in John 18:6 but not the surrounding narration', () => {
+    const cases = [
+      { corpus: webJohn, speech: 'I am he,”' },
+      { corpus: asvJohn, speech: 'I am he,' },
+      { corpus: bsbJohn, speech: 'I am He,”' },
+      { corpus: yltJohn, speech: 'I am [he],\'' },
+    ];
+    for (const item of cases) {
+      const verse = item.corpus['18']['6'];
+      const parts = redLetterVerse(item.corpus, 18, 6, verse.text);
+      expect(parts.filter(part => part.red).map(part => part.text).join('')).toBe(item.speech);
+      expect(parts.some(part => !part.red && part.text.includes('they went'))).toBe(true);
+    }
+  });
+
+  it('splits BSB John 18:8, 11, 20, 34, and 37 around speaker attributions', () => {
+    const cases = [
+      { verse: 8, spoken: 'I told you that I am He,”So if you are looking for Me, let these men go.”', attribution: 'Jesus replied' },
+      { verse: 11, spoken: 'Put your sword back in its sheath!”Shall I not drink the cup the Father has given Me?”', attribution: 'Jesus said to Peter' },
+      { verse: 20, spoken: 'I have spoken openly to the world,”I always taught in the synagogues and at the temple, where all the Jews come together. I said nothing in secret.', attribution: 'Jesus answered' },
+      { verse: 34, spoken: 'Are you saying this on your own,”or did others tell you about Me?”', attribution: 'Jesus asked' },
+      { verse: 37, spoken: 'You say that I am a king,”For this reason I was born and have come into the world, to testify to the truth. Everyone who belongs to the truth listens to My voice.', attribution: 'Jesus answered' },
+    ];
+    for (const item of cases) {
+      const verse = bsbJohn['18'][String(item.verse)];
+      const parts = redLetterVerse(bsbJohn, 18, item.verse, verse.text);
+      expect(parts.filter(part => part.red).map(part => part.text).join('')).toBe(item.spoken);
+      expect(parts.some(part => !part.red && part.text.includes(item.attribution))).toBe(true);
+    }
+  });
+
+  it('keeps other speakers uncoloured in John 18:5 and 18:7', () => {
+    const verse5 = bsbJohn['18']['5'];
+    expect(redLetterVerse(bsbJohn, 18, 5, verse5.text).some(part => !part.red && part.text.includes('Jesus of Nazareth'))).toBe(true);
+    const verse7 = bsbJohn['18']['7'];
+    expect(redLetterVerse(bsbJohn, 18, 7, verse7.text).some(part => !part.red && part.text.includes('Jesus of Nazareth'))).toBe(true);
+  });
+
+  it('does not apply John 18 red letters when the displayed text differs', () => {
+    expect(redLetterVerse(webJohn, 18, 36, 'Changed wording')).toEqual([{ text: 'Changed wording', red: false }]);
+  });
+});
