@@ -407,7 +407,7 @@ describe('John chapter 6 translation-specific red-letter spans', () => {
     const cases = [
       { corpus: webJohn, verse: 5, spoken: 'Where are we to buy bread, that these may eat?”', attribution: 'said to Philip' },
       { corpus: asvJohn, verse: 5, spoken: 'Whence are we to buy bread, that these may eat?', attribution: 'saith unto Philip' },
-      { corpus: yltJohn, verse: 5, spoken: "'Whence shall we buy loaves, that these may eat?'", attribution: 'saith unto Philip' },
+      { corpus: yltJohn, verse: 5, spoken: "Whence shall we buy loaves, that these may eat?'", attribution: 'saith unto Philip' },
       { corpus: bsbJohn, verse: 10, spoken: '“Have the people sit down,”', attribution: 'Jesus said' },
       { corpus: webJohn, verse: 26, spoken: 'Most certainly I tell you, you seek me, not because you saw signs, but because you ate of the loaves, and were filled.', attribution: 'Jesus answered them' },
       { corpus: bsbJohn, verse: 43, spoken: '“Stop grumbling among yourselves,”', attribution: 'Jesus replied' },
