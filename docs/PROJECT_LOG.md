@@ -768,3 +768,12 @@ The YLT source-preparation workflow run `45942618006` completed successfully.
 - For verses containing more than one speaker, spans cover only Jesus' words. For example, John 1:38 highlights Jesus' question but leaves the other speakers' words and narrative uncoloured.
 - Added automated tests for the four new version corpora, mixed-dialogue boundaries, and unannotated passages.
 - Coverage remains limited to selected verses in John chapter 1 for these four versions; this is not full chapter coverage or full Gospel coverage. Next: John chapter 2 for all five versions.
+
+
+## John chapter 2 annotation checkpoint — 2026-11-28
+
+- Preserved the existing KJV John 2 annotations and added exact translation-specific speech spans for WEB, ASV, YLT, and BSB at John 2:4, 2:7, 2:8, 2:16, and 2:19.
+- In BSB John 2:4 and 2:8, the annotation uses separate spans because narrator attribution interrupts Jesus' words. Only Jesus' spoken phrases are highlighted.
+- Added regression tests that verify the highlighted text for all five versions and confirm that Mary’s words in John 2:5 remain uncoloured.
+- Annotation scope is selected verses, not all of John chapter 2. Unannotated verses remain normal text. Exact-text mismatch also disables highlighting.
+- Next: verify CI and reader verification; then continue chapter-by-chapter through John.
