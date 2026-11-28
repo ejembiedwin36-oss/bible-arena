@@ -3355,5 +3355,52 @@
         }
       ]
     }
+  },
+  "19": {
+    "11": {
+      "text": "Jesus answered, 'Thou wouldest have no authority against me, if it were not having been given thee from above; because of this, he who is delivering me up to thee hath greater sin.'",
+      "spans": [
+        {
+          "start": 17,
+          "end": 60
+        }
+      ]
+    },
+    "26": {
+      "text": "Jesus, therefore, having seen [his] mother, and the disciple standing by, whom he was loving, he saith to his mother, 'Woman, lo, thy son;'",
+      "spans": [
+        {
+          "start": 119,
+          "end": 138
+        }
+      ]
+    },
+    "27": {
+      "text": "afterward he saith to the disciple, 'Lo, thy mother;' and from that hour the disciple took her to his own [home].",
+      "spans": [
+        {
+          "start": 37,
+          "end": 53
+        }
+      ]
+    },
+    "28": {
+      "text": "After this, Jesus knowing that all things now have been finished, that the Writing may be fulfilled, saith, 'I thirst;'",
+      "spans": [
+        {
+          "start": 109,
+          "end": 119
+        }
+      ]
+    },
+    "30": {
+      "text": "when, therefore, Jesus received the vinegar, he said, 'It hath been finished;' and having bowed the head, gave up the spirit.",
+      "spans": [
+        {
+          "start": 55,
+          "end": 78
+        }
+      ]
+    }
   }
 }
