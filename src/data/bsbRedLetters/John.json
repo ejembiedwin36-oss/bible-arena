@@ -3423,5 +3423,52 @@
         }
       ]
     }
+  },
+  "19": {
+    "11": {
+      "text": "Jesus answered, “You would have no authority over Me if it were not given to you from above. Therefore the one who handed Me over to you is guilty of greater sin.”",
+      "spans": [
+        {
+          "start": 17,
+          "end": 52
+        }
+      ]
+    },
+    "26": {
+      "text": "When Jesus saw His mother and the disciple whom He loved standing nearby, He said to His mother, “Woman, here is your son.”",
+      "spans": [
+        {
+          "start": 98,
+          "end": 123
+        }
+      ]
+    },
+    "27": {
+      "text": "Then He said to the disciple, “Here is your mother.” So from that hour, this disciple took her into his home. The Death of Jesus ( Psalm 22:1–31|PSA 22:1-31; Matthew 27:45–56|MAT 27:45-56; Mark 15:33–41|MRK 15:33-41; Luke 23:44–49|LUK 23:44-49 )",
+      "spans": [
+        {
+          "start": 31,
+          "end": 52
+        }
+      ]
+    },
+    "28": {
+      "text": "After this, knowing that everything had now been accomplished, and to fulfill the Scripture, Jesus said, “I am thirsty.”",
+      "spans": [
+        {
+          "start": 106,
+          "end": 120
+        }
+      ]
+    },
+    "30": {
+      "text": "When Jesus had received the sour wine, He said, “It is finished.” And bowing His head, He yielded up His spirit. Jesus’ Side Is Pierced ( Zechariah 12:10–14|ZEC 12:10-14 )",
+      "spans": [
+        {
+          "start": 49,
+          "end": 65
+        }
+      ]
+    }
   }
 }
