@@ -1025,5 +1025,106 @@
         }
       ]
     }
+  },
+  "8": {
+    "3": {
+      "text": "and having stretched forth the hand, Jesus touched him, saying, 'I will, be thou cleansed,' and immediately his leprosy was cleansed.",
+      "spans": [
+        {
+          "start": 65,
+          "end": 91
+        }
+      ]
+    },
+    "4": {
+      "text": "And Jesus saith to him, 'See, thou mayest tell no one, but go, thyself shew to the priest, and bring the gift that Moses commanded for a testimony to them.'",
+      "spans": [
+        {
+          "start": 25,
+          "end": 156
+        }
+      ]
+    },
+    "7": {
+      "text": "and Jesus saith to him, 'I, having come, will heal him.'",
+      "spans": [
+        {
+          "start": 25,
+          "end": 56
+        }
+      ]
+    },
+    "10": {
+      "text": "And Jesus having heard, did wonder, and said to those following, 'Verily I say to you, not even in Israel so great faith have I found;",
+      "spans": [
+        {
+          "start": 66,
+          "end": 134
+        }
+      ]
+    },
+    "11": {
+      "text": "and I say to you, that many from east and west shall come and recline (at meat) with Abraham, and Isaac, and Jacob, in the reign of the heavens,",
+      "spans": [
+        {
+          "start": 0,
+          "end": 144
+        }
+      ]
+    },
+    "12": {
+      "text": "but the sons of the reign shall be cast forth to the outer darkness — there shall be the weeping and the gnashing of the teeth.'",
+      "spans": [
+        {
+          "start": 0,
+          "end": 128
+        }
+      ]
+    },
+    "13": {
+      "text": "And Jesus said to the centurion, 'Go, and as thou didst believe let it be to thee;' and his young man was healed in that hour.",
+      "spans": [
+        {
+          "start": 34,
+          "end": 83
+        }
+      ]
+    },
+    "20": {
+      "text": "and Jesus saith to him, 'The foxes have holes, and the birds of the heaven places of rest, but the Son of Man hath not where he may lay the head.'",
+      "spans": [
+        {
+          "start": 25,
+          "end": 146
+        }
+      ]
+    },
+    "22": {
+      "text": "and Jesus said to him, 'Follow me, and suffer the dead to bury their own dead.'",
+      "spans": [
+        {
+          "start": 24,
+          "end": 79
+        }
+      ]
+    },
+    "26": {
+      "text": "And he saith to them, 'Why are ye fearful, O ye of little faith?' Then having risen, he rebuked the winds and the sea, and there was a great calm;",
+      "spans": [
+        {
+          "start": 23,
+          "end": 65
+        }
+      ]
+    },
+    "32": {
+      "text": "and he saith to them, 'Go.' And having come forth, they went to the herd of the swine, and lo, the whole herd of the swine rushed down the steep, to the sea, and died in the waters,",
+      "spans": [
+        {
+          "start": 23,
+          "end": 27
+        }
+      ]
+    }
   }
 }
