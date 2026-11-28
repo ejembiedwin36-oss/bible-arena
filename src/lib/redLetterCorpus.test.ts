@@ -548,4 +548,18 @@ describe('John chapter 8 translation-specific red-letter spans', () => {
   it('does not apply John 8 red letters when the displayed text differs', () => {
     expect(redLetterVerse(webJohn, 8, 12, 'Changed wording')).toEqual([{ text: 'Changed wording', red: false }]);
   });
+  it('includes the complete final clause in John 8:23 across translations', () => {
+    const cases = [
+      { corpus: webJohn, spoken: 'You are from beneath. I am from above. You are of this world. I am not of this world.' },
+      { corpus: asvJohn, spoken: 'Ye are from beneath; I am from above: ye are of this world; I am not of this world.' },
+      { corpus: bsbJohn, spoken: 'You are from below; I am from above. You are of this world; I am not of this world.' },
+      { corpus: yltJohn, spoken: 'Ye are from beneath, I am from above; ye are of this world, I am not of this world;' },
+    ];
+    for (const item of cases) {
+      const verse = (item.corpus as unknown as ChapterCorpus)['8']['23'];
+      const red = redLetterVerse(item.corpus, 8, 23, verse.text).filter(part => part.red).map(part => part.text).join('');
+      expect(red).toBe(item.spoken);
+    }
+  });
+
 });
