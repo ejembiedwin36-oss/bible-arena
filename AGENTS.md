@@ -415,5 +415,5 @@ The Reader now offers the red-letter control for KJV, WEB, ASV, BSB, and YLT. AS
 - Added exact-text Jesus-speech spans for 10 reviewed verses (20:15–17, 20:19, 20:21–23, 20:26–27, and 20:29) to WEB, ASV, YLT, and BSB; existing KJV annotations were preserved.
 - John 20:15 highlights Jesus’ questions and excludes Mary’s reply. BSB 20:15 and 20:17 use separate spans around speaker attributions. BSB 20:23 and 20:29 stop before appended section headings.
 - Added regression tests for all 10 reviewed verses in all five versions, mixed-speaker boundaries, heading exclusions, and text mismatch fallback. A direct exact-text audit confirmed all 40 new annotations match production text and have valid spans.
-- CI and Reader verification are pending for this John 20 checkpoint; deployment is not confirmed.
+- Verification for commit `7372c06`: CI and Reader verification succeeded; 29 test files / 285 tests passed, API and TypeScript checks passed, and the production build passed. Deployment to the live website has not been independently confirmed.
 - Next: verify John 20, then continue with John chapter 21.
