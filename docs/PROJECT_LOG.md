@@ -805,3 +805,13 @@ The YLT source-preparation workflow run `45942618006` completed successfully.
 - Verification for commit `d4c9845`: main CI and Reader verification succeeded; 29 test files / 153 tests passed, API and TypeScript checks passed, and the production build passed.
 - Deployment to the live website has not been independently confirmed.
 - Next: continue John chapter 6 with exact translation text and reviewed speaker boundaries.
+
+
+
+## John chapter 6 annotation checkpoint — 2026-11-28
+
+- Preserved the existing KJV John 6 annotations and added exact production-text spans for WEB, ASV, YLT, and BSB at the same 37 reviewed Jesus-speech verses.
+- Speech spans exclude attributions in John 6:5, 6:10, 6:12, 6:20, 6:26, 6:29, 6:32, 6:35, 6:43, 6:53, 6:61, 6:65, 6:67, and 6:70. John 6:64 stops before the narrator's explanation; BSB John 6:58 stops before its appended section heading.
+- Added regression tests for all reviewed verse keys in all five versions, attribution boundaries, BSB heading/narration exclusions, and verses spoken by other people.
+- Verification is pending for the resulting commit; no deployment is claimed.
+- Next: continue John chapter 7 using exact translation text and reviewed speaker boundaries.
