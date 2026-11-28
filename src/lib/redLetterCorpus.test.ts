@@ -182,7 +182,7 @@ describe('John chapter 2 translation-specific red-letter spans', () => {
 
   it.each(chapter2Cases)('$version highlights only Jesus’ words in reviewed John 2 verses', ({ corpus, spoken }) => {
     for (const verseNumber of [4, 7, 8, 16, 19]) {
-      const annotation = corpus['2'][String(verseNumber)];
+      const annotation = corpus['2'][verseNumber as 4 | 7 | 8 | 16 | 19];
       expect(annotation, `missing annotation for John 2:${verseNumber}`).toBeDefined();
       const parts = redLetterVerse(corpus, 2, verseNumber, annotation.text);
       expect(parts.map((part) => part.text).join('')).toBe(annotation.text);
