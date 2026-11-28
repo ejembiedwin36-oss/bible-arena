@@ -1256,12 +1256,93 @@
     }
   },
   "8": {
+    "7": {
+      "text": "But when they continued asking him, he lifted up himself, and said unto them, He that is without sin among you, let him first cast a stone at her.",
+      "spans": [
+        {
+          "start": 78,
+          "end": 111
+        }
+      ]
+    },
+    "10": {
+      "text": "And Jesus lifted up himself, and said unto her, Woman, where are they? did no man condemn thee?",
+      "spans": [
+        {
+          "start": 48,
+          "end": 95
+        }
+      ]
+    },
+    "11": {
+      "text": "And she said, No man, Lord. And Jesus said, Neither do I condemn thee: go thy way; from henceforth sin no more.]",
+      "spans": [
+        {
+          "start": 44,
+          "end": 112
+        }
+      ]
+    },
     "12": {
       "text": "Again therefore Jesus spake unto them, saying, I am the light of the world: he that followeth me shall not walk in the darkness, but shall have the light of life.",
       "spans": [
         {
           "start": 47,
           "end": 162
+        }
+      ]
+    },
+    "14": {
+      "text": "Jesus answered and said unto them, Even if I bear witness of myself, my witness is true; for I know whence I came, and whither I go; but ye know not whence I come, or whither I go.",
+      "spans": [
+        {
+          "start": 35,
+          "end": 180
+        }
+      ]
+    },
+    "15": {
+      "text": "Ye judge after the flesh; I judge no man.",
+      "spans": [
+        {
+          "start": 0,
+          "end": 41
+        }
+      ]
+    },
+    "16": {
+      "text": "Yea and if I judge, my judgment is true; for I am not alone, but I and the Father that sent me.",
+      "spans": [
+        {
+          "start": 0,
+          "end": 95
+        }
+      ]
+    },
+    "17": {
+      "text": "Yea and in your law it is written, that the witness of two men is true.",
+      "spans": [
+        {
+          "start": 0,
+          "end": 71
+        }
+      ]
+    },
+    "18": {
+      "text": "I am he that beareth witness of myself, and the Father that sent me beareth witness of me.",
+      "spans": [
+        {
+          "start": 0,
+          "end": 90
+        }
+      ]
+    },
+    "19": {
+      "text": "They said therefore unto him, Where is thy Father? Jesus answered, Ye know neither me, nor my Father: if ye knew me, ye would know my Father also.",
+      "spans": [
+        {
+          "start": 67,
+          "end": 146
         }
       ]
     },
@@ -1292,12 +1373,39 @@
         }
       ]
     },
+    "25": {
+      "text": "They said therefore unto him, Who art thou? Jesus said unto them, Even that which I have also spoken unto you from the beginning.",
+      "spans": [
+        {
+          "start": 66,
+          "end": 129
+        }
+      ]
+    },
+    "26": {
+      "text": "I have many things to speak and to judge concerning you: howbeit he that sent me is true; and the things which I heard from him, these speak I unto the world.",
+      "spans": [
+        {
+          "start": 0,
+          "end": 158
+        }
+      ]
+    },
     "28": {
       "text": "Jesus therefore said, When ye have lifted up the Son of man, then shall ye know that I am he, and that I do nothing of myself, but as the Father taught me, I speak these things.",
       "spans": [
         {
           "start": 22,
           "end": 177
+        }
+      ]
+    },
+    "29": {
+      "text": "And he that sent me is with me; he hath not left me alone; for I do always the things that are pleasing to him.",
+      "spans": [
+        {
+          "start": 0,
+          "end": 111
         }
       ]
     },
@@ -1328,6 +1436,15 @@
         }
       ]
     },
+    "35": {
+      "text": "And the bondservant abideth not in the house for ever: the son abideth for ever.",
+      "spans": [
+        {
+          "start": 0,
+          "end": 80
+        }
+      ]
+    },
     "36": {
       "text": "If therefore the Son shall make you free, ye shall be free indeed.",
       "spans": [
@@ -1337,12 +1454,147 @@
         }
       ]
     },
+    "37": {
+      "text": "I know that ye are Abraham’s seed; yet ye seek to kill me, because my word hath not free course in you.",
+      "spans": [
+        {
+          "start": 0,
+          "end": 103
+        }
+      ]
+    },
+    "38": {
+      "text": "I speak the things which I have seen with my Father: and ye also do the things which ye heard from your father.",
+      "spans": [
+        {
+          "start": 0,
+          "end": 111
+        }
+      ]
+    },
+    "39": {
+      "text": "They answered and said unto him, Our father is Abraham. Jesus saith unto them, If ye were Abraham’s children, ye would do the works of Abraham.",
+      "spans": [
+        {
+          "start": 79,
+          "end": 143
+        }
+      ]
+    },
+    "40": {
+      "text": "But now ye seek to kill me, a man that hath told you the truth, which I heard from God: this did not Abraham.",
+      "spans": [
+        {
+          "start": 0,
+          "end": 109
+        }
+      ]
+    },
+    "41": {
+      "text": "Ye do the works of your father. They said unto him, We were not born of fornication; we have one Father, even God.",
+      "spans": [
+        {
+          "start": 0,
+          "end": 31
+        }
+      ]
+    },
+    "42": {
+      "text": "Jesus said unto them, If God were your Father, ye would love me: for I came forth and am come from God; for neither have I come of myself, but he sent me.",
+      "spans": [
+        {
+          "start": 22,
+          "end": 154
+        }
+      ]
+    },
+    "43": {
+      "text": "Why do ye not understand my speech? Even because ye cannot hear my word.",
+      "spans": [
+        {
+          "start": 0,
+          "end": 72
+        }
+      ]
+    },
+    "44": {
+      "text": "Ye are of your father the devil, and the lusts of your father it is your will to do. He was a murderer from the beginning, and standeth not in the truth, because there is no truth in him. When he speaketh a lie, he speaketh of his own: for he is a liar, and the father thereof.",
+      "spans": [
+        {
+          "start": 0,
+          "end": 277
+        }
+      ]
+    },
+    "45": {
+      "text": "But because I say the truth, ye believe me not.",
+      "spans": [
+        {
+          "start": 0,
+          "end": 47
+        }
+      ]
+    },
+    "46": {
+      "text": "Which of you convicteth me of sin? If I say truth, why do ye not believe me?",
+      "spans": [
+        {
+          "start": 0,
+          "end": 76
+        }
+      ]
+    },
+    "47": {
+      "text": "He that is of God heareth the words of God: for this cause ye hear them not, because ye are not of God.",
+      "spans": [
+        {
+          "start": 0,
+          "end": 103
+        }
+      ]
+    },
+    "49": {
+      "text": "Jesus answered, I have not a demon; but I honor my Father, and ye dishonor me.",
+      "spans": [
+        {
+          "start": 16,
+          "end": 78
+        }
+      ]
+    },
+    "50": {
+      "text": "But I seek not mine own glory: there is one that seeketh and judgeth.",
+      "spans": [
+        {
+          "start": 0,
+          "end": 69
+        }
+      ]
+    },
     "51": {
       "text": "Verily, verily, I say unto you, If a man keep my word, he shall never see death.",
       "spans": [
         {
           "start": 0,
           "end": 80
+        }
+      ]
+    },
+    "54": {
+      "text": "Jesus answered, If I glorify myself, my glory is nothing: it is my Father that glorifieth me; of whom ye say, that he is your God;",
+      "spans": [
+        {
+          "start": 16,
+          "end": 130
+        }
+      ]
+    },
+    "55": {
+      "text": "and ye have not known him: but I know him; and if I should say, I know him not, I shall be like unto you, a liar: but I know him, and keep his word.",
+      "spans": [
+        {
+          "start": 0,
+          "end": 148
         }
       ]
     },
