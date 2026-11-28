@@ -3402,5 +3402,97 @@
         }
       ]
     }
+  },
+  "20": {
+    "15": {
+      "text": "Jesus saith to her, 'Woman, why dost thou weep? whom dost thou seek;' she, supposing that he is the gardener, saith to him, 'Sir, if thou didst carry him away, tell me where thou didst lay him, and I will take him away;'",
+      "spans": [
+        {
+          "start": 21,
+          "end": 220
+        }
+      ]
+    },
+    "16": {
+      "text": "Jesus saith to her, 'Mary!' having turned, she saith to him, 'Rabbouni;' that is to say, 'Teacher.'",
+      "spans": [
+        {
+          "start": 21,
+          "end": 27
+        }
+      ]
+    },
+    "17": {
+      "text": "Jesus saith to her, 'Be not touching me, for I have not yet ascended unto my Father; and be going on to my brethren, and say to them, I ascend unto my Father, and your Father, and to my God, and to your God.'",
+      "spans": [
+        {
+          "start": 21,
+          "end": 208
+        }
+      ]
+    },
+    "19": {
+      "text": "It being, therefore, evening, on that day, the first of the sabbaths, and the doors having been shut where the disciples were assembled, through fear of the Jews, Jesus came and stood in the midst, and saith to them, 'Peace to you;'",
+      "spans": [
+        {
+          "start": 218,
+          "end": 232
+        }
+      ]
+    },
+    "21": {
+      "text": "Jesus, therefore, said to them again, 'Peace to you; according as the Father hath sent me, I also send you;'",
+      "spans": [
+        {
+          "start": 39,
+          "end": 108
+        }
+      ]
+    },
+    "22": {
+      "text": "and this having said, he breathed on [them], and saith to them, 'Receive the Holy Spirit;",
+      "spans": [
+        {
+          "start": 65,
+          "end": 89
+        }
+      ]
+    },
+    "23": {
+      "text": "if of any ye may loose the sins, they are loosed to them; if of any ye may retain, they have been retained.'",
+      "spans": [
+        {
+          "start": 0,
+          "end": 108
+        }
+      ]
+    },
+    "26": {
+      "text": "And after eight days, again were his disciples within, and Thomas with them; Jesus cometh, the doors having been shut, and he stood in the midst, and said, 'Peace to you!'",
+      "spans": [
+        {
+          "start": 157,
+          "end": 171
+        }
+      ]
+    },
+    "27": {
+      "text": "then he saith to Thomas, 'Bring thy finger hither, and see my hands, and bring thy hand, and put [it] to my side, and become not unbelieving, but believing.'",
+      "spans": [
+        {
+          "start": 26,
+          "end": 157
+        }
+      ]
+    },
+    "29": {
+      "text": "Jesus saith to him, 'Because thou hast seen me, Thomas, thou hast believed; happy those not having seen, and having believed.'",
+      "spans": [
+        {
+          "start": 21,
+          "end": 126
+        }
+      ]
+    }
   }
 }
