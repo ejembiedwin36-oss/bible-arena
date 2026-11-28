@@ -309,3 +309,12 @@ The Reader now offers the red-letter control for KJV, WEB, ASV, BSB, and YLT. AS
 - Next: verify the John 8 commit and then continue with John chapter 9.
 
 - Boundary review correction: John 8:23 in WEB, ASV, BSB, and YLT now includes the complete final clause “I am not of this world”; a regression test checks each translation's full spoken statement.
+
+
+## John chapter 9 annotation checkpoint — 2026-11-28
+
+- Added exact-text Jesus-speech spans for 8 reviewed verses (9:3–5, 9:7, 9:35, 9:37, 9:39, and 9:41) to WEB, ASV, YLT, and BSB; existing KJV annotations were preserved.
+- John 9:7 stops before the explanatory note about Siloam. BSB 9:37 and 9:41 use separate spans around “Jesus answered/replied” so the speaker attribution remains uncoloured.
+- Added regression tests for all 8 reviewed verses in all five versions, the Siloam explanation boundary, BSB split speech, and text mismatch fallback. A direct exact-text audit confirmed all 32 new annotations match the production verse text and have valid spans.
+- CI and Reader verification are pending for this John 9 checkpoint; deployment is not confirmed.
+- Next: verify John 9, then continue with John chapter 10.
