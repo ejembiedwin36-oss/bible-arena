@@ -468,7 +468,7 @@ describe('John chapter 7 translation-specific red-letter spans', () => {
     const cases = [
       { corpus: webJohn, verse: 6, speech: 'My time has not yet come, but your time is always ready.', attribution: 'Jesus therefore said to them' },
       { corpus: asvJohn, verse: 16, speech: 'My teaching is not mine, but his that sent me.', attribution: 'Jesus therefore answered them' },
-      { corpus: yltJohn, verse: 21, speech: "'One work I did, and ye all wonder,", attribution: 'Jesus answered and said to them' },
+      { corpus: yltJohn, verse: 21, speech: 'One work I did, and ye all wonder,', attribution: 'Jesus answered and said to them' },
       { corpus: bsbJohn, verse: 28, speech: 'You know Me, and you know where I am from. I have not come of My own accord, but He who sent Me is true. You do not know Him,', attribution: 'Then Jesus, still teaching' },
       { corpus: webJohn, verse: 33, speech: 'I will be with you a little while longer, then I go to him who sent me.', attribution: 'Then Jesus said' },
       { corpus: asvJohn, verse: 37, speech: 'If any man thirst, let him come unto me and drink.', attribution: 'Jesus stood and cried, saying' },
