@@ -654,3 +654,51 @@ describe('John chapter 10:1-18 translation-specific red-letter spans', () => {
     expect(redLetterVerse(webJohn, 10, 7, 'Changed wording')).toEqual([{ text: 'Changed wording', red: false }]);
   });
 });
+
+const john10LaterReviewedVerses = [25, 26, 27, 28, 29, 30, 32, 34, 35, 36, 37, 38] as const;
+
+describe('John chapter 10:25-38 translation-specific red-letter spans', () => {
+  const versions = [
+    { version: 'KJV', corpus: john },
+    { version: 'WEB', corpus: webJohn },
+    { version: 'ASV', corpus: asvJohn },
+    { version: 'BSB', corpus: bsbJohn },
+    { version: 'YLT', corpus: yltJohn },
+  ];
+
+  it.each(versions)('$version has reviewed Jesus-speech spans in John 10:25-38', ({ corpus }) => {
+    const typedCorpus = corpus as unknown as ChapterCorpus;
+    for (const verseNumber of john10LaterReviewedVerses) {
+      const annotation = typedCorpus['10'][String(verseNumber)];
+      expect(annotation, `missing John 10:${verseNumber} annotation`).toBeDefined();
+      const parts = redLetterVerse(corpus, 10, verseNumber, annotation.text);
+      expect(parts.map(part => part.text).join('')).toBe(annotation.text);
+      expect(parts.some(part => part.red)).toBe(true);
+    }
+  });
+
+  it('splits BSB John 10:25 around Jesus replied and keeps attribution uncoloured', () => {
+    const verse = bsbJohn['10']['25'];
+    const parts = redLetterVerse(bsbJohn, 10, 25, verse.text);
+    const red = parts.filter(part => part.red).map(part => part.text).join('');
+    expect(red).toBe('I already told you,”but you did not believe. The works I do in My Father’s name testify on My behalf.');
+    expect(parts.some(part => !part.red && part.text.includes('Jesus replied'))).toBe(true);
+  });
+
+  it('keeps speaker introductions outside the red text in John 10:32 and 10:34', () => {
+    const cases = [
+      { corpus: webJohn, verse: 32, attribution: 'Jesus answered them' },
+      { corpus: bsbJohn, verse: 32, attribution: 'But Jesus responded' },
+      { corpus: yltJohn, verse: 34, attribution: 'Jesus answered them' },
+    ];
+    for (const item of cases) {
+      const verse = (item.corpus as unknown as ChapterCorpus)['10'][String(item.verse)];
+      const parts = redLetterVerse(item.corpus, 10, item.verse, verse.text);
+      expect(parts.some(part => !part.red && part.text.includes(item.attribution))).toBe(true);
+    }
+  });
+
+  it('does not apply later John 10 red letters when the displayed text differs', () => {
+    expect(redLetterVerse(bsbJohn, 10, 25, 'Changed wording')).toEqual([{ text: 'Changed wording', red: false }]);
+  });
+});
