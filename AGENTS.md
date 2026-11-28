@@ -482,3 +482,12 @@ The Reader now offers the red-letter control for KJV, WEB, ASV, BSB, and YLT. AS
 - Added regression tests for all 11 verses in all five versions, mixed-speech boundaries, heading exclusions, and text mismatch fallback. A direct exact-text audit confirmed all 44 new annotations match production text and have valid spans.
 - Verification for commit `647ac1b`: CI and Reader verification succeeded; 29 test files / 340 tests passed, API and TypeScript checks passed, and the production build passed. Deployment to the live website has not been independently confirmed.
 - Next: verify Matthew 8, then continue with Matthew chapter 9.
+
+
+## Matthew chapter 9 checkpoint — 2026-11-28
+
+- Added exact-text Jesus-speech spans for 17 KJV-listed verses in Matthew 9 to WEB, ASV, BSB, and YLT (68 annotations); existing KJV data was preserved.
+- BSB Matthew 9:6, 9:22, and 9:24 use separate spans around speaker attributions. BSB 9:13, 9:15, and 9:17 stop before appended section headings. Matthew 9:28 highlights Jesus’ question but not the men’s answer.
+- Added regression tests for all 17 verses in all five versions, mixed-speaker boundaries, heading exclusions, and text mismatch fallback. A direct exact-text audit confirmed all 68 new annotations match production text and have valid spans.
+- CI and Reader verification are pending for Matthew 9; deployment is not confirmed.
+- Next: verify Matthew 9, then continue with Matthew chapter 10.
