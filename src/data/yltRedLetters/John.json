@@ -1254,5 +1254,115 @@
         }
       ]
     }
+  },
+  "8": {
+    "12": {
+      "text": "Again, therefore, Jesus spake to them, saying, 'I am the light of the world; he who is following me shall not walk in the darkness, but he shall have the light of the life.'",
+      "spans": [
+        {
+          "start": 48,
+          "end": 173
+        }
+      ]
+    },
+    "21": {
+      "text": "therefore said Jesus again to them, 'I go away, and ye will seek me, and in your sin ye shall die; whither I go away, ye are not able to come.'",
+      "spans": [
+        {
+          "start": 37,
+          "end": 143
+        }
+      ]
+    },
+    "23": {
+      "text": "and he said to them, 'Ye are from beneath, I am from above; ye are of this world, I am not of this world;",
+      "spans": [
+        {
+          "start": 22,
+          "end": 105
+        }
+      ]
+    },
+    "24": {
+      "text": "I said, therefore, to you, that ye shall die in your sins, for if ye may not believe that I am [he], ye shall die in your sins.'",
+      "spans": [
+        {
+          "start": 0,
+          "end": 128
+        }
+      ]
+    },
+    "28": {
+      "text": "Jesus, therefore, said to them, 'When ye may lift up the Son of Man then ye will know that I am [he]; and of myself I do nothing, but according as my Father did teach me, these things I speak;",
+      "spans": [
+        {
+          "start": 33,
+          "end": 192
+        }
+      ]
+    },
+    "31": {
+      "text": "Jesus, therefore, said unto the Jews who believed in him, 'If ye may remain in my word, truly my disciples ye are, and ye shall know the truth,",
+      "spans": [
+        {
+          "start": 59,
+          "end": 143
+        }
+      ]
+    },
+    "32": {
+      "text": "and the truth shall make you free.'",
+      "spans": [
+        {
+          "start": 0,
+          "end": 35
+        }
+      ]
+    },
+    "34": {
+      "text": "Jesus answered them, 'Verily, verily, I say to you — Every one who is committing sin, is a servant of the sin,",
+      "spans": [
+        {
+          "start": 22,
+          "end": 85
+        }
+      ]
+    },
+    "36": {
+      "text": "if then the son may make you free, in reality ye shall be free.",
+      "spans": [
+        {
+          "start": 0,
+          "end": 63
+        }
+      ]
+    },
+    "51": {
+      "text": "verily, verily, I say to you, If any one may keep my word, death he may not see — to the age.'",
+      "spans": [
+        {
+          "start": 0,
+          "end": 94
+        }
+      ]
+    },
+    "56": {
+      "text": "Abraham, your father, was glad that he might see my day; and he saw, and did rejoice.'",
+      "spans": [
+        {
+          "start": 0,
+          "end": 86
+        }
+      ]
+    },
+    "58": {
+      "text": "Jesus said to them, 'Verily, verily, I say to you, Before Abraham's coming — I am;'",
+      "spans": [
+        {
+          "start": 21,
+          "end": 82
+        }
+      ]
+    }
   }
 }
