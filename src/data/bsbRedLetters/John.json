@@ -1392,5 +1392,87 @@
         }
       ]
     }
+  },
+  "9": {
+    "3": {
+      "text": "Jesus answered, “Neither this man nor his parents sinned, but this happened so that the works of God would be displayed in him.",
+      "spans": [
+        {
+          "start": 17,
+          "end": 127
+        }
+      ]
+    },
+    "4": {
+      "text": "While it is daytime, we must do the works of Him who sent Me. Night is coming, when no one can work.",
+      "spans": [
+        {
+          "start": 0,
+          "end": 100
+        }
+      ]
+    },
+    "5": {
+      "text": "While I am in the world, I am the light of the world.”",
+      "spans": [
+        {
+          "start": 0,
+          "end": 54
+        }
+      ]
+    },
+    "7": {
+      "text": "Then He told him, “Go, wash in the Pool of Siloam” (which means “Sent”). So the man went and washed, and came back seeing.",
+      "spans": [
+        {
+          "start": 19,
+          "end": 50
+        }
+      ]
+    },
+    "35": {
+      "text": "When Jesus heard that they had thrown him out, He found the man and said, “ Do you believe in the Son of Man?”",
+      "spans": [
+        {
+          "start": 76,
+          "end": 110
+        }
+      ]
+    },
+    "37": {
+      "text": "“You have already seen Him,” Jesus answered. “He is the One speaking with you.”",
+      "spans": [
+        {
+          "start": 1,
+          "end": 28
+        },
+        {
+          "start": 46,
+          "end": 79
+        }
+      ]
+    },
+    "39": {
+      "text": "Then Jesus declared, “For judgment I have come into this world, so that the blind may see and those who see may become blind.”",
+      "spans": [
+        {
+          "start": 22,
+          "end": 126
+        }
+      ]
+    },
+    "41": {
+      "text": "“If you were blind,” Jesus replied, “you would not be guilty of sin. But since you claim you can see, your guilt remains.”",
+      "spans": [
+        {
+          "start": 1,
+          "end": 20
+        },
+        {
+          "start": 37,
+          "end": 122
+        }
+      ]
+    }
   }
 }
