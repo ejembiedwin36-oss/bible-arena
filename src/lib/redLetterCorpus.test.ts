@@ -1284,7 +1284,7 @@ describe('John chapter 21 translation-specific red-letter spans', () => {
       17: 'Simon son of John, do you love Me?”Do you love Me?”Feed My sheep.',
     };
     for (const verseNumber of [15, 16, 17] as const) {
-      const verse = bsbJohn['21'][String(verseNumber)];
+      const verse = bsbJohn['21'][String(verseNumber) as '15' | '16' | '17'];
       const parts = redLetterVerse(bsbJohn, 21, verseNumber, verse.text);
       const red = parts.filter(part => part.red).map(part => part.text).join('');
       expect(red).toBe(expected[verseNumber]);
