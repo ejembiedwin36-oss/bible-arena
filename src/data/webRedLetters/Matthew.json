@@ -1,4 +1,62 @@
 {
+  "3": {
+    "15": {
+      "text": "But Jesus, answering, said to him, “Allow it now, for this is the fitting way for us to fulfill all righteousness.” Then he allowed him.",
+      "spans": [
+        {
+          "start": 36,
+          "end": 115
+        }
+      ]
+    }
+  },
+  "4": {
+    "4": {
+      "text": "But he answered, “It is written, ‘Man shall not live by bread alone, but by every word that proceeds out of God’s mouth.’ ”",
+      "spans": [
+        {
+          "start": 18,
+          "end": 123
+        }
+      ]
+    },
+    "7": {
+      "text": "Jesus said to him, “Again, it is written, ‘You shall not test the Lord, your God.’ ”",
+      "spans": [
+        {
+          "start": 20,
+          "end": 84
+        }
+      ]
+    },
+    "10": {
+      "text": "Then Jesus said to him, “Get behind me, Satan! For it is written, ‘You shall worship the Lord your God, and you shall serve him only.’ ”",
+      "spans": [
+        {
+          "start": 25,
+          "end": 136
+        }
+      ]
+    },
+    "17": {
+      "text": "From that time, Jesus began to preach, and to say, “Repent! For the Kingdom of Heaven is at hand.”",
+      "spans": [
+        {
+          "start": 52,
+          "end": 98
+        }
+      ]
+    },
+    "19": {
+      "text": "He said to them, “Come after me, and I will make you fishers for men.”",
+      "spans": [
+        {
+          "start": 18,
+          "end": 70
+        }
+      ]
+    }
+  },
   "5": {
     "3": {
       "text": "“Blessed are the poor in spirit, for theirs is the Kingdom of Heaven.",
