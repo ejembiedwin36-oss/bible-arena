@@ -387,3 +387,56 @@ describe('John chapter 5 translation-specific red-letter spans', () => {
     }
   });
 });
+
+
+const john6ReviewedVerses = [5, 10, 12, 20, 26, 27, 29, 32, 33, 35, 36, 37, 38, 39, 40, 43, 44, 45, 46, 47, 48, 49, 50, 51, 53, 54, 55, 56, 57, 58, 61, 62, 63, 64, 65, 67, 70] as const;
+
+describe('John chapter 6 translation-specific red-letter spans', () => {
+  it.each(john3Versions)('$version has reviewed Jesus-speech spans in John 6', ({ corpus }) => {
+    const typedCorpus = corpus as unknown as ChapterCorpus;
+    for (const verseNumber of john6ReviewedVerses) {
+      const annotation = typedCorpus['6'][String(verseNumber)];
+      expect(annotation, `missing John 6:${verseNumber} annotation`).toBeDefined();
+      const parts = redLetterVerse(corpus, 6, verseNumber, annotation.text);
+      expect(parts.map((part) => part.text).join('')).toBe(annotation.text);
+      expect(parts.some((part) => part.red)).toBe(true);
+    }
+  });
+
+  it('keeps attribution separate in John 6:5, 10, 26, and 43', () => {
+    const cases = [
+      { corpus: webJohn, verse: 5, spoken: 'Where are we to buy bread, that these may eat?”', attribution: 'said to Philip' },
+      { corpus: asvJohn, verse: 5, spoken: 'Whence are we to buy bread, that these may eat?', attribution: 'saith unto Philip' },
+      { corpus: yltJohn, verse: 5, spoken: "'Whence shall we buy loaves, that these may eat?'", attribution: 'saith unto Philip' },
+      { corpus: bsbJohn, verse: 10, spoken: '“Have the people sit down,”', attribution: 'Jesus said' },
+      { corpus: webJohn, verse: 26, spoken: 'Most certainly I tell you, you seek me, not because you saw signs, but because you ate of the loaves, and were filled.', attribution: 'Jesus answered them' },
+      { corpus: bsbJohn, verse: 43, spoken: '“Stop grumbling among yourselves,”', attribution: 'Jesus replied' },
+    ];
+    for (const item of cases) {
+      const annotation = (item.corpus as unknown as ChapterCorpus)['6'][String(item.verse)];
+      const parts = redLetterVerse(item.corpus, 6, item.verse, annotation.text);
+      expect(parts.filter(part => part.red).map(part => part.text).join('')).toBe(item.spoken);
+      expect(parts.some(part => !part.red && part.text.includes(item.attribution))).toBe(true);
+    }
+  });
+
+  it('does not colour BSB John 6:58 section heading or John 6:64 narration', () => {
+    const verse58 = bsbJohn['6']['58'];
+    const red58 = redLetterVerse(bsbJohn, 6, 58, verse58.text).filter(part => part.red).map(part => part.text).join('');
+    expect(red58).toBe('This is the bread that came down from heaven. Unlike your fathers, who ate the manna and died, the one who eats this bread will live forever.”');
+    expect(red58).not.toContain('Many Disciples Turn Back');
+    const verse64 = bsbJohn['6']['64'];
+    const red64 = redLetterVerse(bsbJohn, 6, 64, verse64.text).filter(part => part.red).map(part => part.text).join('');
+    expect(red64).toBe('However, there are some of you who do not believe.”');
+    expect(red64).not.toContain('For Jesus had known');
+  });
+
+  it('leaves John 6:28, 31, 34, 60, 66, 68, 69, and 71 uncoloured', () => {
+    for (const { corpus } of john3Versions) {
+      for (const verseNumber of [28, 31, 34, 60, 66, 68, 69, 71]) {
+        const text = (corpus as unknown as ChapterCorpus)['6'][String(verseNumber)]?.text ?? 'Unannotated verse';
+        expect(redLetterVerse(corpus, 6, verseNumber, text).some(part => part.red)).toBe(false);
+      }
+    }
+  });
+});
