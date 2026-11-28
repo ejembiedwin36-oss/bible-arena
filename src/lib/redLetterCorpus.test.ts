@@ -1572,3 +1572,64 @@ describe('Matthew chapter 7 complete red-letter spans', () => {
     expect(redLetterVerse(webMatthew, 7, 27, 'Changed wording')).toEqual([{ text: 'Changed wording', red: false }]);
   });
 });
+
+const matthew8ReviewedVerses = [3, 4, 7, 10, 11, 12, 13, 20, 22, 26, 32] as const;
+
+describe('Matthew chapter 8 translation-specific red-letter spans', () => {
+  const versions = [
+    { version: 'KJV', corpus: matthew },
+    { version: 'WEB', corpus: webMatthew },
+    { version: 'ASV', corpus: asvMatthew },
+    { version: 'BSB', corpus: bsbMatthew },
+    { version: 'YLT', corpus: yltMatthew },
+  ];
+
+  it.each(versions)('$version has reviewed Jesus-speech spans in Matthew 8', ({ corpus }) => {
+    const typedCorpus = corpus as unknown as ChapterCorpus;
+    for (const verseNumber of matthew8ReviewedVerses) {
+      const annotation = typedCorpus['8'][String(verseNumber)];
+      expect(annotation, `missing Matthew 8:${verseNumber} annotation`).toBeDefined();
+      const parts = redLetterVerse(corpus, 8, verseNumber, annotation.text);
+      expect(parts.map(part => part.text).join('')).toBe(annotation.text);
+      expect(parts.some(part => part.red)).toBe(true);
+    }
+  });
+
+  it('splits BSB Matthew 8:3 and 8:26 around Jesus attributions', () => {
+    const verse3 = bsbMatthew['8']['3'];
+    const parts3 = redLetterVerse(bsbMatthew, 8, 3, verse3.text);
+    expect(parts3.filter(part => part.red).map(part => part.text).join('')).toBe('I am willing,”Be clean!”');
+    expect(parts3.some(part => !part.red && part.text.includes('He said'))).toBe(true);
+
+    const verse26 = bsbMatthew['8']['26'];
+    const parts26 = redLetterVerse(bsbMatthew, 8, 26, verse26.text);
+    expect(parts26.filter(part => part.red).map(part => part.text).join('')).toBe('You of little faith,”why are you so afraid?”');
+    expect(parts26.some(part => !part.red && part.text.includes('Jesus replied'))).toBe(true);
+  });
+
+  it('stops BSB Matthew 8:4, 8:13, and 8:22 before section headings', () => {
+    const cases = [
+      { verse: 4, heading: 'The Faith of the Centurion', spoken: 'See that you don’t tell anyone. But go, show yourself to the priest and offer the gift prescribed by Moses, as a testimony to them.”' },
+      { verse: 13, heading: 'Jesus Heals at Peter’s House', spoken: 'Go! As you have believed, so will it be done for you.”' },
+      { verse: 22, heading: 'Jesus Calms the Storm', spoken: 'Follow Me, and let the dead bury their own dead.”' },
+    ];
+    for (const item of cases) {
+      const verse = bsbMatthew['8'][String(item.verse) as '4' | '13' | '22'];
+      const parts = redLetterVerse(bsbMatthew, 8, item.verse, verse.text);
+      const red = parts.filter(part => part.red).map(part => part.text).join('');
+      expect(red).toBe(item.spoken);
+      expect(red).not.toContain(item.heading);
+    }
+  });
+
+  it('keeps the narration after the command in Matthew 8:32 uncoloured', () => {
+    const verse = bsbMatthew['8']['32'];
+    const parts = redLetterVerse(bsbMatthew, 8, 32, verse.text);
+    expect(parts.filter(part => part.red).map(part => part.text).join('')).toBe('Go!”');
+    expect(parts.some(part => !part.red && part.text.includes('He told them'))).toBe(true);
+  });
+
+  it('does not apply Matthew 8 red letters when the displayed text differs', () => {
+    expect(redLetterVerse(yltMatthew, 8, 32, 'Changed wording')).toEqual([{ text: 'Changed wording', red: false }]);
+  });
+});
