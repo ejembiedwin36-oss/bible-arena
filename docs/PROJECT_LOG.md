@@ -1026,3 +1026,12 @@ The YLT source-preparation workflow run `45942618006` completed successfully.
 - Added regression tests for all 38 verses in all five versions, the 10:5 narration boundary, heading exclusions, and text mismatch fallback. A direct exact-text audit confirmed all 152 new annotations match production text and have valid spans.
 - Verification for commit `8450118`: CI and Reader verification succeeded; 29 test files / 357 tests passed, API and TypeScript checks passed, and the production build passed. Deployment to the live website has not been independently confirmed.
 - Next: verify Matthew 10, then continue with Matthew chapter 11.
+
+
+## Matthew chapter 11 checkpoint — 2026-11-28
+
+- Added exact-text Jesus-speech spans for 26 KJV-listed verses in Matthew 11 to WEB, ASV, BSB, and YLT (104 annotations); existing KJV data was preserved.
+- Matthew 11:4, 11:7, and 11:25 begin after the speaker attribution. BSB 11:6, 11:19, and 11:24 stop before appended section headings.
+- Added regression tests for all 26 verses in all five versions, attribution boundaries, heading exclusions, and text mismatch fallback. A direct exact-text audit confirmed all 104 new annotations match production text and have valid spans.
+- CI and Reader verification are pending for Matthew 11; deployment is not confirmed.
+- Next: verify Matthew 11, then continue with Matthew chapter 12.
