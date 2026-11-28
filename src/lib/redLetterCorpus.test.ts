@@ -702,3 +702,51 @@ describe('John chapter 10:25-38 translation-specific red-letter spans', () => {
     expect(redLetterVerse(bsbJohn, 10, 25, 'Changed wording')).toEqual([{ text: 'Changed wording', red: false }]);
   });
 });
+
+const john11ReviewedVerses = [4, 7, 9, 10, 11, 14, 15, 23, 25, 26, 34, 39, 40, 41, 42, 43, 44] as const;
+
+describe('John chapter 11 translation-specific red-letter spans', () => {
+  const versions = [
+    { version: 'KJV', corpus: john },
+    { version: 'WEB', corpus: webJohn },
+    { version: 'ASV', corpus: asvJohn },
+    { version: 'BSB', corpus: bsbJohn },
+    { version: 'YLT', corpus: yltJohn },
+  ];
+
+  it.each(versions)('$version has reviewed Jesus-speech spans in John 11', ({ corpus }) => {
+    const typedCorpus = corpus as unknown as ChapterCorpus;
+    for (const verseNumber of john11ReviewedVerses) {
+      const annotation = typedCorpus['11'][String(verseNumber)];
+      expect(annotation, `missing John 11:${verseNumber} annotation`).toBeDefined();
+      const parts = redLetterVerse(corpus, 11, verseNumber, annotation.text);
+      expect(parts.map(part => part.text).join('')).toBe(annotation.text);
+      expect(parts.some(part => part.red)).toBe(true);
+    }
+  });
+
+  it('keeps speaker introductions and other speakers out of John 11 red text', () => {
+    const verse9 = webJohn['11']['9'];
+    expect(redLetterVerse(webJohn, 11, 9, verse9.text).some(part => !part.red && part.text.includes('Jesus answered'))).toBe(true);
+
+    const verse34 = bsbJohn['11']['34'];
+    const red34 = redLetterVerse(bsbJohn, 11, 34, verse34.text).filter(part => part.red).map(part => part.text).join('');
+    expect(red34).toBe('Where have you put him?”');
+    expect(red34).not.toContain('Come and see');
+    expect(redLetterVerse(bsbJohn, 11, 34, verse34.text).some(part => !part.red && part.text.includes('He asked'))).toBe(true);
+
+    const verse39 = bsbJohn['11']['39'];
+    const red39 = redLetterVerse(bsbJohn, 11, 39, verse39.text).filter(part => part.red).map(part => part.text).join('');
+    expect(red39).toBe('Take away the stone,”');
+    expect(red39).not.toContain('Lord, by now he stinks');
+
+    const verse44 = bsbJohn['11']['44'];
+    const red44 = redLetterVerse(bsbJohn, 11, 44, verse44.text).filter(part => part.red).map(part => part.text).join('');
+    expect(red44).toBe('Unwrap him and let him go,”');
+    expect(red44).not.toContain('The Plot to Kill Jesus');
+  });
+
+  it('does not apply John 11 red letters when the displayed text differs', () => {
+    expect(redLetterVerse(asvJohn, 11, 43, 'Changed wording')).toEqual([{ text: 'Changed wording', red: false }]);
+  });
+});
