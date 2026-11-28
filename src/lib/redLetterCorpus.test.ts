@@ -264,3 +264,73 @@ describe('John chapter 3 translation-specific red-letter spans', () => {
     }
   });
 });
+
+
+const john4ReviewedVerses = [7, 10, 13, 14, 16, 17, 18, 21, 22, 23, 24, 26, 32, 34, 35, 36, 37, 38, 48, 50, 53] as const;
+
+describe('John chapter 4 translation-specific red-letter spans', () => {
+  it.each(john3Versions)('$version has reviewed Jesus-speech spans in John 4', ({ corpus }) => {
+    const typedCorpus = corpus as unknown as ChapterCorpus;
+    for (const verseNumber of john4ReviewedVerses) {
+      const annotation = typedCorpus['4'][String(verseNumber)];
+      expect(annotation, `missing John 4:${verseNumber} annotation`).toBeDefined();
+      const parts = redLetterVerse(corpus, 4, verseNumber, annotation.text);
+      expect(parts.map((part) => part.text).join('')).toBe(annotation.text);
+      expect(parts.some((part) => part.red)).toBe(true);
+    }
+  });
+
+  it('highlights only Jesus’ reply in John 4:17 across translations', () => {
+    const expected = [
+      { corpus: john, text: 'Thou hast well said, I have no husband:' },
+      { corpus: webJohn, text: '“You said well, ‘I have no husband,’' },
+      { corpus: asvJohn, text: 'Thou saidst well, I have no husband:' },
+      { corpus: yltJohn, text: "'Well didst thou say — A husband I have not;" },
+      { corpus: bsbJohn, text: '“You are correct to say that you have no husband' },
+    ];
+    for (const item of expected) {
+      const verse = (item.corpus as unknown as ChapterCorpus)['4']['17'];
+      const parts = redLetterVerse(item.corpus, 4, 17, verse.text);
+      expect(parts.filter((part) => part.red).map((part) => part.text).join('')).toBe(item.text);
+      expect(parts.some((part) => !part.red)).toBe(true);
+    }
+  });
+
+  it('keeps BSB attribution separate in John 4:21 and 4:50', () => {
+    const verse21 = bsbJohn['4']['21'];
+    const red21 = redLetterVerse(bsbJohn, 4, 21, verse21.text).filter((part) => part.red).map((part) => part.text).join('');
+    expect(red21).toBe('“Believe Me, woman,”“a time is coming when you will worship the Father neither on this mountain nor in Jerusalem.');
+    const verse50 = bsbJohn['4']['50'];
+    const red50 = redLetterVerse(bsbJohn, 4, 50, verse50.text).filter((part) => part.red).map((part) => part.text).join('');
+    expect(red50).toBe('“Go,”“Your son will live.”');
+  });
+
+  it('does not colour the BSB section heading after John 4:38', () => {
+    const verse = bsbJohn['4']['38'];
+    const red = redLetterVerse(bsbJohn, 4, 38, verse.text).filter((part) => part.red).map((part) => part.text).join('');
+    expect(red).toBe('I sent you to reap what you have not worked for; others have done the hard work, and now you have taken up their labor.”');
+    expect(red).not.toContain('Many Samaritans Believe');
+  });
+
+  it('highlights the reported spoken words in John 4:53 only', () => {
+    const expected = [
+      { corpus: john, text: 'Thy son liveth' },
+      { corpus: webJohn, text: '“Your son lives.”' },
+      { corpus: asvJohn, text: 'Thy son liveth' },
+      { corpus: yltJohn, text: "'Thy son doth live,'" },
+      { corpus: bsbJohn, text: '“Your son will live.”' },
+    ];
+    for (const item of expected) {
+      const verse = (item.corpus as unknown as ChapterCorpus)['4']['53'];
+      const parts = redLetterVerse(item.corpus, 4, 53, verse.text);
+      expect(parts.filter((part) => part.red).map((part) => part.text).join('')).toBe(item.text);
+    }
+  });
+
+  it('leaves unannotated John 4:9 in normal text', () => {
+    for (const { corpus } of john3Versions) {
+      const text = (corpus as unknown as ChapterCorpus)['4']['9']?.text ?? 'Unannotated verse';
+      expect(redLetterVerse(corpus, 4, 9, text).some((part) => part.red)).toBe(false);
+    }
+  });
+});
