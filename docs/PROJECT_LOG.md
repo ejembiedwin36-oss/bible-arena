@@ -997,7 +997,7 @@ The YLT source-preparation workflow run `45942618006` completed successfully.
 - Added full Jesus-speech spans for all 27 verses in Matthew 7 to WEB, ASV, BSB, and YLT (108 annotations); existing KJV annotations were preserved.
 - BSB Matthew 7:6, 7:12, 7:14, 7:23, and 7:27 stop before appended section headings.
 - Added regression tests for all 27 verses in all five versions and each BSB heading boundary. A direct exact-text audit confirmed all 108 new annotations match production text and have valid spans.
-- CI and Reader verification are pending for Matthew 7; deployment is not confirmed.
+- Verification for commit `647ac1b`: CI and Reader verification succeeded; 29 test files / 340 tests passed, API and TypeScript checks passed, and the production build passed. Deployment to the live website has not been independently confirmed.
 - Next: verify Matthew 7, then continue with Matthew chapter 8.
 
 
@@ -1006,5 +1006,5 @@ The YLT source-preparation workflow run `45942618006` completed successfully.
 - Added exact-text Jesus-speech spans for 11 KJV-listed verses in Matthew 8 to WEB, ASV, BSB, and YLT (44 annotations); existing KJV data was preserved.
 - BSB Matthew 8:3 and 8:26 use separate spans around speaker attributions. BSB 8:4, 8:13, and 8:22 stop before appended section headings; 8:32 highlights only Jesus’ command, not the narration.
 - Added regression tests for all 11 verses in all five versions, mixed-speech boundaries, heading exclusions, and text mismatch fallback. A direct exact-text audit confirmed all 44 new annotations match production text and have valid spans.
-- CI and Reader verification are pending for Matthew 8; deployment is not confirmed.
+- Verification for commit `647ac1b`: CI and Reader verification succeeded; 29 test files / 340 tests passed, API and TypeScript checks passed, and the production build passed. Deployment to the live website has not been independently confirmed.
 - Next: verify Matthew 8, then continue with Matthew chapter 9.
