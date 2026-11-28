@@ -498,5 +498,5 @@ The Reader now offers the red-letter control for KJV, WEB, ASV, BSB, and YLT. AS
 - Added exact-text Jesus-speech spans for all 38 KJV-listed verses in Matthew 10 to WEB, ASV, BSB, and YLT (152 annotations); existing KJV data was preserved.
 - Matthew 10:5 begins after the narrative introduction. BSB 10:15, 10:25, 10:31, 10:33, and 10:39 stop before appended section headings.
 - Added regression tests for all 38 verses in all five versions, the 10:5 narration boundary, heading exclusions, and text mismatch fallback. A direct exact-text audit confirmed all 152 new annotations match production text and have valid spans.
-- CI and Reader verification are pending for Matthew 10; deployment is not confirmed.
+- Verification for commit `8450118`: CI and Reader verification succeeded; 29 test files / 357 tests passed, API and TypeScript checks passed, and the production build passed. Deployment to the live website has not been independently confirmed.
 - Next: verify Matthew 10, then continue with Matthew chapter 11.
