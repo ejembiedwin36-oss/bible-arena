@@ -135,3 +135,67 @@ describe('John chapter 1 translation-specific red-letter spans', () => {
     ]);
   });
 });
+
+
+import webJohn2 from '../data/webRedLetters/John.json';
+import asvJohn2 from '../data/asvRedLetters/John.json';
+import yltJohn2 from '../data/yltRedLetters/John.json';
+
+describe('John chapter 2 translation-specific red-letter spans', () => {
+  const chapter2Cases = [
+    { version: 'KJV', corpus: john, spoken: {
+      4: 'Woman, what have I to do with thee? mine hour is not yet come.',
+      7: 'Fill the waterpots with water.',
+      8: 'Draw out now, and bear unto the governor of the feast.',
+      16: "Take these things hence; make not my Father's house an house of merchandise.",
+      19: 'Destroy this temple, and in three days I will raise it up.',
+    }},
+    { version: 'WEB', corpus: webJohn2, spoken: {
+      4: '“Woman, what does that have to do with you and me? My hour has not yet come.”',
+      7: '“Fill the water pots with water.”',
+      8: '“Now draw some out, and take it to the ruler of the feast.”',
+      16: '“Take these things out of here! Don’t make my Father’s house a marketplace!”',
+      19: '“Destroy this temple, and in three days I will raise it up.”',
+    }},
+    { version: 'ASV', corpus: asvJohn2, spoken: {
+      4: 'Woman, what have I to do with thee? mine hour is not yet come.',
+      7: 'Fill the waterpots with water.',
+      8: 'Draw out now, and bear unto the ruler of the feast.',
+      16: 'Take these things hence; make not my Father’s house a house of merchandise.',
+      19: 'Destroy this temple, and in three days I will raise it up.',
+    }},
+    { version: 'YLT', corpus: yltJohn2, spoken: {
+      4: "'What — to me and to thee, woman? not yet is mine hour come.'",
+      7: "'Fill the water-jugs with water;'",
+      8: "'Draw out, now, and bear to the director of the apartment;'",
+      16: "'Take these things hence; make not the house of my Father a house of merchandise.'",
+      19: "'Destroy this sanctuary, and in three days I will raise it up.'",
+    }},
+    { version: 'BSB', corpus: bsbJohn, spoken: {
+      4: '“Woman, what is that to you and to Me?”“My hour has not yet come.”',
+      7: '“Fill the jars with water.”',
+      8: '“Now draw some out,”“and take it to the master of the banquet.”',
+      16: '“Get these out of here! How dare you turn My Father’s house into a marketplace!”',
+      19: '“Destroy this temple, and in three days I will raise it up again.”',
+    }},
+  ];
+
+  it.each(chapter2Cases)('$version highlights only Jesus’ words in reviewed John 2 verses', ({ corpus, spoken }) => {
+    for (const verseNumber of [4, 7, 8, 16, 19]) {
+      const annotation = corpus['2'][String(verseNumber)];
+      expect(annotation, `missing annotation for John 2:${verseNumber}`).toBeDefined();
+      const parts = redLetterVerse(corpus, 2, verseNumber, annotation.text);
+      expect(parts.map((part) => part.text).join('')).toBe(annotation.text);
+      expect(parts.filter((part) => part.red).map((part) => part.text).join('')).toBe((spoken as Record<number, string>)[verseNumber]);
+      expect(parts.some((part) => !part.red)).toBe(true);
+    }
+  });
+
+  it('leaves Mary’s words in John 2:5 uncoloured in every version', () => {
+    for (const corpus of [john, webJohn2, asvJohn2, yltJohn2, bsbJohn]) {
+      expect(redLetterVerse(corpus, 2, 5, 'Mary said, Do whatever he tells you.')).toEqual([
+        { text: 'Mary said, Do whatever he tells you.', red: false },
+      ]);
+    }
+  });
+});
