@@ -1181,3 +1181,64 @@ describe('John chapter 19 translation-specific red-letter spans', () => {
     expect(redLetterVerse(webJohn, 19, 28, 'Changed wording')).toEqual([{ text: 'Changed wording', red: false }]);
   });
 });
+
+const john20ReviewedVerses = [15, 16, 17, 19, 21, 22, 23, 26, 27, 29] as const;
+
+describe('John chapter 20 translation-specific red-letter spans', () => {
+  const versions = [
+    { version: 'KJV', corpus: john },
+    { version: 'WEB', corpus: webJohn },
+    { version: 'ASV', corpus: asvJohn },
+    { version: 'BSB', corpus: bsbJohn },
+    { version: 'YLT', corpus: yltJohn },
+  ];
+
+  it.each(versions)('$version has reviewed Jesus-speech spans in John 20', ({ corpus }) => {
+    const typedCorpus = corpus as unknown as ChapterCorpus;
+    for (const verseNumber of john20ReviewedVerses) {
+      const annotation = typedCorpus['20'][String(verseNumber)];
+      expect(annotation, `missing John 20:${verseNumber} annotation`).toBeDefined();
+      const parts = redLetterVerse(corpus, 20, verseNumber, annotation.text);
+      expect(parts.map(part => part.text).join('')).toBe(annotation.text);
+      expect(parts.some(part => part.red)).toBe(true);
+    }
+  });
+
+  it('splits BSB John 20:15 and 20:17 around speaker attributions', () => {
+    const verse15 = bsbJohn['20']['15'];
+    const parts15 = redLetterVerse(bsbJohn, 20, 15, verse15.text);
+    const red15 = parts15.filter(part => part.red).map(part => part.text).join('');
+    expect(red15).toBe('Woman, why are you weeping?”Whom are you seeking?”');
+    expect(parts15.some(part => !part.red && part.text.includes('Jesus asked'))).toBe(true);
+    expect(red15).not.toContain('Sir, if you have carried Him off');
+
+    const verse17 = bsbJohn['20']['17'];
+    const parts17 = redLetterVerse(bsbJohn, 20, 17, verse17.text);
+    const red17 = parts17.filter(part => part.red).map(part => part.text).join('');
+    expect(red17).toBe('Do not cling to Me,”for I have not yet ascended to the Father. But go and tell My brothers, ‘I am ascending to My Father and your Father, to My God and your God.’”');
+    expect(parts17.some(part => !part.red && part.text.includes('Jesus said'))).toBe(true);
+  });
+
+  it('keeps Mary’s reply and Rabboni outside Jesus’ words in John 20:16', () => {
+    const verse = bsbJohn['20']['16'];
+    const parts = redLetterVerse(bsbJohn, 20, 16, verse.text);
+    expect(parts.filter(part => part.red).map(part => part.text).join('')).toBe('Mary.”');
+    expect(parts.some(part => !part.red && part.text.includes('Rabboni'))).toBe(true);
+  });
+
+  it('excludes BSB John 20:23 and 20:29 section headings', () => {
+    const verse23 = bsbJohn['20']['23'];
+    const red23 = redLetterVerse(bsbJohn, 20, 23, verse23.text).filter(part => part.red).map(part => part.text).join('');
+    expect(red23).toBe('If you forgive anyone his sins, they are forgiven; if you withhold forgiveness from anyone, it is withheld.”');
+    expect(red23).not.toContain('Jesus Appears to Thomas');
+
+    const verse29 = bsbJohn['20']['29'];
+    const red29 = redLetterVerse(bsbJohn, 20, 29, verse29.text).filter(part => part.red).map(part => part.text).join('');
+    expect(red29).toBe('Because you have seen Me, you have believed; blessed are those who have not seen and yet have believed.”');
+    expect(red29).not.toContain('The Purpose of John’s Book');
+  });
+
+  it('does not apply John 20 red letters when the displayed text differs', () => {
+    expect(redLetterVerse(webJohn, 20, 27, 'Changed wording')).toEqual([{ text: 'Changed wording', red: false }]);
+  });
+});
