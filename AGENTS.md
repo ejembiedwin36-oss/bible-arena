@@ -307,3 +307,5 @@ The Reader now offers the red-letter control for KJV, WEB, ASV, BSB, and YLT. AS
 - Added regression tests for the reviewed verses in all five versions, attribution exclusion, BSB John 8:58 split speech, and text mismatch fallback.
 - CI and Reader verification are pending for this checkpoint; deployment is not confirmed.
 - Next: verify the John 8 commit and then continue with John chapter 9.
+
+- Boundary review correction: John 8:23 in WEB, ASV, BSB, and YLT now includes the complete final clause “I am not of this world”; a regression test checks each translation's full spoken statement.
