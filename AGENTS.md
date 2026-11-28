@@ -251,3 +251,13 @@ The Reader now offers the red-letter control for KJV, WEB, ASV, BSB, and YLT. AS
 - Added regression tests that verify the highlighted text for all five versions and confirm that Mary’s words in John 2:5 remain uncoloured.
 - Annotation scope is selected verses, not all of John chapter 2. Unannotated verses remain normal text. Exact-text mismatch also disables highlighting.
 - Next: verify CI and reader verification; then continue chapter-by-chapter through John.
+
+
+## John chapters 2–3 annotation checkpoint — 2026-11-28
+
+- John 2: preserved existing KJV annotations; added exact-text speech spans for WEB, ASV, YLT, and BSB at verses 4, 7, 8, 16, and 19. BSB verses 4 and 8 use separate spans where attribution interrupts Jesus’ speech.
+- John 3: added exact-text spans for WEB, ASV, YLT, and BSB at verses 3, 5–8, and 10–21 (17 verses per version). Existing KJV annotations were retained.
+- Boundary checks confirm Jesus’ speech is separated from attributions and Nicodemus’ replies. BSB John 3:10 leaves “said Jesus” uncoloured, and John 3:21 leaves the appended section heading uncoloured.
+- Verification for commit `c2ee791`: Reader verification and main CI both succeeded; 29 test files / 135 tests passed, TypeScript checks passed, and the production build passed.
+- Deployment to the live website has not been independently confirmed in this checkpoint.
+- Next: continue John chapter 4 using exact translation text and reviewed speech boundaries.
