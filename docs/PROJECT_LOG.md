@@ -905,7 +905,7 @@ The YLT source-preparation workflow run `45942618006` completed successfully.
 - Added exact-text Jesus-speech spans for 29 reviewed verses (16:1–16, 16:19–28, and 16:31–33) to WEB, ASV, YLT, and BSB; existing KJV annotations were preserved.
 - BSB John 16:4, 16:16, and 16:22 stop before appended section headings. John 16:19 starts after the speaker introduction; BSB 16:31 highlights Jesus’ question but leaves “Jesus replied” uncoloured.
 - Added regression tests for all 29 reviewed verses in all five versions, heading/attribution boundaries, and text mismatch fallback. A direct exact-text audit confirmed all 116 new annotations match production text and have valid spans.
-- CI and Reader verification are pending for this John 16 checkpoint; deployment is not confirmed.
+- Verification for commit `b978f9c`: CI and Reader verification succeeded; 29 test files / 258 tests passed, API and TypeScript checks passed, and the production build passed. Deployment to the live website has not been independently confirmed.
 - Next: verify John 16, then continue with John chapter 17.
 
 
@@ -914,5 +914,5 @@ The YLT source-preparation workflow run `45942618006` completed successfully.
 - Added exact-text Jesus-speech spans for all 26 reviewed verses in John 17 to WEB, ASV, YLT, and BSB; existing KJV annotations were preserved.
 - John 17:1 begins at Jesus’ prayer after the narration. BSB John 17:5 and 17:19 stop before appended section headings.
 - Added regression tests for all 26 verses in all five versions, the prayer/narration boundary, BSB heading exclusions, and text mismatch fallback. A direct exact-text audit confirmed all 104 new annotations match production text and have valid spans.
-- CI and Reader verification are pending for this John 17 checkpoint; deployment is not confirmed.
+- Verification for commit `b978f9c`: CI and Reader verification succeeded; 29 test files / 258 tests passed, API and TypeScript checks passed, and the production build passed. Deployment to the live website has not been independently confirmed.
 - Next: verify John 17, then continue with John chapter 18.
