@@ -314,7 +314,7 @@ describe('John chapter 4 translation-specific red-letter spans', () => {
 
   it('highlights the reported spoken words in John 4:53 only', () => {
     const expected = [
-      { corpus: john, text: 'Thy son liveth' },
+      { corpus: john, text: 'Thy son liveth:' },
       { corpus: webJohn, text: '“Your son lives.”' },
       { corpus: asvJohn, text: 'Thy son liveth' },
       { corpus: yltJohn, text: "'Thy son doth live,'" },
