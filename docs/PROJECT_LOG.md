@@ -898,3 +898,12 @@ The YLT source-preparation workflow run `45942618006` completed successfully.
 - Added regression tests for all 27 verses in all five versions, BSB heading exclusions, and text mismatch fallback. A direct exact-text audit confirmed all 108 new annotations match production text and have valid spans.
 - CI and Reader verification are pending for this John 15 checkpoint; deployment is not confirmed.
 - Next: verify John 15, then continue with John chapter 16.
+
+
+## John chapter 16 annotation checkpoint — 2026-11-28
+
+- Added exact-text Jesus-speech spans for 29 reviewed verses (16:1–16, 16:19–28, and 16:31–33) to WEB, ASV, YLT, and BSB; existing KJV annotations were preserved.
+- BSB John 16:4, 16:16, and 16:22 stop before appended section headings. John 16:19 starts after the speaker introduction; BSB 16:31 highlights Jesus’ question but leaves “Jesus replied” uncoloured.
+- Added regression tests for all 29 reviewed verses in all five versions, heading/attribution boundaries, and text mismatch fallback. A direct exact-text audit confirmed all 116 new annotations match production text and have valid spans.
+- CI and Reader verification are pending for this John 16 checkpoint; deployment is not confirmed.
+- Next: verify John 16, then continue with John chapter 17.
