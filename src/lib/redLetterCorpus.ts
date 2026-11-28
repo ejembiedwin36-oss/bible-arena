@@ -24,14 +24,17 @@ const webLoaders: Record<string, () => Promise<{ default: CorpusBook }>> = {
   john: () => import('../data/webRedLetters/John.json'),
 };
 const asvLoaders: Record<string, () => Promise<{ default: CorpusBook }>> = {
+  matthew: () => import('../data/asvRedLetters/Matthew.json'),
   john: () => import('../data/asvRedLetters/John.json'),
 };
 const yltLoaders: Record<string, () => Promise<{ default: CorpusBook }>> = {
+  matthew: () => import('../data/yltRedLetters/Matthew.json'),
   john: () => import('../data/yltRedLetters/John.json'),
 };
 // BSB John annotations are reviewed chapter-by-chapter; unannotated verses remain normal text.
 // Never fall back to KJV offsets or the database's whole-verse marker for another translation.
 const bsbLoaders: Record<string, () => Promise<{ default: CorpusBook }>> = {
+  matthew: () => import('../data/bsbRedLetters/Matthew.json'),
   john: () => import('../data/bsbRedLetters/John.json'),
 };
 const loadersByVersion: Record<string, Record<string, () => Promise<{ default: CorpusBook }>>> = {
