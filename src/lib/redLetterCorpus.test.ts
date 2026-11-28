@@ -835,7 +835,7 @@ describe('John chapter 13 translation-specific red-letter spans', () => {
   it('keeps Peter’s words and Jesus speaker attributions uncoloured in John 13:8 and 13:36', () => {
     const verse8 = bsbJohn['13']['8'];
     const red8 = redLetterVerse(bsbJohn, 13, 8, verse8.text).filter(part => part.red).map(part => part.text).join('');
-    expect(red8).toBe('Unless I wash you, you have no part with Me.');
+    expect(red8).toBe('Unless I wash you, you have no part with Me.”');
     expect(redLetterVerse(bsbJohn, 13, 8, verse8.text).some(part => !part.red && part.text.includes('Never shall You wash my feet'))).toBe(true);
 
     const verse36 = bsbJohn['13']['36'];
