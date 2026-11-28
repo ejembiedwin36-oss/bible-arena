@@ -1592,6 +1592,114 @@
           "end": 167
         }
       ]
+    },
+    "25": {
+      "text": "Jesus answered them, I told you, and ye believe not: the works that I do in my Father’s name, these bear witness of me.",
+      "spans": [
+        {
+          "start": 21,
+          "end": 119
+        }
+      ]
+    },
+    "26": {
+      "text": "But ye believe not, because ye are not of my sheep.",
+      "spans": [
+        {
+          "start": 0,
+          "end": 51
+        }
+      ]
+    },
+    "27": {
+      "text": "My sheep hear my voice, and I know them, and they follow me:",
+      "spans": [
+        {
+          "start": 0,
+          "end": 60
+        }
+      ]
+    },
+    "28": {
+      "text": "and I give unto them eternal life; and they shall never perish, and no one shall snatch them out of my hand.",
+      "spans": [
+        {
+          "start": 0,
+          "end": 108
+        }
+      ]
+    },
+    "29": {
+      "text": "My Father, who hath given them unto me, is greater than all; and no one is able to snatch them out of the Father’s hand.",
+      "spans": [
+        {
+          "start": 0,
+          "end": 120
+        }
+      ]
+    },
+    "30": {
+      "text": "I and the Father are one.",
+      "spans": [
+        {
+          "start": 0,
+          "end": 25
+        }
+      ]
+    },
+    "32": {
+      "text": "Jesus answered them, Many good works have I showed you from the Father; for which of those works do ye stone me?",
+      "spans": [
+        {
+          "start": 21,
+          "end": 112
+        }
+      ]
+    },
+    "34": {
+      "text": "Jesus answered them, Is it not written in your law, I said, Ye are gods?",
+      "spans": [
+        {
+          "start": 21,
+          "end": 72
+        }
+      ]
+    },
+    "35": {
+      "text": "If he called them gods, unto whom the word of God came (and the scripture cannot be broken),",
+      "spans": [
+        {
+          "start": 0,
+          "end": 92
+        }
+      ]
+    },
+    "36": {
+      "text": "say ye of him, whom the Father sanctified and sent into the world, Thou blasphemest; because I said, I am the Son of God?",
+      "spans": [
+        {
+          "start": 0,
+          "end": 121
+        }
+      ]
+    },
+    "37": {
+      "text": "If I do not the works of my Father, believe me not.",
+      "spans": [
+        {
+          "start": 0,
+          "end": 51
+        }
+      ]
+    },
+    "38": {
+      "text": "But if I do them, though ye believe not me, believe the works: that ye may know and understand that the Father is in me, and I in the Father.",
+      "spans": [
+        {
+          "start": 0,
+          "end": 141
+        }
+      ]
     }
   }
 }
