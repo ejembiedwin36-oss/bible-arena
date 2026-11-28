@@ -1242,3 +1242,65 @@ describe('John chapter 20 translation-specific red-letter spans', () => {
     expect(redLetterVerse(webJohn, 20, 27, 'Changed wording')).toEqual([{ text: 'Changed wording', red: false }]);
   });
 });
+
+const john21ReviewedVerses = [5, 6, 10, 12, 15, 16, 17, 18, 19, 22] as const;
+
+describe('John chapter 21 translation-specific red-letter spans', () => {
+  const versions = [
+    { version: 'KJV', corpus: john },
+    { version: 'WEB', corpus: webJohn },
+    { version: 'ASV', corpus: asvJohn },
+    { version: 'BSB', corpus: bsbJohn },
+    { version: 'YLT', corpus: yltJohn },
+  ];
+
+  it.each(versions)('$version has reviewed Jesus-speech spans in John 21', ({ corpus }) => {
+    const typedCorpus = corpus as unknown as ChapterCorpus;
+    for (const verseNumber of john21ReviewedVerses) {
+      const annotation = typedCorpus['21'][String(verseNumber)];
+      expect(annotation, `missing John 21:${verseNumber} annotation`).toBeDefined();
+      const parts = redLetterVerse(corpus, 21, verseNumber, annotation.text);
+      expect(parts.map(part => part.text).join('')).toBe(annotation.text);
+      expect(parts.some(part => part.red)).toBe(true);
+    }
+  });
+
+  it('keeps the fishermen’s answer outside Jesus’ words in John 21:5 and 21:6', () => {
+    const verse5 = bsbJohn['21']['5'];
+    const red5 = redLetterVerse(bsbJohn, 21, 5, verse5.text).filter(part => part.red).map(part => part.text).join('');
+    expect(red5).toBe('Children, do you have any fish?”');
+    expect(red5).not.toContain('No,” they answered');
+
+    const verse6 = bsbJohn['21']['6'];
+    const red6 = redLetterVerse(bsbJohn, 21, 6, verse6.text).filter(part => part.red).map(part => part.text).join('');
+    expect(red6).toBe('Cast the net on the right side of the boat, and you will find some.”');
+    expect(red6).not.toContain('So they cast it there');
+  });
+
+  it('splits BSB John 21:15-17 around Peter’s replies and Jesus’ attributions', () => {
+    const expected = {
+      15: 'Simon son of John, do you love Me more than these?”Feed My lambs.”',
+      16: 'Simon son of John, do you love Me?”Shepherd My sheep.”',
+      17: 'Simon son of John, do you love Me?”Do you love Me?”Feed My sheep.',
+    };
+    for (const verseNumber of [15, 16, 17] as const) {
+      const verse = bsbJohn['21'][String(verseNumber)];
+      const parts = redLetterVerse(bsbJohn, 21, verseNumber, verse.text);
+      const red = parts.filter(part => part.red).map(part => part.text).join('');
+      expect(red).toBe(expected[verseNumber]);
+      expect(parts.some(part => !part.red && part.text.includes('Yes, Lord'))).toBe(true);
+    }
+  });
+
+  it('keeps the John 21:19 narration and section heading outside Follow Me', () => {
+    const verse = bsbJohn['21']['19'];
+    const parts = redLetterVerse(bsbJohn, 21, 19, verse.text);
+    expect(parts.filter(part => part.red).map(part => part.text).join('')).toBe('Follow Me.”');
+    expect(parts.some(part => !part.red && part.text.includes('Jesus said this to indicate'))).toBe(true);
+    expect(parts.some(part => !part.red && part.text.includes('Jesus and the Beloved Disciple'))).toBe(true);
+  });
+
+  it('does not apply John 21 red letters when the displayed text differs', () => {
+    expect(redLetterVerse(yltJohn, 21, 22, 'Changed wording')).toEqual([{ text: 'Changed wording', red: false }]);
+  });
+});
