@@ -1364,5 +1364,79 @@
         }
       ]
     }
+  },
+  "9": {
+    "3": {
+      "text": "Jesus answered, 'Neither did this one sin nor his parents, but that the works of God may be manifested in him;",
+      "spans": [
+        {
+          "start": 17,
+          "end": 110
+        }
+      ]
+    },
+    "4": {
+      "text": "it behoveth me to be working the works of Him who sent me while it is day; night doth come, when no one is able to work: —",
+      "spans": [
+        {
+          "start": 0,
+          "end": 120
+        }
+      ]
+    },
+    "5": {
+      "text": "when I am in the world, I am a light of the world.'",
+      "spans": [
+        {
+          "start": 0,
+          "end": 51
+        }
+      ]
+    },
+    "7": {
+      "text": "'Go away, wash at the pool of Siloam,' which is, interpreted, Sent. He went away, therefore, and did wash, and came seeing;",
+      "spans": [
+        {
+          "start": 1,
+          "end": 37
+        }
+      ]
+    },
+    "35": {
+      "text": "Jesus heard that they cast him forth without, and having found him, he said to him, 'Dost thou believe in the Son of God?'",
+      "spans": [
+        {
+          "start": 85,
+          "end": 122
+        }
+      ]
+    },
+    "37": {
+      "text": "And Jesus said to him, 'Thou hast both seen him, and he who is speaking with thee is he;'",
+      "spans": [
+        {
+          "start": 24,
+          "end": 89
+        }
+      ]
+    },
+    "39": {
+      "text": "And Jesus said, 'For judgment I to this world did come, that those not seeing may see, and those seeing may become blind.'",
+      "spans": [
+        {
+          "start": 17,
+          "end": 122
+        }
+      ]
+    },
+    "41": {
+      "text": "Jesus said to them, 'If ye were blind, ye were not having had sin, but now ye say — We see, therefore doth your sin remain.",
+      "spans": [
+        {
+          "start": 21,
+          "end": 123
+        }
+      ]
+    }
   }
 }
