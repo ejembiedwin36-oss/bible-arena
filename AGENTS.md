@@ -390,3 +390,12 @@ The Reader now offers the red-letter control for KJV, WEB, ASV, BSB, and YLT. AS
 - Added regression tests for all 26 verses in all five versions, the prayer/narration boundary, BSB heading exclusions, and text mismatch fallback. A direct exact-text audit confirmed all 104 new annotations match production text and have valid spans.
 - Verification for commit `b978f9c`: CI and Reader verification succeeded; 29 test files / 258 tests passed, API and TypeScript checks passed, and the production build passed. Deployment to the live website has not been independently confirmed.
 - Next: verify John 17, then continue with John chapter 18.
+
+
+## John chapter 18 annotation checkpoint — 2026-11-28
+
+- Added exact-text Jesus-speech spans for 12 reviewed verses (18:4–8, 18:11, 18:20–21, 18:23, 18:34, and 18:36–37) to WEB, ASV, YLT, and BSB; existing KJV annotations were preserved.
+- John 18:6 highlights Jesus’ reported words only. BSB 18:8, 18:11, 18:20, 18:34, and 18:37 use multiple spans around speaker attributions; other speakers’ words remain uncoloured.
+- Added regression tests for all 12 reviewed verses in all five versions, reported speech, mixed-speaker boundaries, and text mismatch fallback. A direct exact-text audit confirmed all 48 new annotations match production text and have valid spans.
+- CI and Reader verification are pending for this John 18 checkpoint; deployment is not confirmed.
+- Next: verify John 18, then continue with John chapter 19.
