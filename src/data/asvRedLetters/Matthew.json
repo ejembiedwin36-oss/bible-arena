@@ -1,0 +1,60 @@
+{
+  "3": {
+    "15": {
+      "text": "But Jesus answering said unto him, Suffer it now: for thus it becometh us to fulfil all righteousness. Then he suffereth him.",
+      "spans": [
+        {
+          "start": 35,
+          "end": 102
+        }
+      ]
+    }
+  },
+  "4": {
+    "4": {
+      "text": "But he answered and said, It is written, Man shall not live by bread alone, but by every word that proceedeth out of the mouth of God.",
+      "spans": [
+        {
+          "start": 26,
+          "end": 134
+        }
+      ]
+    },
+    "7": {
+      "text": "Jesus said unto him, Again it is written, Thou shalt not make trial of the Lord thy God.",
+      "spans": [
+        {
+          "start": 21,
+          "end": 88
+        }
+      ]
+    },
+    "10": {
+      "text": "Then saith Jesus unto him, Get thee hence, Satan: for it is written, Thou shalt worship the Lord thy God, and him only shalt thou serve.",
+      "spans": [
+        {
+          "start": 27,
+          "end": 136
+        }
+      ]
+    },
+    "17": {
+      "text": "From that time began Jesus to preach, and to say, Repent ye; for the kingdom of heaven is at hand.",
+      "spans": [
+        {
+          "start": 50,
+          "end": 98
+        }
+      ]
+    },
+    "19": {
+      "text": "And he saith unto them, Come ye after me, and I will make you fishers of men.",
+      "spans": [
+        {
+          "start": 24,
+          "end": 77
+        }
+      ]
+    }
+  }
+}
