@@ -636,10 +636,16 @@ describe('John chapter 10:1-18 translation-specific red-letter spans', () => {
   });
 
   it('keeps the John 10:7 speaker introduction outside the red text', () => {
-    for (const corpus of [webJohn, asvJohn, bsbJohn, yltJohn]) {
-      const verse = (corpus as unknown as ChapterCorpus)['10']['7'];
-      const parts = redLetterVerse(corpus, 10, 7, verse.text);
-      expect(parts.some(part => !part.red && part.text.includes('Jesus'))).toBe(true);
+    const cases = [
+      { corpus: webJohn, attribution: 'Jesus therefore said to them again' },
+      { corpus: asvJohn, attribution: 'Jesus therefore said unto them again' },
+      { corpus: bsbJohn, attribution: 'So He said to them again' },
+      { corpus: yltJohn, attribution: 'Jesus said therefore again to them' },
+    ];
+    for (const item of cases) {
+      const verse = (item.corpus as unknown as ChapterCorpus)['10']['7'];
+      const parts = redLetterVerse(item.corpus, 10, 7, verse.text);
+      expect(parts.some(part => !part.red && part.text.includes(item.attribution))).toBe(true);
       expect(parts.some(part => part.red)).toBe(true);
     }
   });
