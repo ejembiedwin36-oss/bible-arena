@@ -440,3 +440,64 @@ describe('John chapter 6 translation-specific red-letter spans', () => {
     }
   });
 });
+
+
+const john7ReviewedVerses = [6, 7, 8, 16, 17, 18, 19, 21, 22, 23, 24, 28, 29, 33, 34, 37, 38] as const;
+
+describe('John chapter 7 translation-specific red-letter spans', () => {
+  const versions = [
+    { version: 'KJV', corpus: john },
+    { version: 'WEB', corpus: webJohn },
+    { version: 'ASV', corpus: asvJohn },
+    { version: 'BSB', corpus: bsbJohn },
+    { version: 'YLT', corpus: yltJohn },
+  ];
+
+  it.each(versions)('$version has reviewed Jesus-speech spans in John 7', ({ corpus }) => {
+    const typedCorpus = corpus as unknown as ChapterCorpus;
+    for (const verseNumber of john7ReviewedVerses) {
+      const annotation = typedCorpus['7'][String(verseNumber)];
+      expect(annotation, `missing John 7:${verseNumber} annotation`).toBeDefined();
+      const parts = redLetterVerse(corpus, 7, verseNumber, annotation.text);
+      expect(parts.map(part => part.text).join('')).toBe(annotation.text);
+      expect(parts.some(part => part.red)).toBe(true);
+    }
+  });
+
+  it('keeps verse attributions outside the red text in John 7:6, 16, 21, 28, 33, and 37', () => {
+    const cases = [
+      { corpus: webJohn, verse: 6, speech: 'My time has not yet come, but your time is always ready.', attribution: 'Jesus therefore said to them' },
+      { corpus: asvJohn, verse: 16, speech: 'My teaching is not mine, but his that sent me.', attribution: 'Jesus therefore answered them' },
+      { corpus: yltJohn, verse: 21, speech: "'One work I did, and ye all wonder,", attribution: 'Jesus answered and said to them' },
+      { corpus: bsbJohn, verse: 28, speech: 'You know Me, and you know where I am from. I have not come of My own accord, but He who sent Me is true. You do not know Him,', attribution: 'Then Jesus, still teaching' },
+      { corpus: webJohn, verse: 33, speech: 'I will be with you a little while longer, then I go to him who sent me.', attribution: 'Then Jesus said' },
+      { corpus: asvJohn, verse: 37, speech: 'If any man thirst, let him come unto me and drink.', attribution: 'Jesus stood and cried, saying' },
+    ];
+    for (const item of cases) {
+      const annotation = (item.corpus as unknown as ChapterCorpus)['7'][String(item.verse)];
+      const parts = redLetterVerse(item.corpus, 7, item.verse, annotation.text);
+      expect(parts.filter(part => part.red).map(part => part.text).join('')).toBe(item.speech);
+      expect(parts.some(part => !part.red && part.text.includes(item.attribution))).toBe(true);
+    }
+  });
+
+  it('keeps BSB John 7:16 speaker attribution separate and excludes the 7:24 section heading', () => {
+    const verse16 = bsbJohn['7']['16'];
+    const red16 = redLetterVerse(bsbJohn, 7, 16, verse16.text).filter(part => part.red).map(part => part.text).join('');
+    expect(red16).toBe('“My teaching is not My own,”“ It comes from Him who sent Me.');
+    expect(redLetterVerse(bsbJohn, 7, 16, verse16.text).some(part => !part.red && part.text.includes('Jesus replied'))).toBe(true);
+    const verse24 = bsbJohn['7']['24'];
+    const red24 = redLetterVerse(bsbJohn, 7, 24, verse24.text).filter(part => part.red).map(part => part.text).join('');
+    expect(red24).toBe('Stop judging by outward appearances, and start judging justly.”');
+    expect(red24).not.toContain('Is Jesus the Christ?');
+  });
+
+  it('leaves other speakers and narration in John 7 uncoloured', () => {
+    for (const { corpus } of versions) {
+      for (const verseNumber of [20, 25, 26, 27, 30, 31, 32, 35, 36, 39, 40, 41, 42, 43, 44, 45, 46, 47, 48, 49, 50, 51, 52, 53]) {
+        const verse = (corpus as unknown as ChapterCorpus)['7'][String(verseNumber)]?.text ?? 'Unannotated verse';
+        expect(redLetterVerse(corpus, 7, verseNumber, verse).some(part => part.red)).toBe(false);
+      }
+    }
+  });
+});
