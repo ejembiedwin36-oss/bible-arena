@@ -1254,5 +1254,115 @@
         }
       ]
     }
+  },
+  "8": {
+    "12": {
+      "text": "Again, therefore, Jesus spoke to them, saying, “I am the light of the world. He who follows me will not walk in the darkness, but will have the light of life.”",
+      "spans": [
+        {
+          "start": 48,
+          "end": 159
+        }
+      ]
+    },
+    "21": {
+      "text": "Jesus said therefore again to them, “I am going away, and you will seek me, and you will die in your sins. Where I go, you can’t come.”",
+      "spans": [
+        {
+          "start": 37,
+          "end": 135
+        }
+      ]
+    },
+    "23": {
+      "text": "He said to them, “You are from beneath. I am from above. You are of this world. I am not of this world.",
+      "spans": [
+        {
+          "start": 18,
+          "end": 79
+        }
+      ]
+    },
+    "24": {
+      "text": "I said therefore to you that you will die in your sins; for unless you believe that I am he, you will die in your sins.”",
+      "spans": [
+        {
+          "start": 0,
+          "end": 120
+        }
+      ]
+    },
+    "28": {
+      "text": "Jesus therefore said to them, “When you have lifted up the Son of Man, then you will know that I am he, and I do nothing of myself, but as my Father taught me, I say these things.",
+      "spans": [
+        {
+          "start": 31,
+          "end": 179
+        }
+      ]
+    },
+    "31": {
+      "text": "Jesus therefore said to those Jews who had believed him, “If you remain in my word, then you are truly my disciples.",
+      "spans": [
+        {
+          "start": 58,
+          "end": 116
+        }
+      ]
+    },
+    "32": {
+      "text": "You will know the truth, and the truth will make you free.”",
+      "spans": [
+        {
+          "start": 0,
+          "end": 59
+        }
+      ]
+    },
+    "34": {
+      "text": "Jesus answered them, “Most certainly I tell you, everyone who commits sin is the bondservant of sin.",
+      "spans": [
+        {
+          "start": 22,
+          "end": 100
+        }
+      ]
+    },
+    "36": {
+      "text": "If therefore the Son makes you free, you will be free indeed.",
+      "spans": [
+        {
+          "start": 0,
+          "end": 61
+        }
+      ]
+    },
+    "51": {
+      "text": "Most certainly, I tell you, if a person keeps my word, he will never see death.”",
+      "spans": [
+        {
+          "start": 0,
+          "end": 80
+        }
+      ]
+    },
+    "56": {
+      "text": "Your father Abraham rejoiced to see my day. He saw it, and was glad.”",
+      "spans": [
+        {
+          "start": 0,
+          "end": 69
+        }
+      ]
+    },
+    "58": {
+      "text": "Jesus said to them, “Most certainly, I tell you, before Abraham came into existence, I AM.”",
+      "spans": [
+        {
+          "start": 21,
+          "end": 91
+        }
+      ]
+    }
   }
 }
